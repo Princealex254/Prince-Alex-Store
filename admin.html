@@ -538,6 +538,7 @@
         // Firebase Auth State Listener: Crucial for updating UI on login/logout
         onAuthStateChanged(auth, (user) => {
             firebaseUser = user; // Update the global user object
+            console.log("Auth state changed. Current user:", firebaseUser ? firebaseUser.email : "No user"); // Debug log
             updateAdminUI(); // Call the UI update function
         });
 
@@ -561,6 +562,12 @@
                 showModal('Error', 'Please fill in all product details correctly.', true);
                 return;
             }
+
+            // Debug logs before attempting to add product
+            console.log("Attempting to add product...");
+            console.log("Current firebaseUser:", firebaseUser ? firebaseUser.email : "No user logged in");
+            console.log("Auth.currentUser:", auth.currentUser ? auth.currentUser.email : "No user from auth.currentUser");
+
 
             try {
                 await addDoc(collection(db, "products"), {
