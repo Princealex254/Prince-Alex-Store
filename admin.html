@@ -134,25 +134,21 @@
         }
 
         .hero {
-            background: linear-gradient(rgba(255,255,255,0.8), rgba(255,255,255,0.8)), url('https://images.unsplash.com/photo-1596700676451-f761e3d368e7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover;
             text-align: center;
             padding: 100px 20px;
+            background-color: var(--secondary-color);
+            color: var(--white);
             border-radius: 10px;
             margin-bottom: 40px;
-        }
-        body.dark-mode .hero {
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1596700676451-f761e3d368e7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover;
         }
 
         .hero h1 {
             font-size: 48px;
-            color: var(--primary-color);
             margin-bottom: 10px;
         }
 
         .hero p {
             font-size: 20px;
-            color: var(--dark-text);
             margin-bottom: 30px;
         }
 
@@ -167,7 +163,7 @@
         }
 
         .cta-button:hover {
-            background-color: var(--secondary-color);
+            background-color: var(--dark-text);
         }
 
         .section-title {
@@ -182,9 +178,6 @@
             gap: 20px;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         }
-        .product-grid.list-view {
-            grid-template-columns: 1fr;
-        }
 
         .product-card, .feature-item, .order-card, .contact-submission-card {
             background-color: var(--white);
@@ -193,28 +186,6 @@
             padding: 20px;
             text-align: center;
             transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
-            position: relative; /* For badges */
-        }
-        .product-grid.list-view .product-card {
-            display: flex;
-            text-align: left;
-            gap: 20px;
-            align-items: center;
-        }
-        .product-grid.list-view .product-card img {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            flex-shrink: 0;
-        }
-        .product-grid.list-view .product-card .product-info {
-            flex-grow: 1;
-        }
-        .product-grid.list-view .product-card .product-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: flex-end;
         }
 
         .product-card:hover {
@@ -254,10 +225,6 @@
 
         .add-to-cart-btn:hover {
             background-color: var(--secondary-color);
-        }
-        .add-to-cart-btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
         }
 
         .features-grid .feature-item h4 {
@@ -345,7 +312,7 @@
             background-color: var(--secondary-color);
         }
 
-        .forms-container, .contact-form-container, .admin-panel-login, .auth-modal-content {
+        .forms-container, .contact-form-container, .admin-panel-login {
             max-width: 600px;
             margin: 0 auto;
             background-color: var(--white);
@@ -355,7 +322,7 @@
             transition: background-color 0.3s, box-shadow 0.3s;
         }
         
-        .admin-form input, .admin-form textarea, .contact-form input, .contact-form textarea, .order-track-form input, .admin-panel-login input, .checkout-form input, .payment-form input, .auth-form input {
+        .admin-form input, .admin-form textarea, .contact-form input, .contact-form textarea, .order-track-form input, .admin-panel-login input {
             width: 100%;
             padding: 12px;
             margin-bottom: 15px;
@@ -366,40 +333,12 @@
             color: var(--text-color);
             transition: border-color 0.3s, background-color 0.3s;
         }
-        .admin-form input:focus, .admin-form textarea:focus, .contact-form input:focus, .contact-form textarea:focus, .order-track-form input:focus, .admin-panel-login input:focus, .checkout-form input:focus, .payment-form input:focus, .auth-form input:focus {
+        .admin-form input:focus, .admin-form textarea:focus, .contact-form input:focus, .contact-form textarea:focus, .order-track-form input:focus, .admin-panel-login input:focus {
             outline: none;
             border-color: var(--primary-color);
         }
-        .payment-options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .payment-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background-color: var(--light-bg);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-        .payment-option:hover {
-            background-color: #e0e0e0;
-            border-color: var(--primary-color);
-        }
-        .payment-option input[type="radio"] {
-            width: auto;
-            margin-bottom: 0;
-        }
-        body.dark-mode .payment-option:hover {
-            background-color: #444;
-        }
 
-        .admin-form button, .contact-form button, .order-track-form button, .admin-panel-login button, .checkout-form button, .payment-form button, .auth-form button, .newsletter-form button {
+        .admin-form button, .contact-form button, .order-track-form button, .admin-panel-login button {
             width: 100%;
             padding: 15px;
             background-color: var(--primary-color);
@@ -411,7 +350,7 @@
             transition: background-color 0.3s;
         }
 
-        .admin-form button:hover, .contact-form button:hover, .order-track-form button:hover, .admin-panel-login button:hover, .checkout-form button:hover, .payment-form button:hover, .auth-form button:hover, .newsletter-form button:hover {
+        .admin-form button:hover, .contact-form button:hover, .order-track-form button:hover, .admin-panel-login button:hover {
             background-color: var(--secondary-color);
         }
 
@@ -593,327 +532,96 @@
             margin-bottom: 20px;
             text-align: center;
         }
-        .admin-list-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .admin-list-table th, .admin-list-table td {
-            text-align: left;
-            padding: 12px;
+        .admin-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
             border-bottom: 1px solid var(--border-color);
-            color: var(--dark-text);
         }
-        .admin-list-table th {
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-        .admin-list-table tr:last-child td {
+        .admin-list-item:last-child {
             border-bottom: none;
         }
-        .admin-list-table select, .admin-list-table button {
-            padding: 6px 10px;
+        .admin-list-item button {
+            padding: 8px 15px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 13px;
-            border: 1px solid var(--border-color);
-            background-color: var(--light-bg);
-            color: var(--text-color);
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: background-color 0.3s;
+            font-size: 14px;
         }
-        .admin-list-table select:hover, .admin-list-table button:hover {
-            border-color: var(--primary-color);
-        }
-        .admin-list-table button.delete-btn {
+        .admin-list-item .delete-btn {
             background-color: #f44336;
             color: var(--white);
             border: none;
-            margin-left: 5px;
         }
-        .admin-list-table button.delete-btn:hover {
+        .admin-list-item .delete-btn:hover {
             background-color: #d32f2f;
         }
-        .admin-list-table button.print-btn {
-            background-color: #03A9F4; /* Blue */
+        .admin-list-item .mark-delivered-btn {
+            background-color: var(--primary-color);
             color: var(--white);
             border: none;
         }
-        .admin-list-table button.print-btn:hover {
-            background-color: #0288D1; /* Darker Blue */
+        .admin-list-item .mark-delivered-btn:hover {
+            background-color: var(--secondary-color);
         }
-        .admin-list-table .order-items-list {
+        .admin-list-item .status-delivered {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .admin-list-item .order-items-list {
             font-size: 0.9em;
             color: #666;
         }
-        body.dark-mode .admin-list-table .order-items-list {
+        body.dark-mode .admin-list-item .order-items-list {
             color: #ccc;
         }
 
-        /* Invoice Modal Styling */
-        #invoice-modal .modal-content {
-            max-width: 700px;
-            text-align: left;
-            padding: 40px;
-        }
-        .invoice-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 15px;
-        }
-        .invoice-header .logo-invoice {
-            font-size: 30px;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-        .invoice-header .invoice-date {
-            font-size: 1.1em;
-            color: var(--dark-text);
-        }
-        .invoice-details {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-        }
-        .invoice-details div {
-            flex: 1;
-        }
-        .invoice-details h4 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-        .invoice-details p {
-            margin-bottom: 5px;
-            font-size: 0.95em;
-        }
-        .invoice-items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-        }
-        .invoice-items-table th, .invoice-items-table td {
-            border: 1px solid var(--border-color);
-            padding: 10px;
-            text-align: left;
-            font-size: 0.9em;
-        }
-        .invoice-items-table th {
-            background-color: var(--light-bg);
-            color: var(--dark-text);
-        }
-        .invoice-totals {
-            text-align: right;
-            margin-top: 20px;
-            font-size: 1.1em;
-        }
-        .invoice-totals div {
-            margin-bottom: 8px;
-        }
-        .invoice-totals .grand-total-invoice {
-            font-size: 1.4em;
-            font-weight: 700;
-            color: var(--primary-color);
-            border-top: 2px solid var(--primary-color);
-            padding-top: 10px;
-            margin-top: 15px;
-        }
-        .invoice-footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 0.9em;
-            color: #666;
-        }
-        .invoice-actions {
-            text-align: center;
-            margin-top: 30px;
-        }
-        .invoice-actions button {
-            background-color: var(--primary-color);
-            color: var(--white);
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        .invoice-actions button:hover {
-            background-color: var(--secondary-color);
-        }
-
-        /* Print specific styles */
-        @media print {
-            body > *:not(#invoice-modal) {
-                display: none !important;
-            }
-            #invoice-modal {
-                display: block !important;
-                position: static !important;
-                background-color: transparent !important;
-                overflow: visible !important;
-                width: auto !important;
-                height: auto !important;
-            }
-            #invoice-modal .modal-content {
-                width: 100% !important;
-                max-width: none !important;
-                box-shadow: none !important;
-                border-radius: 0 !important;
-                margin: 0 !important;
-                padding: 0 !important; /* Adjust if needed for print margins */
-                transform: none !important;
-                opacity: 1 !important;
-                animation: none !important;
-            }
-            .invoice-actions, .close-button {
-                display: none !important; /* Hide buttons when printing */
-            }
-        }
-
-        /* Edit Order Modal Specific Styles */
-        #edit-order-modal .modal-content {
-            max-width: 800px;
-            text-align: left;
-        }
-        #edit-order-modal .modal-content h3 {
-            text-align: center;
-        }
-        #edit-order-modal .order-summary-edit {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        #edit-order-modal .order-summary-edit div {
-            flex: 1;
-        }
-        #edit-order-modal .order-summary-edit p {
-            margin-bottom: 5px;
-        }
-        #edit-order-modal .edit-items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        #edit-order-modal .edit-items-table th,
-        #edit-order-modal .edit-items-table td {
-            border: 1px solid var(--border-color);
-            padding: 8px;
-            text-align: left;
-            font-size: 0.9em;
-        }
-        #edit-order-modal .edit-items-table th {
-            background-color: var(--light-bg);
-            color: var(--dark-text);
-        }
-        #edit-order-modal .edit-items-table .quantity-controls {
-            justify-content: center;
-        }
-        #edit-order-modal .edit-items-table button {
-            padding: 5px 10px;
-            font-size: 0.8em;
-            margin: 0 2px;
-            background-color: #FFC107; /* Amber for edit actions */
-            color: var(--dark-text);
-            border: none;
-        }
-        #edit-order-modal .edit-items-table button.remove-item-btn {
-            background-color: #f44336;
-            color: var(--white);
-        }
-        #edit-order-modal .edit-items-table button:hover {
-            opacity: 0.8;
-        }
-        #edit-order-modal .replacement-section {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-        }
-        #edit-order-modal .replacement-section h4 {
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-        #edit-order-modal .replacement-search-results {
-            max-height: 150px;
-            overflow-y: auto;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-        #edit-order-modal .replacement-search-results div {
-            padding: 8px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        #edit-order-modal .replacement-search-results div:last-child {
-            border-bottom: none;
-        }
-        #edit-order-modal .replacement-search-results button {
-            background-color: var(--primary-color);
-            color: var(--white);
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #edit-order-modal .edit-order-totals {
-            text-align: right;
-            margin-top: 20px;
-            font-size: 1.1em;
-        }
-        #edit-order-modal .edit-order-totals div {
-            margin-bottom: 5px;
-        }
-        #edit-order-modal .edit-order-totals .grand-total-edit {
-            font-size: 1.3em;
-            font-weight: 700;
-            color: var(--primary-color);
-            border-top: 1px solid var(--primary-color);
-            padding-top: 10px;
-            margin-top: 10px;
-        }
-        #edit-order-modal .edit-order-actions {
-            text-align: center;
-            margin-top: 30px;
-        }
-        #edit-order-modal .edit-order-actions button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 0 10px;
-        }
-
+        /* Responsive adjustments */
         @media (max-width: 768px) {
-            .admin-list-table th, .admin-list-table td {
-                padding: 8px;
-                font-size: 12px;
-            }
-            .admin-list-table select, .admin-list-table button {
-                padding: 4px 8px;
-                font-size: 11px;
-            }
-            .invoice-header, .invoice-details {
+            .nav-links {
+                display: none; /* Hide by default on mobile */
                 flex-direction: column;
-                align-items: flex-start;
-            }
-            .invoice-details div {
-                margin-bottom: 15px;
-            }
-            #edit-order-modal .edit-items-table th,
-            #edit-order-modal .edit-items-table td {
-                padding: 6px;
-                font-size: 0.8em;
-            }
-            #edit-order-modal .edit-order-totals {
-                font-size: 1em;
-            }
-            #edit-order-modal .edit-order-actions button {
                 width: 100%;
-                margin: 5px 0;
+                background-color: var(--white);
+                position: absolute;
+                top: 70px; /* Adjust based on header height */
+                left: 0;
+                box-shadow: var(--shadow);
+                padding: 20px 0;
+                text-align: center;
+            }
+            .nav-links.active {
+                display: flex; /* Show when active */
+            }
+            .nav-links li {
+                margin-bottom: 10px;
+            }
+            .hamburger-menu {
+                display: block; /* Show hamburger on mobile */
+            }
+            nav {
+                flex-wrap: wrap;
+            }
+            .nav-icons {
+                order: 1; /* Place icons first on small screens */
+            }
+            .logo {
+                order: 2;
+                flex-grow: 1;
+                text-align: center;
+            }
+            .hamburger-menu {
+                order: 3;
+            }
+            .hero h1 {
+                font-size: 36px;
+            }
+            .product-grid, .features-grid, .admin-orders-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -923,14 +631,13 @@
     <header>
         <div class="container">
             <nav>
-                <div class="logo">Prince Alex Admin</div>
+                <div class="logo">Prince Alex Store - Admin</div>
                 <ul class="nav-links" id="nav-links">
-                    <li><a href="index.html" class="page-link">Back to Store</a></li>
-                    <li><a href="#" class="page-link" data-page="upload-product">Products</a></li>
-                    <li><a href="#" class="page-link" data-page="manage-orders">Orders</a></li>
-                    <li><a href="#" class="page-link" data-page="manage-users">Users</a></li>
-                    <li><a href="#" class="page-link" data-page="contact-submissions">Contacts</a></li>
-                    <li><a href="#" id="admin-logout-btn">Logout</a></li>
+                    <li><a href="#" class="page-link active" data-page="admin-home">Admin Home</a></li>
+                    <li><a href="#" class="page-link" data-page="manage-products">Manage Products</a></li>
+                    <li><a href="#" class="page-link" data-page="manage-orders">Manage Orders</a></li>
+                    <li><a href="#" class="page-link" data-page="contact-submissions">Contact Submissions</a></li>
+                    <li><a href="#" class="page-link" data-page="logout">Logout</a></li>
                 </ul>
                 <div class="nav-icons">
                     <button id="dark-mode-toggle"><i class="fas fa-moon"></i></button>
@@ -941,18 +648,22 @@
     </header>
 
     <main class="container">
-        <!-- Admin Product Upload & Management Page -->
-        <section id="admin-panel-page" class="active">
+        
+        <!-- Admin Home Page / Login -->
+        <section id="admin-home-page" class="active">
             <h2 class="section-title">Admin Panel</h2>
-            
-<div id="admin-login" class="forms-container">
-    <input type="email" id="admin-email" placeholder="Email" required>
-    <input type="password" id="admin-password" placeholder="Password" required>
-    <button onclick="loginAdmin()">Login</button>
-    <p id="auth-message" style="color:red;"></p>
-</div>
+            <div id="admin-login" class="admin-panel-login">
+                <p>Please log in to access the Admin Panel.</p>
+                <input type="email" id="admin-email" placeholder="Admin Email" value="admin@princealex.com">
+                <input type="password" id="admin-password" placeholder="Password">
+                <button onclick="loginAdmin()">Login</button>
+            </div>
+            <div id="admin-content" style="display: none;">
+                <div class="hero">
+                    <h1>Welcome, Admin!</h1>
+                    <p>Manage products, orders, and customer inquiries.</p>
+                </div>
 
-<div id="admin-content" style="display: none;">
                 <div id="product-upload-form" class="forms-container">
                     <h3>Add a New Product</h3>
                     <form class="admin-form" onsubmit="addProduct(event)">
@@ -969,46 +680,51 @@
                         <button type="submit">Upload Product</button>
                     </form>
                 </div>
+            </div>
+        </section>
 
-                <div class="admin-section" id="manage-products">
-                    <h3>Manage Products</h3>
-                    <div id="admin-product-list">
-                        <!-- Admin products will be loaded here -->
-                    </div>
-                </div>
-
-                <div class="admin-section" id="manage-orders">
-                    <h3>Manage Orders</h3>
-                    <div id="admin-order-list">
-                        <!-- Admin orders will be loaded here -->
-                    </div>
-                </div>
-
-                <div class="admin-section" id="manage-users">
-                    <h3>Manage Users</h3>
-                    <div id="admin-user-list">
-                        <!-- Admin users will be loaded here -->
-                    </div>
-                </div>
-
-                <div class="admin-section" id="contact-submissions">
-                    <h3>Contact Submissions</h3>
-                    <div id="admin-contact-submissions">
-                        <!-- Contact submissions will be loaded here -->
-                    </div>
+        <!-- Manage Products Section -->
+        <section id="manage-products-page">
+            <h2 class="section-title">Manage Products</h2>
+            <div class="admin-section">
+                <h3>Current Products</h3>
+                <div id="admin-product-list">
+                    <p style="text-align: center;">Loading products...</p>
                 </div>
             </div>
         </section>
+
+        <!-- Manage Orders Section -->
+        <section id="manage-orders-page">
+            <h2 class="section-title">Manage Orders</h2>
+            <div class="admin-section">
+                <h3>Customer Orders</h3>
+                <div id="admin-order-list">
+                    <p style="text-align: center;">Loading orders...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Submissions Section -->
+        <section id="contact-submissions-page">
+            <h2 class="section-title">Contact Submissions</h2>
+            <div class="admin-section">
+                <h3>Customer Messages</h3>
+                <div id="admin-contact-submissions">
+                    <p style="text-align: center;">Loading contact submissions...</p>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <footer>
         <div class="container footer-grid">
             <div class="footer-column">
                 <h4>Admin Links</h4>
-                <a href="#" class="page-link" data-page="upload-product">Add Product</a>
+                <a href="#" class="page-link" data-page="admin-home">Admin Home</a>
+                <a href="#" class="page-link" data-page="manage-products">Manage Products</a>
                 <a href="#" class="page-link" data-page="manage-orders">Manage Orders</a>
-                <a href="#" class="page-link" data-page="manage-users">Manage Users</a>
-                <a href="#" class="page-link" data-page="contact-submissions">Contact Submissions</a>
             </div>
             <div class="footer-column">
                 <h4>Contact Info</h4>
@@ -1023,6 +739,10 @@
                     <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
+            <div class="footer-column">
+                <h4>Admin Tools</h4>
+                <p>Quick access to backend management.</p>
+            </div>
         </div>
     </footer>
 
@@ -1036,148 +756,46 @@
         </div>
     </div>
 
-    <!-- Invoice Modal -->
-    <div id="invoice-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeInvoiceModal()">&times;</span>
-            <div class="invoice-header">
-                <div class="logo-invoice">Prince Alex Store</div>
-                <div class="invoice-date">Date: <span id="invoice-date"></span></div>
-            </div>
-            <div class="invoice-details">
-                <div>
-                    <h4>Invoice To:</h4>
-                    <p id="invoice-customer-name"></p>
-                    <p id="invoice-customer-phone"></p>
-                    <p id="invoice-delivery-location"></p>
-                    <p id="invoice-house-name"></p>
-                </div>
-                <div>
-                    <h4>Order Details:</h4>
-                    <p>Order ID: <strong id="invoice-order-id"></strong></p>
-                    <p>Status: <span id="invoice-order-status"></span></p>
-                    <p>Payment Method: <span id="invoice-payment-method"></span></p>
-                </div>
-            </div>
-            <table class="invoice-items-table">
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Quantity</th>
-                        <th>Unit Price</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody id="invoice-items">
-                    <!-- Invoice items will be loaded here -->
-                </tbody>
-            </table>
-            <div class="invoice-totals">
-                <div>Subtotal: KES <span id="invoice-subtotal"></span></div>
-                <div>Transportation Fee: KES <span id="invoice-transport-fee"></span></div>
-                <div class="grand-total-invoice">Grand Total: KES <span id="invoice-grand-total"></span></div>
-            </div>
-            <div class="invoice-footer">
-                <p>Thank you for your business!</p>
-                <p>Prince Alex Online Store | princealexdigital@gmail.com | 0717384875</p>
-            </div>
-            <div class="invoice-actions">
-                <button onclick="printCurrentInvoice()"><i class="fas fa-print"></i> Print Invoice</button>
-            </div>
-        </div>
-    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy, doc, setDoc, addDoc, updateDoc, deleteDoc, where, getDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
-    <!-- Edit Order Modal -->
-    <div id="edit-order-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeEditOrderModal()">&times;</span>
-            <h3>Edit Order <span id="edit-order-id-display"></span></h3>
-            <div class="order-summary-edit">
-                <div>
-                    <p><strong>Customer:</strong> <span id="edit-customer-name"></span></p>
-                    <p><strong>Phone:</strong> <span id="edit-customer-phone"></span></p>
-                </div>
-                <div>
-                    <p><strong>Delivery:</strong> <span id="edit-delivery-location"></span>, <span id="edit-house-name"></span></p>
-                    <p><strong>Date:</strong> <span id="edit-order-date"></span></p>
-                </div>
-            </div>
-            
-            <h4>Order Items</h4>
-            <table class="edit-items-table">
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Total</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="edit-order-items">
-                    <!-- Editable order items will be loaded here -->
-                </tbody>
-            </table>
+        // Firebase Configuration (replace with your actual config)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAlS1nqRKolwc-7mySezN6XBcwk5p2Al4U",
+            authDomain: "prince-alex-store.firebaseapp.com",
+            projectId: "prince-alex-store",
+            storageBucket: "prince-alex-store.firebasestorage.app",
+            messagingSenderId: "266163776280",
+            appId: "1:266163776280:web:fdd89c30f84ed03540cc6d"
+        };
 
-            <div class="replacement-section">
-                <h4>Add/Replace Product</h4>
-                <input type="text" id="replacement-search-input" placeholder="Search for product to add/replace...">
-                <div id="replacement-search-results" class="replacement-search-results">
-                    <!-- Search results for replacement products -->
-                </div>
-            </div>
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-            <div class="edit-order-totals">
-                <div>Subtotal: KES <span id="edit-subtotal">0.00</span></div>
-                <div>Transportation Fee: KES <span id="edit-transport-fee">0.00</span></div>
-                <div class="grand-total-edit">Grand Total: KES <span id="edit-grand-total">0.00</span></div>
-            </div>
+        let firebaseUser = null; // To store the logged-in admin user
 
-            <div class="edit-order-actions">
-                <button onclick="saveEditedOrder()"><i class="fas fa-save"></i> Save Changes</button>
-                <button onclick="closeEditOrderModal()" style="background-color: #6c757d;"><i class="fas fa-times"></i> Cancel</button>
-            </div>
-        </div>
-    </div>
-
-
-    <script>
+        // --- UI Elements ---
         const pages = document.querySelectorAll('section');
         const navLinks = document.querySelectorAll('.page-link');
+        const adminLoginDiv = document.getElementById('admin-login');
+        const adminContentDiv = document.getElementById('admin-content');
+        const adminProductListDiv = document.getElementById('admin-product-list');
+        const adminOrderListDiv = document.getElementById('admin-order-list');
+        const adminContactSubmissionsDiv = document.getElementById('admin-contact-submissions');
+
+        // Message Modal elements
         const messageModal = document.getElementById('message-modal');
         const modalTitle = document.getElementById('modal-title');
         const modalMessage = document.getElementById('modal-message');
-        const hamburgerMenu = document.getElementById('hamburger-menu');
-        const mobileNavLinks = document.getElementById('nav-links');
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        const invoiceModal = document.getElementById('invoice-modal');
-        const editOrderModal = document.getElementById('edit-order-modal');
 
-        let currentEditedOrder = null; // Stores the order object being edited
-
-        // --- Utility Functions for Local Storage ---
-        function getFromLocalStorage(key, defaultValue) {
-            try {
-                const item = localStorage.getItem(key);
-                return item ? JSON.parse(item) : defaultValue;
-            } catch (e) {
-                console.error(`Error parsing localStorage item "${key}":`, e);
-                return defaultValue;
-            }
-        }
-
-        function saveToLocalStorage(key, data) {
-            try {
-                localStorage.setItem(key, JSON.stringify(data));
-            } catch (e) {
-                console.error(`Error saving to localStorage item "${key}":`, e);
-            }
-        }
-
-        // --- Message Modal Functions ---
+        // --- Utility Functions ---
         function showModal(title, message) {
             modalTitle.textContent = title;
-            modalMessage.innerHTML = message; // Use innerHTML for strong tags
+            modalMessage.innerHTML = message;
             messageModal.style.display = 'flex';
         }
 
@@ -1185,111 +803,57 @@
             messageModal.style.display = 'none';
         }
 
-        // --- Invoice Modal Functions ---
-        function openInvoiceModal(orderId) {
-            const orders = getOrders();
-            const order = orders.find(o => o.id === orderId);
-
-            if (!order) {
-                showModal('Error', 'Order not found for invoice generation.');
-                return;
-            }
-
-            document.getElementById('invoice-date').textContent = order.date;
-            document.getElementById('invoice-customer-name').textContent = order.customer.fullName;
-            document.getElementById('invoice-customer-phone').textContent = order.customer.phoneNumber;
-            document.getElementById('invoice-delivery-location').textContent = order.customer.deliveryLocation;
-            document.getElementById('invoice-house-name').textContent = order.customer.houseName || 'N/A';
-            document.getElementById('invoice-order-id').textContent = order.id;
-            document.getElementById('invoice-order-status').textContent = order.status;
-            document.getElementById('invoice-payment-method').textContent = order.paymentMethod;
-
-            const invoiceItemsTable = document.getElementById('invoice-items');
-            invoiceItemsTable.innerHTML = '';
-            order.items.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.name}</td>
-                    <td>${item.quantity} ${item.unit}</td>
-                    <td>KES ${item.price.toFixed(2)}</td>
-                    <td>KES ${(item.price * item.quantity).toFixed(2)}</td>
-                `;
-                invoiceItemsTable.appendChild(row);
-            });
-
-            document.getElementById('invoice-subtotal').textContent = order.subtotal.toFixed(2);
-            document.getElementById('invoice-transport-fee').textContent = order.transportationFee.toFixed(2);
-            document.getElementById('invoice-grand-total').textContent = order.total.toFixed(2);
-
-            invoiceModal.style.display = 'flex';
-        }
-
-        function closeInvoiceModal() {
-            invoiceModal.style.display = 'none';
-        }
-
-        function printCurrentInvoice() {
-            window.print();
-        }
-
-        // --- Page Navigation (for admin sections) ---
-        function showAdminSection(sectionId) {
-            // Hide all admin sections first
-            document.querySelectorAll('#admin-content .admin-section, #admin-content .forms-container').forEach(section => {
-                section.style.display = 'none';
-            });
-            // Show the requested section
-            const targetSection = document.getElementById(sectionId);
-            if (targetSection) {
-                targetSection.style.display = 'block';
-            }
-            // Update active link in admin nav
+        // --- Page Navigation ---
+        function showPage(pageId) {
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
             navLinks.forEach(link => link.classList.remove('active'));
-            const activeLink = document.querySelector(`.page-link[data-page="${sectionId.replace('-product-form', '').replace('manage-', '').replace('contact-submissions', 'contact-submissions')}"]`);
+            const activeLink = document.querySelector(`.page-link[data-page="${pageId.replace('-page', '')}"]`);
             if (activeLink) {
                 activeLink.classList.add('active');
             }
-            mobileNavLinks.classList.remove('active'); // Close mobile menu
+            // Close mobile menu if open
+            document.getElementById('nav-links').classList.remove('active');
+
+            // Specific page rendering/updates
+            if (pageId === 'manage-products-page') {
+                renderAdminProducts();
+            } else if (pageId === 'manage-orders-page') {
+                renderAdminOrders();
+            } else if (pageId === 'contact-submissions-page') {
+                renderAdminContactSubmissions();
+            }
         }
 
         navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
+                e.preventDefault();
                 const pageData = link.dataset.page;
-                if (pageData) { // Check if data-page attribute exists
-                    e.preventDefault();
-                    if (pageData === 'upload-product') {
-                        showAdminSection('product-upload-form');
-                    } else if (pageData === 'manage-orders') {
-                        showAdminSection('manage-orders');
-                        renderAdminOrders();
-                    } else if (pageData === 'manage-users') {
-                        showAdminSection('manage-users');
-                        renderAdminUsers();
-                    } else if (pageData === 'contact-submissions') {
-                        showAdminSection('contact-submissions');
-                        renderAdminContactSubmissions();
-                    }
+                if (pageData === 'logout') {
+                    logoutAdmin();
+                } else {
+                    showPage(pageData + '-page');
                 }
             });
         });
 
         // --- Mobile Hamburger Menu ---
-        hamburgerMenu.addEventListener('click', () => {
-            mobileNavLinks.classList.toggle('active');
+        document.getElementById('hamburger-menu').addEventListener('click', () => {
+            document.getElementById('nav-links').classList.toggle('active');
         });
 
         // --- Dark Mode Toggle ---
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
         darkModeToggle.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
-            // Save preference to localStorage
             const isDarkMode = document.body.classList.contains('dark-mode');
-            saveToLocalStorage('darkMode', isDarkMode);
-            // Update icon
+            // Save preference to localStorage (optional, but good for persistence)
+            localStorage.setItem('darkModeAdmin', isDarkMode);
             darkModeToggle.querySelector('i').className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
         });
 
         function applyDarkModePreference() {
-            const isDarkMode = getFromLocalStorage('darkMode', false); // Default to light mode
+            const isDarkMode = localStorage.getItem('darkModeAdmin') === 'true';
             if (isDarkMode) {
                 document.body.classList.add('dark-mode');
                 darkModeToggle.querySelector('i').className = 'fas fa-sun';
@@ -1299,78 +863,53 @@
             }
         }
 
-        // --- Admin Panel Authentication ---
-        const ADMIN_PASSWORD = 'admin'; // Simple, mock password
-        let isAdminLoggedIn = getFromLocalStorage('isAdminLoggedIn', false);
-
-        function loginAdmin() {
+        // --- Admin Authentication ---
+        async function loginAdmin() {
+            const email = document.getElementById('admin-email').value;
             const password = document.getElementById('admin-password').value;
-            if (password === ADMIN_PASSWORD) {
-                isAdminLoggedIn = true;
-                saveToLocalStorage('isAdminLoggedIn', true);
-                document.getElementById('admin-login').style.display = 'none';
-                document.getElementById('admin-content').style.display = 'block';
+            try {
+                // Authenticate using Firebase signInWithEmailAndPassword
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                
+                // Optional: You can add logic here to check for specific admin roles/claims
+                // For example, if you set a custom claim 'admin: true' for admin users:
+                // const idTokenResult = await userCredential.user.getIdTokenResult();
+                // if (!idTokenResult.claims.admin) {
+                //     await signOut(auth); // Log out if not an admin
+                //     showModal('Access Denied', 'You do not have admin privileges.');
+                //     return;
+                // }
+
                 showModal('Admin Login', 'Welcome to the Admin Panel!');
-                // Render all admin content on successful login
+                adminLoginDiv.style.display = 'none';
+                adminContentDiv.style.display = 'block';
+                // Automatically load data after successful login
                 renderAdminProducts();
                 renderAdminOrders();
-                renderAdminUsers();
                 renderAdminContactSubmissions();
-                showAdminSection('product-upload-form'); // Default to product upload after login
-            } else {
-                showModal('Login Failed', 'Incorrect password.');
+            } catch (error) {
+                showModal('Login Failed', 'Login failed: ' + error.message);
+                console.error("Admin login error:", error);
             }
         }
 
-        function logoutAdmin() {
-            isAdminLoggedIn = false;
-            saveToLocalStorage('isAdminLoggedIn', false);
-            document.getElementById('admin-login').style.display = 'block';
-            document.getElementById('admin-content').style.display = 'none';
-            document.getElementById('admin-password').value = ''; // Clear password field
-            showModal('Admin Logout', 'You have been logged out from the Admin Panel.');
-        }
-
-        document.getElementById('admin-logout-btn').addEventListener('click', (e) => {
-            e.preventDefault();
-            logoutAdmin();
-        });
-
-
-        // --- Product Data Management (Shared with index.html) ---
-        // Default products (should ideally be loaded from a backend or shared config)
-        const defaultProducts = [
-            { id: 1, name: 'Sukuma Wiki', price: 50.00, unit: 'per bunch', image: 'https://images.unsplash.com/photo-1601007790325-1033b006c459?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Freshly harvested collard greens, perfect for a healthy meal.', category: 'leafy greens', rating: 4.5, badge: 'Organic', stock: 50, tags: ['Vitamin K-rich', 'Iron source'] },
-            { id: 2, name: 'Tomatoes', price: 120.00, unit: 'per kg', image: 'https://images.unsplash.com/photo-1596489370605-e41c484f23c7?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Juicy and ripe red tomatoes, ideal for salads and cooking.', category: 'fruits', rating: 4.8, badge: 'Best Seller', stock: 120, tags: ['Vitamin C-rich', 'Antioxidant'] },
-            { id: 3, name: 'Onions', price: 90.00, unit: 'per kg', image: 'https://images.unsplash.com/photo-1577793444053-29f95738d821?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Pungent and flavorful onions, a staple for any kitchen.', category: 'roots', rating: 4.2, badge: '', stock: 80, tags: ['Immunity booster'] },
-            { id: 4, name: 'Potatoes', price: 150.00, unit: 'per kg', image: 'https://images.unsplash.com/photo-1563795325732-c1285e683701?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Starchy and versatile potatoes, great for mashing, frying, or roasting.', category: 'roots', rating: 4.0, badge: '', stock: 200, tags: ['Energy source'] },
-            { id: 5, name: 'Spinach', price: 60.00, unit: 'per bunch', image: 'https://images.unsplash.com/photo-1596280455088-e215d2698944?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Nutrient-rich green spinach, excellent for stews and smoothies.', category: 'leafy greens', rating: 4.7, badge: 'Organic', stock: 40, tags: ['Vitamin A-rich', 'Folate source'] },
-            { id: 6, name: 'Cabbage', price: 75.00, unit: 'per head', image: 'https://images.unsplash.com/photo-1628178168273-057d38ae859b?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Crisp and fresh green cabbage, perfect for salads or cooking.', category: 'leafy greens', rating: 4.1, badge: '', stock: 60, tags: ['Fiber-rich', 'Low calories'] },
-            { id: 7, name: 'Carrots', price: 80.00, unit: 'per kg', image: 'https://images.unsplash.com/photo-1502741525547-511674482d8c?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Sweet and crunchy carrots, great for snacking or adding to dishes.', category: 'roots', rating: 4.6, badge: 'New', stock: 90, tags: ['Vitamin A-rich', 'Good for eyes'] },
-            { id: 8, name: 'Green Pepper', price: 55.00, unit: 'per piece', image: 'https://images.unsplash.com/photo-1627883908868-b7c7b28d576a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Bell pepper with a mild flavor, adds color and crunch to meals.', category: 'fruits', rating: 4.3, badge: '', stock: 70, tags: ['Vitamin C-rich'] },
-            { id: 9, name: 'Garlic', price: 40.00, unit: 'per head', image: 'https://images.unsplash.com/photo-1555541673-f93504107e3a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Adds a pungent flavor to dishes, known for its health benefits.', category: 'roots', rating: 4.4, badge: '', stock: 110, tags: ['Immunity booster', 'Antimicrobial'] },
-            { id: 10, name: 'Ginger', price: 65.00, unit: 'per 100g', image: 'https://images.unsplash.com/photo-1624831631557-0b1a03e1e912?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Aromatic and zesty ginger root, great for teas and cooking.', category: 'roots', rating: 4.6, badge: 'New', stock: 55, tags: ['Digestive aid', 'Anti-inflammatory'] },
-            { id: 11, name: 'Broccoli', price: 180.00, unit: 'per head', image: 'https://images.unsplash.com/photo-1628042453448-433a042e61a6?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Nutrient-packed broccoli, perfect for steaming or stir-frying.', category: 'cruciferous', rating: 4.7, badge: 'Organic', stock: 30, tags: ['Vitamin C-rich', 'Fiber-rich'] },
-            { id: 12, name: 'Cucumber', price: 70.00, unit: 'per piece', image: 'https://images.unsplash.com/photo-1589139158020-e204c3d8e5e8?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Cool and crisp cucumber, excellent for salads and refreshing drinks.', category: 'fruits', rating: 4.3, badge: '', stock: 95, tags: ['Hydrating', 'Low calories'] },
-            { id: 13, name: 'Capsicum (Red)', price: 100.00, unit: 'per piece', image: 'https://images.unsplash.com/photo-1596489370605-e41c484f23c7?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Sweet and vibrant red capsicum, adds color and flavor to any dish.', category: 'fruits', rating: 4.5, badge: 'Discount -10%', stock: 20, tags: ['Vitamin C-rich'] },
-            { id: 14, name: 'Eggplant', price: 85.00, unit: 'per piece', image: 'https://images.unsplash.com/photo-1597843846660-84a1d4b6b27e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Versatile eggplant, great for grilling, baking, or stews.', category: 'fruits', rating: 3.9, badge: '', stock: 45, tags: ['Fiber-rich', 'Antioxidant'] },
-            { id: 15, name: 'Dhania (Coriander)', price: 30.00, unit: 'per bunch', image: 'https://images.unsplash.com/photo-1620241091515-b4d4b14d8b5a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Fresh coriander, essential for adding a fresh aroma to your meals.', category: 'herbs', rating: 4.8, badge: 'Best Seller', stock: 75, tags: ['Aromatic', 'Digestive aid'] },
-        ];
-
-        function getProducts() {
-            let products = getFromLocalStorage('products', null); // Get from storage, default to null
-            if (!products || products.length === 0) { // If nothing in storage, or empty array
-                products = [...defaultProducts]; // Use a copy of default products
-                saveToLocalStorage('products', products); // Save defaults to storage for first time
+        async function logoutAdmin() {
+            try {
+                await signOut(auth);
+                showModal('Logged Out', 'You have been successfully logged out.');
+                adminLoginDiv.style.display = 'block';
+                adminContentDiv.style.display = 'none';
+                document.getElementById('admin-email').value = 'admin@princealex.com'; // Reset email
+                document.getElementById('admin-password').value = ''; // Clear password
+                showPage('admin-home-page'); // Go back to login screen
+            } catch (error) {
+                showModal('Logout Failed', 'Error logging out: ' + error.message);
+                console.error("Admin logout error:", error);
             }
-            return products;
-        }
-        function saveProducts(products) {
-            saveToLocalStorage('products', products);
         }
 
-        // Admin: Add Product
-        function addProduct(event) {
+        // --- Product Management (Firestore) ---
+        async function addProduct(event) {
             event.preventDefault();
             const name = document.getElementById('product-name').value;
             const image = document.getElementById('product-image').value;
@@ -1384,687 +923,223 @@
             const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()) : [];
             const category = document.getElementById('product-category').value;
 
-            if (name && image && description && price > 0 && unit && rating >= 1 && rating <= 5 && stock >= 0 && category) {
-                const products = getProducts();
-                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-                const newProduct = { id: newId, name, image, description, price, unit, rating, badge, stock, tags, category };
-                products.push(newProduct);
-                saveProducts(products);
+            if (!name || !image || !description || isNaN(price) || price <= 0 || !unit || isNaN(rating) || rating < 1 || rating > 5 || isNaN(stock) || stock < 0 || !category) {
+                showModal('Error', 'Please fill out all fields correctly. Price and stock must be numbers, rating between 1-5.');
+                return;
+            }
+
+            const originalPriceInput = prompt("Enter original price if this is an offer (leave blank otherwise):");
+            const originalPrice = originalPriceInput ? parseFloat(originalPriceInput) : undefined;
+
+            if (originalPriceInput && isNaN(originalPrice)) {
+                showModal('Error', 'Invalid original price. Please enter a number or leave blank.');
+                return;
+            }
+
+            const newProduct = { 
+                name, 
+                image, 
+                description, 
+                price, 
+                unit, 
+                rating, 
+                badge, 
+                stock, 
+                tags, 
+                category,
+                originalPrice: originalPrice,
+                createdAt: new Date().toISOString() // Timestamp for ordering
+            };
+
+            try {
+                await addDoc(collection(db, "products"), newProduct);
                 showModal('Product Added', `Product "${name}" added successfully!`);
                 document.querySelector('.admin-form').reset();
-                renderAdminProducts(); // Refresh admin product list
-            } else {
-                showModal('Error', 'Please fill out all fields correctly, including valid rating (1-5), stock (>=0), and category.');
+                renderAdminProducts(); // Refresh the product list
+            } catch (error) {
+                console.error("Error adding product:", error);
+                showModal('Error', 'Failed to add product. Please try again.');
             }
         }
 
-        // Admin: Render Products for Management
-        function renderAdminProducts() {
-            const adminProductList = document.getElementById('admin-product-list');
-            adminProductList.innerHTML = '';
-            const products = getProducts();
+        async function renderAdminProducts() {
+            adminProductListDiv.innerHTML = '<p style="text-align: center;">Loading products...</p>';
+            try {
+                const productsCol = collection(db, "products");
+                const q = query(productsCol, orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
 
-            if (products.length === 0) {
-                adminProductList.innerHTML = '<p>No products available to manage.</p>';
-                return;
-            }
+                if (querySnapshot.empty) {
+                    adminProductListDiv.innerHTML = '<p style="text-align: center;">No products to manage.</p>';
+                    return;
+                }
 
-            products.forEach(product => {
-                const listItem = document.createElement('div');
-                listItem.className = 'admin-list-item';
-                listItem.innerHTML = `
-                    <span>${product.name} (ID: ${product.id}) - KES ${product.price.toFixed(2)} ${product.unit} | Stock: ${product.stock} | Rating: ${product.rating} | Category: ${product.category}</span>
-                    <button class="delete-btn" onclick="deleteProduct(${product.id})">Delete</button>
-                `;
-                adminProductList.appendChild(listItem);
-            });
-        }
-
-        // Admin: Delete Product
-        function deleteProduct(productId) {
-            let products = getProducts();
-            products = products.filter(p => p.id !== productId);
-            saveProducts(products);
-            showModal('Product Deleted', 'Product removed successfully.');
-            renderAdminProducts(); // Refresh admin product list
-        }
-
-        // --- Order Data Management (Shared with index.html) ---
-        function getOrders() {
-            return getFromLocalStorage('orders', []);
-        }
-        function saveOrders(orders) {
-            saveToLocalStorage('orders', orders);
-        }
-
-        // Admin: Render Orders for Management
-        function renderAdminOrders() {
-            const adminOrderListDiv = document.getElementById('admin-order-list');
-            adminOrderListDiv.innerHTML = '';
-            const orders = getOrders();
-
-            if (orders.length === 0) {
-                adminOrderListDiv.innerHTML = '<p>No orders to manage.</p>';
-                return;
-            }
-
-            // Create table structure
-            const table = document.createElement('table');
-            table.className = 'admin-list-table';
-            table.innerHTML = `
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Customer</th>
-                        <th>Items</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            `;
-            const tbody = table.querySelector('tbody');
-
-            // Sort orders by date, newest first
-            orders.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            orders.forEach(order => {
-                const row = document.createElement('tr');
-                const itemsSummary = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
-
-                // Create the status dropdown
-                const statusOptions = ['Pending', 'Confirmed', 'Packed', 'On Transit', 'Delivered'];
-                let statusSelectHtml = `<select onchange="updateOrderStatus('${order.id}', this.value)">`;
-                statusOptions.forEach(status => {
-                    const selected = order.status === status ? 'selected' : '';
-                    statusSelectHtml += `<option value="${status}" ${selected}>${status}</option>`;
-                });
-                statusSelectHtml += '</select>';
-
-                row.innerHTML = `
-                    <td>${order.id}<br><small>${order.date}</small></td>
-                    <td>${order.customer.fullName}<br><small>${order.customer.phoneNumber}</small><br><small>${order.customer.deliveryLocation}</small></td>
-                    <td><span class="order-items-list">${itemsSummary}</span></td>
-                    <td>KES ${order.total.toFixed(2)}</td>
-                    <td>${statusSelectHtml}</td>
-                    <td>
-                        <button class="print-btn" onclick="openInvoiceModal('${order.id}')"><i class="fas fa-print"></i> Print</button>
-                        <button class="edit-btn" onclick="openEditOrderModal('${order.id}')"><i class="fas fa-edit"></i> Edit</button>
-                        <button class="delete-btn" onclick="deleteOrder('${order.id}')"><i class="fas fa-trash-alt"></i> Delete</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-            adminOrderListDiv.appendChild(table);
-        }
-
-        // Admin: Update Order Status
-        function updateOrderStatus(orderId, newStatus) {
-            let orders = getOrders();
-            const orderIndex = orders.findIndex(o => o.id === orderId);
-            if (orderIndex !== -1) {
-                orders[orderIndex].status = newStatus;
-                saveOrders(orders);
-                showModal('Order Updated', `Order ${orderId} status changed to ${newStatus}.`);
-                renderAdminOrders(); // Re-render admin order list to reflect potential styling changes
-            }
-        }
-
-        // Admin: Delete Order
-        function deleteOrder(orderId) {
-            let orders = getOrders();
-            orders = orders.filter(o => o.id !== orderId);
-            saveOrders(orders);
-            showModal('Order Deleted', `Order ${orderId} removed successfully.`);
-            renderAdminOrders(); // Refresh admin order list
-        }
-
-        // --- Edit Order Modal Functions ---
-        function openEditOrderModal(orderId) {
-            const orders = getOrders();
-            const orderToEdit = orders.find(o => o.id === orderId);
-
-            if (!orderToEdit) {
-                showModal('Error', 'Order not found for editing.');
-                return;
-            }
-
-            // Create a deep copy to work on, so changes aren't saved until confirmed
-            currentEditedOrder = JSON.parse(JSON.stringify(orderToEdit));
-
-            document.getElementById('edit-order-id-display').textContent = currentEditedOrder.id;
-            document.getElementById('edit-customer-name').textContent = currentEditedOrder.customer.fullName;
-            document.getElementById('edit-customer-phone').textContent = currentEditedOrder.customer.phoneNumber;
-            document.getElementById('edit-delivery-location').textContent = currentEditedOrder.customer.deliveryLocation;
-            document.getElementById('edit-house-name').textContent = currentEditedOrder.customer.houseName || 'N/A';
-            document.getElementById('edit-order-date').textContent = currentEditedOrder.date;
-
-            renderEditOrderItems();
-            updateEditOrderTotals();
-
-            // Setup search for replacement products
-            const replacementSearchInput = document.getElementById('replacement-search-input');
-            replacementSearchInput.value = ''; // Clear previous search
-            replacementSearchInput.onkeyup = () => searchReplacementProducts(replacementSearchInput.value);
-            document.getElementById('replacement-search-results').innerHTML = ''; // Clear previous results
-
-            editOrderModal.style.display = 'flex';
-        }
-
-        function closeEditOrderModal() {
-            editOrderModal.style.display = 'none';
-            currentEditedOrder = null; // Clear the edited order
-            renderAdminOrders(); // Re-render the main orders list in case of changes
-        }
-
-        function renderEditOrderItems() {
-            const editOrderItemsTable = document.getElementById('edit-order-items');
-            editOrderItemsTable.innerHTML = '';
-
-            if (currentEditedOrder && currentEditedOrder.items.length > 0) {
-                currentEditedOrder.items.forEach(item => {
-                    const row = document.createElement('tr');
-                    const productInStore = getProducts().find(p => p.id === item.id);
-                    const maxQuantity = productInStore ? productInStore.stock + item.quantity : item.quantity; // Allow increasing up to original stock + current order quantity
-
-                    row.innerHTML = `
-                        <td>${item.name}</td>
-                        <td>
-                            <div class="quantity-controls">
-                                <button onclick="updateEditItemQuantity(${item.id}, -1)"><i class="fas fa-minus"></i></button>
-                                <input type="number" value="${item.quantity}" min="0" max="${maxQuantity}"
-                                    onchange="updateEditItemQuantity(${item.id}, 0, this.value)"
-                                    style="width: 50px; text-align: center;">
-                                <button onclick="updateEditItemQuantity(${item.id}, 1)"><i class="fas fa-plus"></i></button>
-                            </div>
-                        </td>
-                        <td>KES ${item.price.toFixed(2)} ${item.unit}</td>
-                        <td>KES ${(item.price * item.quantity).toFixed(2)}</td>
-                        <td>
-                            <button class="remove-item-btn" onclick="removeOrderItem(${item.id})"><i class="fas fa-trash-alt"></i> Remove</button>
-                        </td>
+                adminProductListDiv.innerHTML = ''; // Clear loading message
+                querySnapshot.forEach(doc => {
+                    const product = doc.data();
+                    const listItem = document.createElement('div');
+                    listItem.className = 'admin-list-item';
+                    listItem.innerHTML = `
+                        <div>
+                            <strong>${product.name}</strong> (KES ${product.price.toFixed(2)} / ${product.unit})<br>
+                            Stock: ${product.stock}, Category: ${product.category}<br>
+                            <small>ID: ${doc.id}</small>
+                        </div>
+                        <div>
+                            <button class="delete-btn" onclick="deleteProduct('${doc.id}')">Delete</button>
+                        </div>
                     `;
-                    editOrderItemsTable.appendChild(row);
+                    adminProductListDiv.appendChild(listItem);
                 });
-            } else {
-                editOrderItemsTable.innerHTML = '<tr><td colspan="5" style="text-align: center;">This order has no items.</td></tr>';
+            } catch (error) {
+                console.error("Error rendering admin products:", error);
+                adminProductListDiv.innerHTML = '<p style="text-align: center; color: red;">Error loading products for management.</p>';
             }
         }
 
-        function updateEditItemQuantity(productId, change, manualValue = null) {
-            if (!currentEditedOrder) return;
-
-            const itemIndex = currentEditedOrder.items.findIndex(item => item.id === productId);
-            if (itemIndex === -1) return;
-
-            const item = currentEditedOrder.items[itemIndex];
-            const productInStore = getProducts().find(p => p.id === productId);
-            // Calculate effective stock: current stock + quantity already in this order (before changes)
-            const originalOrder = getOrders().find(o => o.id === currentEditedOrder.id);
-            const originalItemQuantity = originalOrder.items.find(i => i.id === productId)?.quantity || 0;
-            const availableStock = (productInStore ? productInStore.stock : 0) + originalItemQuantity;
-
-            let newQuantity;
-            if (manualValue !== null) {
-                newQuantity = parseInt(manualValue);
-            } else {
-                newQuantity = item.quantity + change;
-            }
-
-            if (isNaN(newQuantity) || newQuantity < 0) {
-                newQuantity = 0;
-            }
-            if (newQuantity > availableStock) {
-                newQuantity = availableStock;
-                showModal('Stock Limit', `Cannot set quantity for ${item.name} above available stock (${availableStock}).`);
-            }
-
-            item.quantity = newQuantity;
-            if (item.quantity === 0) {
-                // If quantity becomes 0, remove the item, but prompt for reason
-                removeOrderItem(productId);
-            } else {
-                renderEditOrderItems(); // Re-render to update display
-                updateEditOrderTotals();
-            }
-        }
-
-        function removeOrderItem(productId) {
-            if (!currentEditedOrder) return;
-
-            const itemIndex = currentEditedOrder.items.findIndex(item => item.id === productId);
-            if (itemIndex === -1) return;
-
-            const removedItem = currentEditedOrder.items[itemIndex];
-
-            // Prompt for reason (for simplicity, using a basic prompt, ideally a custom modal)
-            const reason = prompt(`Removing ${removedItem.name}. Please state the reason (e.g., Out of Stock, Damaged, Customer Request):`);
-            if (!reason) {
-                showModal('Removal Cancelled', 'Item removal cancelled as no reason was provided.');
-                return;
-            }
-
-            // Store removal reason (can be extended to send to user)
-            if (!currentEditedOrder.modifications) {
-                currentEditedOrder.modifications = [];
-            }
-            currentEditedOrder.modifications.push({
-                type: 'removed',
-                productId: removedItem.id,
-                productName: removedItem.name,
-                quantity: removedItem.quantity,
-                reason: reason,
-                timestamp: new Date().toISOString()
-            });
-
-            currentEditedOrder.items.splice(itemIndex, 1); // Remove from temporary order
-
-            renderEditOrderItems();
-            updateEditOrderTotals();
-            showModal('Item Removed', `${removedItem.name} removed from order. Reason: ${reason}`);
-        }
-
-        function searchReplacementProducts(query) {
-            const searchResultsDiv = document.getElementById('replacement-search-results');
-            searchResultsDiv.innerHTML = '';
-            const allProducts = getProducts();
-            const lowerCaseQuery = query.toLowerCase().trim();
-
-            if (lowerCaseQuery.length < 2) { // Require at least 2 characters for search
-                searchResultsDiv.innerHTML = '<p style="padding: 10px; text-align: center; color: #666;">Type at least 2 characters to search for products.</p>';
-                return;
-            }
-
-            const results = allProducts.filter(p =>
-                p.name.toLowerCase().includes(lowerCaseQuery) &&
-                p.stock > 0 // Only show in-stock products
-            );
-
-            if (results.length === 0) {
-                searchResultsDiv.innerHTML = '<p style="padding: 10px; text-align: center; color: #666;">No products found or in stock.</p>';
-                return;
-            }
-
-            results.forEach(product => {
-                const resultDiv = document.createElement('div');
-                resultDiv.innerHTML = `
-                    <span>${product.name} (KES ${product.price.toFixed(2)} ${product.unit}) - Stock: ${product.stock}</span>
-                    <button onclick="addReplacementToOrder(${product.id})">Add</button>
-                `;
-                searchResultsDiv.appendChild(resultDiv);
-            });
-        }
-
-        function addReplacementToOrder(productId) {
-            if (!currentEditedOrder) return;
-
-            const productToAdd = getProducts().find(p => p.id === productId);
-            if (!productToAdd || productToAdd.stock <= 0) {
-                showModal('Error', 'Selected product is out of stock or not found.');
-                return;
-            }
-
-            const quantity = parseInt(prompt(`How many ${productToAdd.name} would you like to add? (Max: ${productToAdd.stock})`, '1'));
-            if (isNaN(quantity) || quantity <= 0 || quantity > productToAdd.stock) {
-                showModal('Invalid Quantity', `Please enter a valid quantity between 1 and ${productToAdd.stock}.`);
-                return;
-            }
-
-            const existingItemIndex = currentEditedOrder.items.findIndex(item => item.id === productId);
-            if (existingItemIndex !== -1) {
-                // If product already in order, just update quantity
-                const currentQuantity = currentEditedOrder.items[existingItemIndex].quantity;
-                if (currentQuantity + quantity > productToAdd.stock + (getOrders().find(o => o.id === currentEditedOrder.id)?.items.find(i => i.id === productId)?.quantity || 0)) {
-                     showModal('Stock Limit', `Cannot add more ${productToAdd.name}. Total quantity would exceed available stock.`);
-                     return;
-                }
-                currentEditedOrder.items[existingItemIndex].quantity += quantity;
-            } else {
-                // Add new product to order
-                currentEditedOrder.items.push({ ...productToAdd, quantity: quantity });
-            }
-
-            // Record replacement (can be extended to link to original removed item)
-            if (!currentEditedOrder.modifications) {
-                currentEditedOrder.modifications = [];
-            }
-            currentEditedOrder.modifications.push({
-                type: 'added',
-                productId: productToAdd.id,
-                productName: productToAdd.name,
-                quantity: quantity,
-                timestamp: new Date().toISOString()
-            });
-
-            renderEditOrderItems();
-            updateEditOrderTotals();
-            document.getElementById('replacement-search-input').value = '';
-            document.getElementById('replacement-search-results').innerHTML = '';
-            showModal('Product Added', `${quantity} ${productToAdd.name}(s) added to order.`);
-        }
-
-
-        function updateEditOrderTotals() {
-            if (!currentEditedOrder) return;
-
-            let subtotal = 0;
-            currentEditedOrder.items.forEach(item => {
-                subtotal += item.price * item.quantity;
-            });
-
-            const transportationFee = 100.00; // Assuming fixed fee as in index.html
-            const grandTotal = subtotal + transportationFee;
-
-            document.getElementById('edit-subtotal').textContent = subtotal.toFixed(2);
-            document.getElementById('edit-transport-fee').textContent = transportationFee.toFixed(2);
-            document.getElementById('edit-grand-total').textContent = grandTotal.toFixed(2);
-
-            // Update the currentEditedOrder object itself
-            currentEditedOrder.subtotal = subtotal;
-            currentEditedOrder.transportationFee = transportationFee;
-            currentEditedOrder.total = grandTotal;
-        }
-
-        function saveEditedOrder() {
-            if (!currentEditedOrder) return;
-
-            let allOrders = getOrders();
-            const originalOrderIndex = allOrders.findIndex(o => o.id === currentEditedOrder.id);
-
-            if (originalOrderIndex === -1) {
-                showModal('Error', 'Original order not found. Cannot save changes.');
-                return;
-            }
-
-            // Validate quantities against current stock before saving
-            let products = getProducts();
-            let stockUpdates = {}; // { productId: stockChange }
-
-            // Calculate net change for each product
-            const originalOrder = allOrders[originalOrderIndex];
-            const originalItemsMap = new Map(originalOrder.items.map(item => [item.id, item.quantity]));
-            const currentItemsMap = new Map(currentEditedOrder.items.map(item => [item.id, item.quantity]));
-
-            // Handle items that were in original order
-            originalItemsMap.forEach((originalQuantity, productId) => {
-                const currentQuantity = currentItemsMap.get(productId) || 0;
-                const change = originalQuantity - currentQuantity; // Positive if stock should increase, negative if decrease
-                if (change !== 0) {
-                    stockUpdates[productId] = (stockUpdates[productId] || 0) + change;
-                }
-            });
-
-            // Handle new items added in the edited order
-            currentItemsMap.forEach((currentQuantity, productId) => {
-                if (!originalItemsMap.has(productId)) { // This is a newly added item
-                    const change = -currentQuantity; // Decrease stock by this amount
-                    stockUpdates[productId] = (stockUpdates[productId] || 0) + change;
-                }
-            });
-            
-            // Apply stock changes and check for sufficiency
-            let stockProblem = false;
-            for (const productId in stockUpdates) {
-                const productIndex = products.findIndex(p => p.id === parseInt(productId));
-                if (productIndex !== -1) {
-                    const product = products[productIndex];
-                    const requiredChange = stockUpdates[productId];
-                    if (product.stock + requiredChange < 0) { // If stock would go negative
-                        showModal('Stock Error', `Not enough stock for ${product.name}. Available: ${product.stock}, Needed: ${-requiredChange}.`);
-                        stockProblem = true;
-                        break;
-                    }
-                    product.stock += requiredChange;
-                } else {
-                    // This case should ideally not happen if product IDs are consistent
-                    console.warn(`Product ID ${productId} not found in global products list during stock update.`);
+        async function deleteProduct(productId) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                try {
+                    await deleteDoc(doc(db, "products", productId));
+                    showModal('Product Deleted', 'Product removed successfully!');
+                    renderAdminProducts(); // Refresh admin product list
+                } catch (error) {
+                    console.error("Error deleting product:", error);
+                    showModal('Error', 'Failed to delete product. Please try again.');
                 }
             }
+        }
 
-            if (stockProblem) {
-                return; // Abort save if stock is insufficient
-            }
+        // --- Order Management (Firestore) ---
+        async function renderAdminOrders() {
+            adminOrderListDiv.innerHTML = '<p style="text-align: center;">Loading orders...</p>';
+            try {
+                const ordersCol = collection(db, "orders");
+                const q = query(ordersCol, orderBy("date", "desc"));
+                const querySnapshot = await getDocs(q);
 
-            // Update the order in the main orders array
-            allOrders[originalOrderIndex] = currentEditedOrder;
-            saveOrders(allOrders);
-            saveProducts(products); // Save updated product stock
+                if (querySnapshot.empty) {
+                    adminOrderListDiv.innerHTML = '<p style="text-align: center;">No orders to manage.</p>';
+                    return;
+                }
 
-            // Simulate notification to user (for mock purposes)
-            let notificationMessage = `Order ${currentEditedOrder.id} has been updated.`;
-            if (currentEditedOrder.modifications && currentEditedOrder.modifications.length > 0) {
-                notificationMessage += '<br>Changes:<ul>';
-                currentEditedOrder.modifications.forEach(mod => {
-                    notificationMessage += `<li>${mod.type === 'removed' ? 'Removed' : 'Added'}: ${mod.quantity} x ${mod.productName} (${mod.reason ? 'Reason: ' + mod.reason : ''})</li>`;
+                adminOrderListDiv.innerHTML = ''; // Clear loading message
+                querySnapshot.forEach(doc => {
+                    const order = doc.data();
+                    const listItem = document.createElement('div');
+                    listItem.className = 'admin-list-item';
+                    const itemsSummary = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+                    const statusClass = order.status === 'Delivered' ? 'status-delivered' : '';
+                    listItem.innerHTML = `
+                        <div>
+                            <strong>Order ID: ${doc.id}</strong><br>
+                            Customer: ${order.customer.fullName} (${order.customer.phoneNumber})<br>
+                            Delivery: ${order.customer.deliveryLocation}, ${order.customer.houseName || 'N/A'}<br>
+                            Total: KES ${order.total.toFixed(2)} (${order.paymentMethod})<br>
+                            Status: <span class="${statusClass}">${order.status}</span><br>
+                            Date: ${new Date(order.date).toLocaleString()}<br>
+                            <span class="order-items-list">Items: ${itemsSummary}</span>
+                        </div>
+                        <div>
+                            ${order.status !== 'Delivered' ? `<button class="mark-delivered-btn" onclick="markOrderDelivered('${doc.id}')">Mark Delivered</button>` : ''}
+                        </div>
+                    `;
+                    adminOrderListDiv.appendChild(listItem);
                 });
-                notificationMessage += '</ul>';
+            } catch (error) {
+                console.error("Error rendering admin orders:", error);
+                adminOrderListDiv.innerHTML = '<p style="text-align: center; color: red;">Error loading orders for management.</p>';
             }
-            showModal('Order Saved!', notificationMessage);
-
-            closeEditOrderModal();
         }
 
-        // --- User Data Management (Shared with index.html) ---
-        function getUsers() {
-            return getFromLocalStorage('users', []);
-        }
-        function saveUsers(users) {
-            saveToLocalStorage('users', users);
-        }
-
-        // Admin: Render Users for Management
-        function renderAdminUsers() {
-            const adminUserList = document.getElementById('admin-user-list');
-            adminUserList.innerHTML = '';
-            const users = getUsers();
-
-            if (users.length === 0) {
-                adminUserList.innerHTML = '<p>No registered users.</p>';
-                return;
+        async function markOrderDelivered(orderId) {
+            if (confirm('Are you sure you want to mark this order as Delivered?')) {
+                try {
+                    await updateDoc(doc(db, "orders", orderId), { status: 'Delivered' });
+                    showModal('Order Status Updated', 'Order marked as delivered!');
+                    renderAdminOrders(); // Refresh admin order list
+                } catch (error) {
+                    console.error("Error updating order status:", error);
+                    showModal('Error', 'Failed to update order status. Please try again.');
+                }
             }
-
-            users.forEach(user => {
-                const listItem = document.createElement('div');
-                listItem.className = 'admin-list-item';
-                listItem.innerHTML = `
-                    <span>Name: ${user.fullname || 'N/A'} | Email: ${user.email} | Phone: ${user.phoneNumber || 'N/A'}</span>
-                    <button class="delete-btn" onclick="deleteUser('${user.email}')">Delete User</button>
-                `;
-                adminUserList.appendChild(listItem);
-            });
         }
 
-        // Admin: Delete User
-        function deleteUser(emailToDelete) {
-            let users = getUsers();
-            users = users.filter(user => user.email !== emailToDelete);
-            saveUsers(users);
-            showModal('User Deleted', `User with email ${emailToDelete} has been deleted.`);
-            renderAdminUsers(); // Refresh admin user list
-        }
+        // --- Contact Submissions (Firestore) ---
+        async function renderAdminContactSubmissions() {
+            adminContactSubmissionsDiv.innerHTML = '<p style="text-align: center;">Loading contact submissions...</p>';
+            try {
+                const submissionsCol = collection(db, "contactSubmissions");
+                const q = query(submissionsCol, orderBy("date", "desc"));
+                const querySnapshot = await getDocs(q);
 
-        // --- Contact Submissions Data Management (Shared with index.html) ---
-        function getContactSubmissions() {
-            return getFromLocalStorage('contactSubmissions', []);
-        }
-        function saveContactSubmissions(submissions) {
-            saveToLocalStorage('contactSubmissions', submissions);
-        }
+                if (querySnapshot.empty) {
+                    adminContactSubmissionsDiv.innerHTML = '<p style="text-align: center;">No contact submissions.</p>';
+                    return;
+                }
 
-        // Admin: Render Contact Form Submissions
-        function renderAdminContactSubmissions() {
-            const adminContactSubmissions = document.getElementById('admin-contact-submissions');
-            adminContactSubmissions.innerHTML = '';
-            const submissions = getContactSubmissions();
-
-            if (submissions.length === 0) {
-                adminContactSubmissions.innerHTML = '<p>No contact form submissions.</p>';
-                return;
+                adminContactSubmissionsDiv.innerHTML = ''; // Clear loading message
+                querySnapshot.forEach(doc => {
+                    const submission = doc.data();
+                    const listItem = document.createElement('div');
+                    listItem.className = 'admin-list-item'; // Reusing style
+                    listItem.innerHTML = `
+                        <div>
+                            <strong>From: ${submission.name} (${submission.email})</strong><br>
+                            Message: ${submission.message}<br>
+                            Date: ${new Date(submission.date).toLocaleString()}
+                        </div>
+                        <div>
+                            <button class="delete-btn" onclick="deleteContactSubmission('${doc.id}')">Delete</button>
+                        </div>
+                    `;
+                    adminContactSubmissionsDiv.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error("Error rendering contact submissions:", error);
+                adminContactSubmissionsDiv.innerHTML = '<p style="text-align: center; color: red;">Error loading contact submissions.</p>';
             }
-
-            // Sort submissions by date, newest first
-            submissions.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            submissions.forEach((submission, index) => {
-                const card = document.createElement('div');
-                card.className = 'contact-submission-card';
-                card.style.textAlign = 'left';
-                card.innerHTML = `
-                    <p><strong>Name:</strong> ${submission.name}</p>
-                    <p><strong>Email:</strong> ${submission.email}</p>
-                    <p><strong>Message:</strong> ${submission.message}</p>
-                    <p><strong>Date:</strong> ${submission.date}</p>
-                    <button class="delete-btn" onclick="deleteContactSubmission(${index})">Delete</button>
-                `;
-                adminContactSubmissions.appendChild(card);
-            });
         }
 
-        // Admin: Delete Contact Submission
-        function deleteContactSubmission(index) {
-            let submissions = getContactSubmissions();
-            if (index >= 0 && index < submissions.length) {
-                submissions.splice(index, 1);
-                saveToLocalStorage('contactSubmissions', submissions);
-                showModal('Deleted', 'Contact submission deleted.');
+        async function deleteContactSubmission(submissionId) {
+            if (confirm('Are you sure you want to delete this contact submission?')) {
+                try {
+                    await deleteDoc(doc(db, "contactSubmissions", submissionId));
+                    showModal('Deleted', 'Contact submission deleted!');
+                    renderAdminContactSubmissions(); // Refresh list
+                } catch (error) {
+                    console.error("Error deleting contact submission:", error);
+                    showModal('Error', 'Failed to delete submission. Please try again.');
+                }
+            }
+        }
+
+        // --- Firebase Auth State Listener ---
+        onAuthStateChanged(auth, (user) => {
+            firebaseUser = user;
+            if (user) {
+                // User is signed in, check if they are an admin
+                // For this example, we assume any logged-in user to admin.html is an admin.
+                // In a real app, you'd check custom claims or a separate 'admins' collection.
+                adminLoginDiv.style.display = 'none';
+                adminContentDiv.style.display = 'block';
+                // Load data immediately if already logged in
+                renderAdminProducts();
+                renderAdminOrders();
                 renderAdminContactSubmissions();
+            } else {
+                // User is signed out
+                adminLoginDiv.style.display = 'block';
+                adminContentDiv.style.display = 'none';
             }
-        }
+        });
 
         // --- Initialization ---
         document.addEventListener('DOMContentLoaded', () => {
             applyDarkModePreference();
-            if (isAdminLoggedIn) {
-                document.getElementById('admin-login').style.display = 'none';
-                document.getElementById('admin-content').style.display = 'block';
-                showAdminSection('product-upload-form'); // Show default admin section
-            } else {
-                document.getElementById('admin-login').style.display = 'block';
-                document.getElementById('admin-content').style.display = 'none';
-            }
+            // Initial page load, will be handled by onAuthStateChanged
         });
     </script>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAlS1nqRKolwc-7mySezN6XBcwk5p2Al4U",
-    authDomain: "prince-alex-store.firebaseapp.com",
-    projectId: "prince-alex-store",
-    storageBucket: "prince-alex-store.firebasestorage.app",
-    messagingSenderId: "266163776280",
-    appId: "1:266163776280:web:fdd89c30f84ed03540cc6d"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  window.loginAdmin = async function () {
-    const email = document.getElementById('admin-email')?.value || 'admin@princealex.com';
-    const password = document.getElementById('admin-password').value;
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      document.getElementById('admin-login').style.display = 'none';
-      document.getElementById('admin-content').style.display = 'block';
-    } catch (error) {
-      alert('Login failed: ' + error.message);
-    }
-  };
-
-  window.signUpUser = async function () {
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert("Signup successful! You can now login.");
-    } catch (error) {
-      alert("Signup error: " + error.message);
-    }
-  };
-
-  window.loginUser = async function () {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert("Login successful!");
-    } catch (error) {
-      alert("Login failed: " + error.message);
-    }
-  };
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("User logged in:", user.email);
-    }
-  });
-</script>
-
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getFirestore } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAlS1nqRKolwc-7mySezN6XBcwk5p2Al4U",
-    authDomain: "prince-alex-store.firebaseapp.com",
-    projectId: "prince-alex-store",
-    storageBucket: "prince-alex-store.firebasestorage.app",
-    messagingSenderId: "266163776280",
-    appId: "1:266163776280:web:fdd89c30f84ed03540cc6d"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  window.loginAdmin = () => {
-    const email = document.getElementById('admin-email').value;
-    const password = document.getElementById('admin-password').value;
-    const message = document.getElementById('auth-message');
-    message.textContent = '';
-
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        localStorage.setItem('isAdminLoggedIn', 'true');
-        document.getElementById('admin-login').style.display = 'none';
-        document.getElementById('admin-content').style.display = 'block';
-        showModal('Admin Login', 'Welcome to the Admin Panel!');
-        renderAdminProducts();
-        renderAdminOrders();
-        renderAdminUsers();
-        renderAdminContactSubmissions();
-        showAdminSection('product-upload-form');
-      })
-      .catch((error) => {
-        message.textContent = error.message;
-      });
-  };
-
-  window.logoutAdmin = () => {
-    signOut(auth).then(() => {
-      localStorage.setItem('isAdminLoggedIn', 'false');
-      document.getElementById('admin-login').style.display = 'block';
-      document.getElementById('admin-content').style.display = 'none';
-      document.getElementById('admin-password').value = '';
-      showModal('Admin Logout', 'You have been logged out from the Admin Panel.');
-    });
-  };
-
-  onAuthStateChanged(auth, (user) => {
-    const isStoredLogin = localStorage.getItem('isAdminLoggedIn') === 'true';
-    if (user && isStoredLogin) {
-      document.getElementById('admin-login').style.display = 'none';
-      document.getElementById('admin-content').style.display = 'block';
-    } else {
-      document.getElementById('admin-login').style.display = 'block';
-      document.getElementById('admin-content').style.display = 'none';
-    }
-  });
-</script>
 </body>
 </html>
