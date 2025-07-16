@@ -654,7 +654,7 @@
             <h2 class="section-title">Admin Panel</h2>
             <div id="admin-login" class="admin-panel-login">
                 <p>Please log in to access the Admin Panel.</p>
-                <input type="email" id="admin-email" placeholder="Admin Email" value="admin@princealex.com">
+                <input type="email" id="admin-email" placeholder="Email">
                 <input type="password" id="admin-password" placeholder="Password">
                 <button onclick="loginAdmin()">Login</button>
             </div>
@@ -765,7 +765,7 @@
         const firebaseConfig = {
             apiKey: "AIzaSyAlS1nqRKolwc-7mySezN6XBcwk5p2Al4U",
             authDomain: "prince-alex-store.firebaseapp.com",
-            projectId: "prince-alex-store",
+            projectId: "prance-alex-store", // Corrected project ID
             storageBucket: "prince-alex-store.firebasestorage.app",
             messagingSenderId: "266163776280",
             appId: "1:266163776280:web:fdd89c30f84ed03540cc6d"
@@ -912,12 +912,12 @@
                 showModal('Logged Out', 'You have been successfully logged out.');
                 adminLoginDiv.style.display = 'block';
                 adminContentDiv.style.display = 'none';
-                document.getElementById('admin-email').value = 'admin@princealex.com'; // Reset email
+                document.getElementById('admin-email').value = ''; // Clear email
                 document.getElementById('admin-password').value = ''; // Clear password
                 showPage('admin-home-page'); // Go back to login screen
             } catch (error) {
                 showModal('Logout Failed', 'Error logging out: ' + error.message);
-                console.error("Admin logout error:", error);
+                console.error("Logout error:", error);
             }
         }
 
