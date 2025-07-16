@@ -1009,8 +1009,7 @@
             #my-account-page .account-buttons {
                 flex-direction: column;
             }
-        }
-    </style>
+        </style>
 </head>
 <body>
 
@@ -1098,6 +1097,7 @@
             </div>
             <div class="product-grid" id="product-list">
                 <!-- Products will be dynamically loaded here -->
+                <p style="text-align: center; width: 100%;">Loading products...</p>
             </div>
         </section>
 
@@ -1186,6 +1186,7 @@
                 <div class="account-details-grid">
                     <div class="profile-info-card">
                         <p><strong>Email:</strong> <span id="profile-email"></span></p>
+                        <p><strong>Phone:</strong> <span id="profile-phone"></span></p>
                     </div>
                     <!-- Add other profile details here if needed -->
                 </div>
@@ -1226,6 +1227,7 @@
                         <input type="text" id="product-badge" placeholder="Badge (New, Best Seller, Organic, Discount, or leave empty)">
                         <input type="number" id="product-stock" placeholder="Stock (quantity)" required min="0" value="100">
                         <input type="text" id="product-tags" placeholder="Tags (comma-separated, e.g., Vitamin A-rich, Low calories)">
+                        <input type="text" id="product-category" placeholder="Category (e.g., leafy greens, fruits)" required>
                         <button type="submit">Upload Product</button>
                     </form>
                 </div>
@@ -1234,6 +1236,7 @@
                     <h3>Manage Products</h3>
                     <div id="admin-product-list">
                         <!-- Admin products will be loaded here -->
+                        <p style="text-align: center;">Loading products...</p>
                     </div>
                 </div>
 
@@ -1241,6 +1244,7 @@
                     <h3>Manage Orders</h3>
                     <div id="admin-order-list">
                         <!-- Admin orders will be loaded here -->
+                        <p style="text-align: center;">Loading orders...</p>
                     </div>
                 </div>
 
@@ -1248,6 +1252,7 @@
                     <h3>Contact Submissions</h3>
                     <div id="admin-contact-submissions">
                         <!-- Contact submissions will be loaded here -->
+                        <p style="text-align: center;">Loading contact submissions...</p>
                     </div>
                 </div>
             </div>
@@ -1498,32 +1503,16 @@
         const authLinkContainer = document.getElementById('auth-link-container');
         const accountUsernameSpan = document.getElementById('account-username');
         const profileEmailSpan = document.getElementById('profile-email');     // New
+        const profilePhoneSpan = document.getElementById('profile-phone'); // New
 
         const TRANSPORT_FEE = 100.00; // Fixed transportation fee for Vihiga County
         const MIN_ORDER_VALUE = 600.00; // Minimum order value for checkout
 
         let currentView = 'grid'; // Default view
         let firebaseUser = null; // Stores the currently logged in Firebase user object
+        let allProducts = []; // Array to store products fetched from Firestore
 
-        const defaultProducts = [
-            { id: 1, name: 'Sukuma Wiki', price: 40.00, originalPrice: 50.00, unit: 'per bunch', image: 'https://images.unsplash.com/photo-1601007790325-1033b006c459?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Freshly harvested collard greens, perfect for a healthy meal.', category: 'leafy greens', rating: 4.5, badge: 'Organic', stock: 50, tags: ['Vitamin K-rich', 'Iron source'] },
-            { id: 2, name: 'Tomatoes', price: 100.00, originalPrice: 120.00, unit: 'per kg', image: 'https://images.unsplash.com/photo-1596489370605-e41c484f23c7?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Juicy and ripe red tomatoes, ideal for salads and cooking.', category: 'fruits', rating: 4.8, badge: 'Best Seller', stock: 120, tags: ['Vitamin C-rich', 'Antioxidant'] },
-            { id: 3, name: 'Onions', price: 80.00, originalPrice: 90.00, unit: 'per kg', image: 'https://images.unsplash.com/photo-1577793444053-29f95738d821?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Pungent and flavorful onions, a staple for any kitchen.', category: 'roots', rating: 4.2, badge: '', stock: 80, tags: ['Immunity booster'] },
-            { id: 4, name: 'Potatoes', price: 150.00, unit: 'per kg', image: 'https://images.unsplash.com/photo-1563795325732-c1285e683701?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Starchy and versatile potatoes, great for mashing, frying, or roasting.', category: 'roots', rating: 4.0, badge: '', stock: 200, tags: ['Energy source'] },
-            { id: 5, name: 'Spinach', price: 60.00, unit: 'per bunch', image: 'https://images.unsplash.com/photo-1596280455088-e215d2698944?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Nutrient-rich green spinach, excellent for stews and smoothies.', category: 'leafy greens', rating: 4.7, badge: 'Organic', stock: 40, tags: ['Vitamin A-rich', 'Folate source'] },
-            { id: 6, name: 'Cabbage', price: 75.00, unit: 'per head', image: 'https://images.unsplash.com/photo-1628178168273-057d38ae859b?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Crisp and fresh green cabbage, perfect for salads or cooking.', category: 'leafy greens', rating: 4.1, badge: '', stock: 60, tags: ['Fiber-rich', 'Low calories'] },
-            { id: 7, name: 'Carrots', price: 80.00, unit: 'per kg', image: 'https://images.unsplash.com/photo-1502741525547-511674482d8c?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Sweet and crunchy carrots, great for snacking or adding to dishes.', category: 'roots', rating: 4.6, badge: 'New', stock: 90, tags: ['Vitamin A-rich', 'Good for eyes'] },
-            { id: 8, name: 'Green Pepper', price: 55.00, unit: 'per piece', image: 'https://images.unsplash.com/photo-1627883908868-b7c7b28d576a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Bell pepper with a mild flavor, adds color and crunch to meals.', category: 'fruits', rating: 4.3, badge: '', stock: 70, tags: ['Vitamin C-rich'] },
-            { id: 9, name: 'Garlic', price: 40.00, unit: 'per head', image: 'https://images.unsplash.com/photo-1555541673-f93504107e3a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Adds a pungent flavor to dishes, known for its health benefits.', category: 'roots', rating: 4.4, badge: '', stock: 110, tags: ['Immunity booster', 'Antimicrobial'] },
-            { id: 10, name: 'Ginger', price: 65.00, unit: 'per 100g', image: 'https://images.unsplash.com/photo-1624831631557-0b1a03e1e912?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Aromatic and zesty ginger root, great for teas and cooking.', category: 'roots', rating: 4.6, badge: 'New', stock: 55, tags: ['Digestive aid', 'Anti-inflammatory'] },
-            { id: 11, name: 'Broccoli', price: 180.00, unit: 'per head', image: 'https://images.unsplash.com/photo-1628042453448-433a042e61a6?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Nutrient-packed broccoli, perfect for steaming or stir-frying.', category: 'cruciferous', rating: 4.7, badge: 'Organic', stock: 30, tags: ['Vitamin C-rich', 'Fiber-rich'] },
-            { id: 12, name: 'Cucumber', price: 70.00, unit: 'per piece', image: 'https://images.unsplash.com/photo-1589139158020-e204c3d8e5e8?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGV DufDB8fHx8fA%3D%3D', description: 'Cool and crisp cucumber, excellent for salads and refreshing drinks.', category: 'fruits', rating: 4.3, badge: '', stock: 95, tags: ['Hydrating', 'Low calories'] },
-            { id: 13, name: 'Capsicum (Red)', price: 90.00, originalPrice: 100.00, unit: 'per piece', image: 'https://images.unsplash.com/photo-1596489370605-e41c484f23c7?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Sweet and vibrant red capsicum, adds color and flavor to any dish.', category: 'fruits', rating: 4.5, badge: 'Discount -10%', stock: 20, tags: ['Vitamin C-rich'] },
-            { id: 14, name: 'Eggplant', price: 85.00, unit: 'per piece', image: 'https://images.unsplash.com/photo-1597843846660-84a1d4b6b27e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Versatile eggplant, great for grilling, baking, or stews.', category: 'fruits', rating: 3.9, badge: '', stock: 45, tags: ['Fiber-rich', 'Antioxidant'] },
-            { id: 15, name: 'Dhania (Coriander)', price: 30.00, unit: 'per bunch', image: 'https://images.unsplash.com/photo-1620241091515-b4d4b14d8b5a?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', description: 'Fresh coriander, essential for adding a fresh aroma to your meals.', category: 'herbs', rating: 4.8, badge: 'Best Seller', stock: 75, tags: ['Aromatic', 'Digestive aid'] },
-        ];
-
-        // --- Utility Functions for Local Storage ---
+        // --- Utility Functions for Local Storage (will be replaced by Firestore for most data) ---
         function getFromLocalStorage(key, defaultValue) {
             try {
                 const item = localStorage.getItem(key);
@@ -1555,8 +1544,7 @@
 
         // --- Quick View Modal Functions ---
         function openQuickViewModal(productId) {
-            const products = getProducts();
-            const product = products.find(p => p.id === productId);
+            const product = allProducts.find(p => p.id === productId);
 
             if (!product) return;
 
@@ -1633,6 +1621,9 @@
                 // Admin panel logic is handled in admin.html, this page is mostly for display here
                 // For this file, we assume admin login is separate or handled differently
                 // If you want to enable admin functions here, you'd need to integrate Firebase Admin SDK securely
+                renderAdminProducts();
+                renderAdminOrders();
+                renderAdminContactSubmissions();
             } else if (pageId === 'order-confirmation-page') {
                 displayLastOrderConfirmation();
             } else if (pageId === 'my-account-page') {
@@ -1687,43 +1678,6 @@
             }
         }
 
-        // --- Product Data Management ---
-        function getProducts() {
-            let products = getFromLocalStorage('products', defaultProducts);
-            // Ensure IDs are unique and consecutive if default products are used initially
-            // This is a simple check; a more robust solution might involve merging or versioning
-            if (products.length === defaultProducts.length && products.every((p, i) => p.id === defaultProducts[i].id)) {
-                return defaultProducts; // Use default if no custom products added
-            }
-            return products;
-        }
-        function saveProducts(products) {
-            saveToLocalStorage('products', products);
-        }
-
-        // --- Favorite Products ---
-        function getFavorites() {
-            return getFromLocalStorage('favorites', []);
-        }
-
-        function saveFavorites(favorites) {
-            saveToLocalStorage('favorites', favorites);
-        }
-
-        function toggleFavorite(productId, iconElement) {
-            let favorites = getFavorites();
-            if (favorites.includes(productId)) {
-                favorites = favorites.filter(id => id !== productId);
-                iconElement.classList.remove('fas');
-                iconElement.classList.add('far');
-            } else {
-                favorites.push(productId);
-                iconElement.classList.remove('far');
-                iconElement.classList.add('fas');
-            }
-            saveFavorites(favorites);
-        }
-
         // --- Generate Star Rating HTML ---
         function generateStarRating(rating) {
             let starsHtml = '';
@@ -1741,25 +1695,34 @@
             return starsHtml;
         }
 
-        // --- Product Reviews ---
-        function getProductReviews(productId) {
-            const allReviews = getFromLocalStorage('productReviews', {});
-            return allReviews[productId] || [];
-        }
-
-        function saveProductReview(productId, review) {
-            const allReviews = getFromLocalStorage('productReviews', {});
-            if (!allReviews[productId]) {
-                allReviews[productId] = [];
+        // --- Product Reviews (Firestore) ---
+        async function getProductReviews(productId) {
+            try {
+                const reviewsRef = collection(db, "products", productId, "reviews");
+                const q = query(reviewsRef, orderBy("date", "desc"));
+                const querySnapshot = await getDocs(q);
+                return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            } catch (error) {
+                console.error("Error getting product reviews:", error);
+                return [];
             }
-            allReviews[productId].push(review);
-            saveToLocalStorage('productReviews', allReviews);
         }
 
-        function renderProductReviews(productId) {
+        async function saveProductReview(productId, review) {
+            try {
+                const reviewsRef = collection(db, "products", productId, "reviews");
+                await addDoc(reviewsRef, review);
+                return true;
+            } catch (error) {
+                console.error("Error saving product review:", error);
+                return false;
+            }
+        }
+
+        async function renderProductReviews(productId) {
             const qvReviewsList = document.getElementById('qv-reviews-list');
             const addReviewContainer = document.getElementById('add-review-container');
-            const reviews = getProductReviews(productId);
+            const reviews = await getProductReviews(productId);
 
             qvReviewsList.innerHTML = '';
             if (reviews.length === 0) {
@@ -1781,7 +1744,7 @@
             if (firebaseUser) {
                 addReviewContainer.innerHTML = `
                     <h4>Add Your Review</h4>
-                    <form class="add-review-form" onsubmit="submitProductReview(event, ${productId})">
+                    <form class="add-review-form" onsubmit="submitProductReview(event, '${productId}')">
                         <input type="number" id="review-rating-input" placeholder="Rating (1-5)" min="1" max="5" step="0.5" required>
                         <textarea id="review-comment-input" rows="3" placeholder="Your comment..." required></textarea>
                         <button type="submit">Submit Review</button>
@@ -1792,7 +1755,7 @@
             }
         }
 
-        function submitProductReview(event, productId) {
+        async function submitProductReview(event, productId) {
             event.preventDefault();
             const rating = parseFloat(document.getElementById('review-rating-input').value);
             const comment = document.getElementById('review-comment-input').value;
@@ -1808,23 +1771,40 @@
                 comment: comment,
                 date: new Date().toISOString()
             };
-            saveProductReview(productId, newReview);
-            showModal('Review Submitted', 'Thank you for your review!');
-            document.querySelector('.add-review-form').reset();
-            renderProductReviews(productId); // Re-render reviews
+            const success = await saveProductReview(productId, newReview);
+            if (success) {
+                showModal('Review Submitted', 'Thank you for your review!');
+                document.querySelector('.add-review-form').reset();
+                renderProductReviews(productId); // Re-render reviews
+            } else {
+                showModal('Error', 'Failed to submit review. Please try again.');
+            }
         }
 
+        // --- Product Data Management (Firestore) ---
+        async function loadProductsFromFirestore() {
+            try {
+                const productsCol = collection(db, "products");
+                const q = query(productsCol, orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                allProducts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderProducts(); // Render products once loaded
+            } catch (error) {
+                console.error("Error loading products from Firestore:", error);
+                productListDiv.innerHTML = '<p style="text-align: center; width: 100%; color: red;">Failed to load products. Please check console for errors.</p>';
+            }
+        }
 
         // --- Render Products on Shop Page ---
         function renderProducts() {
             productListDiv.innerHTML = '';
-            let products = getProducts();
-            const favorites = getFavorites();
-            
+            let productsToDisplay = [...allProducts]; // Create a mutable copy
+            const favorites = getFavorites(); // Still using localStorage for favorites for now
+
             // Apply search filter
             const query = document.getElementById('search-input').value.toLowerCase();
             if (query) {
-                products = products.filter(p => 
+                productsToDisplay = productsToDisplay.filter(p => 
                     p.name.toLowerCase().includes(query) || 
                     p.description.toLowerCase().includes(query) ||
                     (p.tags && p.tags.some(tag => tag.toLowerCase().includes(query)))
@@ -1834,13 +1814,13 @@
             // Apply category filter
             const categoryFilter = document.getElementById('filter-category').value;
             if (categoryFilter) {
-                products = products.filter(p => p.category === categoryFilter);
+                productsToDisplay = productsToDisplay.filter(p => p.category && p.category.toLowerCase() === categoryFilter.toLowerCase());
             }
 
             // Apply sorting
             const sortBy = document.getElementById('sort-by').value;
             if (sortBy) {
-                products.sort((a, b) => {
+                productsToDisplay.sort((a, b) => {
                     if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
                     if (sortBy === 'name-desc') return b.name.localeCompare(a.name);
                     if (sortBy === 'price-asc') return a.price - b.price;
@@ -1849,7 +1829,7 @@
                 });
             }
             
-            if (products.length === 0) {
+            if (productsToDisplay.length === 0) {
                 productListDiv.innerHTML = '<p style="text-align: center; width: 100%;">No products found matching your criteria.</p>';
                 return;
             }
@@ -1858,7 +1838,7 @@
             productListDiv.classList.remove('grid-view', 'list-view');
             productListDiv.classList.add(`${currentView}-view`);
 
-            products.forEach(product => {
+            productsToDisplay.forEach(product => {
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
 
@@ -1889,20 +1869,20 @@
                 if (currentView === 'grid') {
                     productCard.innerHTML = `
                         ${badgeHtml}
-                        <i class="${favoriteIconClass} fa-heart favorite-icon" onclick="toggleFavorite(${product.id}, this)"></i>
+                        <i class="${favoriteIconClass} fa-heart favorite-icon" onclick="toggleFavorite('${product.id}', this)"></i>
                         <img src="${product.image}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/150x150/cccccc/333333?text=No+Image';">
                         <h3>${product.name}</h3>
                         <div class="product-rating">${generateStarRating(product.rating)}</div>
                         ${priceHtml}
                         <p class="stock-indicator ${stockStatusClass}">${stockText}</p>
                         ${tagsHtml}
-                        <button class="add-to-cart-btn" onclick="addToCart(${product.id})" ${addToCartDisabled}>${addToCartText}</button>
-                        <button class="add-to-cart-btn" style="background-color: #03A9F4; margin-top: 10px;" onclick="openQuickViewModal(${product.id})">Quick View</button>
+                        <button class="add-to-cart-btn" onclick="addToCart('${product.id}')" ${addToCartDisabled}>${addToCartText}</button>
+                        <button class="add-to-cart-btn" style="background-color: #03A9F4; margin-top: 10px;" onclick="openQuickViewModal('${product.id}')">Quick View</button>
                     `;
                 } else { // List view
                     productCard.innerHTML = `
                         ${badgeHtml}
-                        <i class="${favoriteIconClass} fa-heart favorite-icon" onclick="toggleFavorite(${product.id}, this)"></i>
+                        <i class="${favoriteIconClass} fa-heart favorite-icon" onclick="toggleFavorite('${product.id}', this)"></i>
                         <img src="${product.image}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/120x120/cccccc/333333?text=No+Image';">
                         <div class="product-info">
                             <h3>${product.name}</h3>
@@ -1913,8 +1893,8 @@
                             ${tagsHtml}
                         </div>
                         <div class="product-actions">
-                            <button class="add-to-cart-btn" onclick="addToCart(${product.id})" ${addToCartDisabled}>${addToCartText}</button>
-                            <button class="add-to-cart-btn" style="background-color: #03A9F4;" onclick="openQuickViewModal(${product.id})">Quick View</button>
+                            <button class="add-to-cart-btn" onclick="addToCart('${product.id}')" ${addToCartDisabled}>${addToCartText}</button>
+                            <button class="add-to-cart-btn" style="background-color: #03A9F4;" onclick="openQuickViewModal('${product.id}')">Quick View</button>
                         </div>
                     `;
                 }
@@ -1936,26 +1916,44 @@
             renderProducts();
         }
         
-        // --- Shopping Cart functionality ---
-        function getCart() {
-            return getFromLocalStorage('cart', []);
+        // --- Shopping Cart functionality (Firestore) ---
+        async function getCart() {
+            if (!firebaseUser) {
+                return getFromLocalStorage('guestCart', []); // Use local storage for guest cart
+            }
+            try {
+                const cartDocRef = doc(db, "carts", firebaseUser.uid);
+                const cartDocSnap = await getDoc(cartDocRef);
+                return cartDocSnap.exists() ? cartDocSnap.data().items : [];
+            } catch (error) {
+                console.error("Error getting cart from Firestore:", error);
+                return [];
+            }
         }
 
-        function saveCart(cart) {
-            saveToLocalStorage('cart', cart);
+        async function saveCart(cart) {
+            if (!firebaseUser) {
+                saveToLocalStorage('guestCart', cart); // Save to local storage for guests
+            } else {
+                try {
+                    const cartDocRef = doc(db, "carts", firebaseUser.uid);
+                    await setDoc(cartDocRef, { items: cart });
+                } catch (error) {
+                    console.error("Error saving cart to Firestore:", error);
+                }
+            }
             updateCartCount();
         }
 
-        function updateCartCount() {
-            const cart = getCart();
+        async function updateCartCount() {
+            const cart = await getCart();
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
             cartCountSpan.textContent = totalItems;
         }
 
-        function addToCart(productId) {
-            const cart = getCart();
-            const products = getProducts();
-            const productToAdd = products.find(p => p.id === productId);
+        async function addToCart(productId) {
+            const cart = await getCart();
+            const productToAdd = allProducts.find(p => p.id === productId);
 
             if (!productToAdd) return;
             if (productToAdd.stock <= 0) {
@@ -1971,15 +1969,14 @@
                 }
                 existingItem.quantity += 1;
             } else {
-                // Store the current price when adding to cart, not originalPrice
                 cart.push({ ...productToAdd, quantity: 1, price: productToAdd.price });
             }
-            saveCart(cart);
+            await saveCart(cart);
             showModal('Success!', `${productToAdd.name} added to cart!`);
         }
 
-        function renderCart() {
-            const cart = getCart();
+        async function renderCart() {
+            const cart = await getCart();
             cartItemsBody.innerHTML = '';
             let subTotal = 0;
 
@@ -2001,13 +1998,13 @@
                     <td>KES ${item.price.toFixed(2)} ${item.unit}</td>
                     <td>
                         <div class="quantity-controls">
-                            <button onclick="updateQuantity(${item.id}, -1)"><i class="fas fa-minus"></i></button>
+                            <button onclick="updateQuantity('${item.id}', -1)"><i class="fas fa-minus"></i></button>
                             <span>${item.quantity}</span>
-                            <button onclick="updateQuantity(${item.id}, 1)"><i class="fas fa-plus"></i></button>
+                            <button onclick="updateQuantity('${item.id}', 1)"><i class="fas fa-plus"></i></button>
                         </div>
                     </td>
                     <td>KES ${itemTotal.toFixed(2)}</td>
-                    <td><button onclick="removeFromCart(${item.id})" style="color: red; border: none; background: transparent; cursor: pointer;"><i class="fas fa-trash-alt"></i></button></td>
+                    <td><button onclick="removeFromCart('${item.id}')" style="color: red; border: none; background: transparent; cursor: pointer;"><i class="fas fa-trash-alt"></i></button></td>
                 `;
                 cartItemsBody.appendChild(row);
             });
@@ -2018,10 +2015,9 @@
             cartGrandTotalPriceSpan.textContent = grandTotal.toFixed(2);
         }
 
-        function updateQuantity(productId, change) {
-            const cart = getCart();
-            const products = getProducts();
-            const productInStore = products.find(p => p.id === productId);
+        async function updateQuantity(productId, change) {
+            const cart = await getCart();
+            const productInStore = allProducts.find(p => p.id === productId);
             const item = cart.find(i => i.id === productId);
 
             if (item) {
@@ -2031,25 +2027,25 @@
                 }
                 item.quantity += change;
                 if (item.quantity <= 0) {
-                    removeFromCart(productId);
+                    await removeFromCart(productId);
                 } else {
-                    saveCart(cart);
+                    await saveCart(cart);
                     renderCart();
                 }
             }
         }
 
-        function removeFromCart(productId) {
-            let cart = getCart();
+        async function removeFromCart(productId) {
+            let cart = await getCart();
             cart = cart.filter(item => item.id !== productId);
-            saveCart(cart);
+            await saveCart(cart);
             renderCart();
             showModal('Removed!', 'Item removed from cart.');
         }
         
         // --- Checkout Flow Functions ---
-        function openCustomerDetailsModal() {
-            const cart = getCart();
+        async function openCustomerDetailsModal() {
+            const cart = await getCart();
             const cartSubtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
             if (cart.length === 0) {
@@ -2068,10 +2064,10 @@
                 return;
             }
 
-            // Pre-fill customer details if logged in (Firebase user might not have all these details)
-            // You might need to fetch custom user data from Firestore if you store phone/address there.
-            document.getElementById('customer-full-name').value = firebaseUser.displayName || '';
-            document.getElementById('customer-phone').value = firebaseUser.phoneNumber || '';
+            // Pre-fill customer details from user profile if available
+            const userProfile = await getUserProfile(firebaseUser.uid);
+            document.getElementById('customer-full-name').value = userProfile.fullname || firebaseUser.displayName || '';
+            document.getElementById('customer-phone').value = userProfile.phoneNumber || firebaseUser.phoneNumber || '';
             // ID number and delivery location might not be stored in user profile by default,
             // so they remain empty for user to fill.
 
@@ -2083,7 +2079,7 @@
             document.getElementById('checkout-form').reset(); // Clear form on close
         }
 
-        function collectCustomerDetails(event) {
+        async function collectCustomerDetails(event) {
             event.preventDefault();
             const fullName = document.getElementById('customer-full-name').value;
             const idNumber = document.getElementById('customer-id').value;
@@ -2104,14 +2100,14 @@
             }
 
             const customerDetails = { fullName, idNumber, phoneNumber, deliveryLocation, houseName };
-            saveToLocalStorage('lastCustomerDetails', customerDetails);
+            saveToLocalStorage('lastCustomerDetails', customerDetails); // Still using localStorage for this temporary detail
             
             closeCustomerDetailsModal();
             openPaymentMethodModal(customerDetails); // Pass customerDetails to the next step
         }
 
-        function openPaymentMethodModal(customerDetails) {
-            const currentCartSubtotal = getCart().reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        async function openPaymentMethodModal(customerDetails) {
+            const currentCartSubtotal = (await getCart()).reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const grandTotal = currentCartSubtotal + TRANSPORT_FEE;
             mpesaAmountSpan.textContent = grandTotal.toFixed(2); // Auto-fill Mpesa amount
             
@@ -2144,10 +2140,10 @@
             document.getElementById('payment-form').reset(); // Clear form on close
         }
 
-        function processPayment(event) {
+        async function processPayment(event) {
             event.preventDefault();
             const selectedMethod = document.querySelector('input[name="payment-method"]:checked').value;
-            const currentCartSubtotal = getCart().reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const currentCartSubtotal = (await getCart()).reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const grandTotal = currentCartSubtotal + TRANSPORT_FEE;
             const customerDetails = getFromLocalStorage('lastCustomerDetails', {});
 
@@ -2161,12 +2157,12 @@
                 // Updated message for M-Pesa payment
                 showModal('M-Pesa Payment', `Prompt successful! Check your phone (${mpesaPhoneNumber}) and enter your M-Pesa PIN to complete the payment of KES ${grandTotal.toFixed(2)}.`);
                 // Simulate payment completion after a short delay
-                setTimeout(() => {
-                    placeOrderFinal(selectedMethod, customerDetails, TRANSPORT_FEE, grandTotal);
+                setTimeout(async () => {
+                    await placeOrderFinal(selectedMethod, customerDetails, TRANSPORT_FEE, grandTotal);
                 }, 3000); // Simulate network delay
             } else if (selectedMethod === 'cash') {
                 showModal('Cash on Delivery', 'Your order will be processed, and payment will be collected upon delivery. Thank you!');
-                placeOrderFinal(selectedMethod, customerDetails, TRANSPORT_FEE, grandTotal);
+                await placeOrderFinal(selectedMethod, customerDetails, TRANSPORT_FEE, grandTotal);
             } else if (selectedMethod === 'card') {
                 const cardNumber = document.getElementById('card-number').value;
                 const cardExpiry = document.getElementById('card-expiry').value;
@@ -2184,62 +2180,81 @@
 
                 showModal('Card Payment', `Processing your card payment of KES ${grandTotal.toFixed(2)}. This is a simulated transaction.`);
                 // Simulate payment completion after a short delay
-                setTimeout(() => {
-                    placeOrderFinal(selectedMethod, customerDetails, TRANSPORT_FEE, grandTotal);
+                setTimeout(async () => {
+                    await placeOrderFinal(selectedMethod, customerDetails, TRANSPORT_FEE, grandTotal);
                 }, 3000); // Simulate network delay
             }
             closePaymentMethodModal();
         }
 
-        function placeOrderFinal(paymentMethod, customerDetails, transportationFee, grandTotal) {
-            const cart = getCart();
+        async function placeOrderFinal(paymentMethod, customerDetails, transportationFee, grandTotal) {
+            const cart = await getCart();
             if (cart.length === 0) {
                 showModal('Cart Empty', 'Your cart is empty. Please add items before placing an order.');
                 return;
             }
             
             // Deduct stock
-            let products = getProducts();
             let stockProblem = false;
-            cart.forEach(cartItem => {
-                const productIndex = products.findIndex(p => p.id === cartItem.id);
-                if (productIndex !== -1) {
-                    if (products[productIndex].stock < cartItem.quantity) {
+            for (const cartItem of cart) {
+                const productRef = doc(db, "products", cartItem.id);
+                try {
+                    const productSnap = await getDoc(productRef);
+                    if (productSnap.exists()) {
+                        const currentStock = productSnap.data().stock;
+                        if (currentStock < cartItem.quantity) {
+                            stockProblem = true;
+                            showModal('Stock Error', `Not enough ${cartItem.name} in stock. Available: ${currentStock}`);
+                            break; // Exit loop if stock issue found
+                        }
+                        await updateDoc(productRef, { stock: currentStock - cartItem.quantity });
+                    } else {
                         stockProblem = true;
-                        showModal('Stock Error', `Not enough ${products[productIndex].name} in stock. Available: ${products[productIndex].stock}`);
-                        return;
+                        showModal('Product Not Found', `Product ${cartItem.name} not found in store.`);
+                        break;
                     }
-                    products[productIndex].stock -= cartItem.quantity;
+                } catch (error) {
+                    console.error("Error updating stock:", error);
+                    stockProblem = true;
+                    showModal('Stock Update Error', `Failed to update stock for ${cartItem.name}.`);
+                    break;
                 }
-            });
+            }
 
             if (stockProblem) {
-                return; // Stop order placement if stock is insufficient
+                return; // Stop order placement if stock is insufficient or error occurred
             }
-            saveProducts(products); // Save updated stock levels
+            
+            // Save order to Firestore
+            try {
+                const ordersCol = collection(db, "orders");
+                const newOrderRef = await addDoc(ordersCol, { 
+                    items: cart, 
+                    status: 'Pending', 
+                    date: new Date().toISOString(),
+                    subtotal: grandTotal - transportationFee,
+                    transportationFee: transportationFee,
+                    total: grandTotal,
+                    customer: customerDetails,
+                    paymentMethod: paymentMethod,
+                    userEmail: firebaseUser ? firebaseUser.email : null,
+                    userId: firebaseUser ? firebaseUser.uid : null // Link to Firebase User ID
+                });
+                const orderId = newOrderRef.id;
 
-            const orderId = 'PA' + Date.now().toString().slice(-6); // Simple unique ID
-            const orders = getFromLocalStorage('orders', []);
+                // Clear cart after order
+                await saveCart([]); // Clear user's cart in Firestore
+                updateCartCount();
 
-            const newOrder = { 
-                id: orderId, 
-                items: cart, 
-                status: 'Pending', 
-                date: new Date().toLocaleString(),
-                subtotal: grandTotal - transportationFee, // Store subtotal
-                transportationFee: transportationFee,
-                total: grandTotal, // Store grand total
-                customer: customerDetails,
-                paymentMethod: paymentMethod,
-                userEmail: firebaseUser ? firebaseUser.email : null // Associate order with logged-in user
-            };
-            orders.push(newOrder);
-            saveToLocalStorage('orders', orders);
-            saveToLocalStorage('lastOrder', newOrder); // Save for confirmation page
-            localStorage.removeItem('cart'); // Clear cart after order
-            updateCartCount();
-            showModal('Order Placed!', `Your order has been placed successfully! Your Order ID is: <strong>${orderId}</strong>.<br><br>Delivery will be done in the next 30 minutes to your pinned location!`);
-            showPage('order-confirmation-page');
+                // Save last order for confirmation page
+                saveToLocalStorage('lastOrder', { ...newOrderRef.data(), id: orderId }); // Store in local storage for immediate display
+
+                showModal('Order Placed!', `Your order has been placed successfully! Your Order ID is: <strong>${orderId}</strong>.<br><br>Delivery will be done in the next 30 minutes to your pinned location!`);
+                showPage('order-confirmation-page');
+            } catch (error) {
+                console.error("Error placing order:", error);
+                showModal('Order Failed', 'There was an error placing your order. Please try again.');
+            }
         }
 
         // --- Order Confirmation Page ---
@@ -2252,7 +2267,7 @@
                     <h3>Thank You for Your Order!</h3>
                     <p>Order ID: <strong>${lastOrder.id}</strong></p>
                     <p>Status: <strong>${lastOrder.status}</strong></p>
-                    <p>Date Placed: ${lastOrder.date}</p>
+                    <p>Date Placed: ${new Date(lastOrder.date).toLocaleString()}</p>
                     <p>Subtotal: <strong>KES ${lastOrder.subtotal.toFixed(2)}</strong></p>
                     <p>Transportation Fee: <strong>KES ${lastOrder.transportationFee.toFixed(2)}</strong></p>
                     <p>Grand Total: <strong>KES ${lastOrder.total.toFixed(2)}</strong></p>
@@ -2273,40 +2288,49 @@
             }
         }
 
-        // --- Order Tracking Simulation ---
-        function trackOrder(event, orderId) {
+        // --- Order Tracking Simulation (Firestore) ---
+        async function trackOrder(event) {
             if (event) event.preventDefault();
             const orderIdInput = document.getElementById('order-id-input').value.trim();
             const statusDiv = document.getElementById('order-status');
-            const idToTrack = orderId || orderIdInput;
+            const idToTrack = orderIdInput;
 
             if (!idToTrack) {
                 statusDiv.innerHTML = '<p style="color: red;">Please enter a valid Order ID.</p>';
                 return;
             }
 
-            const orders = getFromLocalStorage('orders', []);
-            const order = orders.find(o => o.id === idToTrack);
+            try {
+                const orderDocRef = doc(db, "orders", idToTrack);
+                const orderDocSnap = await getDoc(orderDocRef);
 
-            if (order) {
-                statusDiv.innerHTML = `
-                    <p>Order ID: <strong>${order.id}</strong></p>
-                    <p>Status: <strong>${order.status}</strong></p>
-                    <p>Date Placed: ${order.date}</p>
-                    <p>Subtotal: KES ${order.subtotal.toFixed(2)}</p>
-                    <p>Transportation Fee: KES ${order.transportationFee.toFixed(2)}</p>
-                    <p>Grand Total: KES ${order.total.toFixed(2)}</p>
-                    <p>Payment Method: ${order.paymentMethod}</p>
-                    <p>Delivery to: ${order.customer.fullName}, ${order.customer.deliveryLocation}, ${order.customer.houseName || 'N/A'}</p>
-                    <p>Your order is currently being processed and will be shipped soon. Thank you for your patience!</p>
-                `;
-            } else {
-                statusDiv.innerHTML = '<p style="color: red;">Order not found. Please check your Order ID.</p>';
+                if (orderDocSnap.exists()) {
+                    const order = orderDocSnap.data();
+                    let itemsHtml = order.items.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('');
+                    statusDiv.innerHTML = `
+                        <p>Order ID: <strong>${orderDocSnap.id}</strong></p>
+                        <p>Status: <strong>${order.status}</strong></p>
+                        <p>Date Placed: ${new Date(order.date).toLocaleString()}</p>
+                        <p>Subtotal: KES ${order.subtotal.toFixed(2)}</p>
+                        <p>Transportation Fee: KES ${order.transportationFee.toFixed(2)}</p>
+                        <p>Grand Total: KES ${order.total.toFixed(2)}</p>
+                        <p>Payment Method: ${order.paymentMethod}</p>
+                        <p>Delivery to: ${order.customer.fullName}, ${order.customer.deliveryLocation}, ${order.customer.houseName || 'N/A'}</p>
+                        <h4>Items:</h4>
+                        <ul>${itemsHtml}</ul>
+                        <p>Your order is currently being processed and will be shipped soon. Thank you for your patience!</p>
+                    `;
+                } else {
+                    statusDiv.innerHTML = '<p style="color: red;">Order not found. Please check your Order ID.</p>';
+                }
+            } catch (error) {
+                console.error("Error tracking order:", error);
+                statusDiv.innerHTML = '<p style="color: red;">Error tracking order. Please try again.</p>';
             }
         }
         
-        // --- Contact Form ---
-        function submitContactForm(event) {
+        // --- Contact Form (Firestore) ---
+        async function submitContactForm(event) {
             event.preventDefault();
             const name = document.getElementById('contact-name').value;
             const email = document.getElementById('contact-email').value;
@@ -2314,45 +2338,77 @@
             
             // Basic validation
             if (name && email && message) {
-                const submissions = getFromLocalStorage('contactSubmissions', []);
-                submissions.push({ name, email, message, date: new Date().toLocaleString() });
-                saveToLocalStorage('contactSubmissions', submissions);
-                showModal('Message Sent!', `Thank you, ${name}! Your message has been sent. We will get back to you shortly.`);
-                document.querySelector('.contact-form').reset();
+                try {
+                    await addDoc(collection(db, "contactSubmissions"), { 
+                        name, 
+                        email, 
+                        message, 
+                        date: new Date().toISOString() 
+                    });
+                    showModal('Message Sent!', `Thank you, ${name}! Your message has been sent. We will get back to you shortly.`);
+                    document.querySelector('.contact-form').reset();
+                } catch (error) {
+                    console.error("Error submitting contact form:", error);
+                    showModal('Error', 'Failed to send message. Please try again.');
+                }
             } else {
                 showModal('Error', 'Please fill out all fields.');
             }
         }
 
-        // --- Newsletter Subscription ---
-        function subscribeToNewsletter(event) {
+        // --- Newsletter Subscription (Firestore) ---
+        async function subscribeToNewsletter(event) {
             event.preventDefault();
             const email = document.getElementById('newsletter-email').value;
             if (email) {
-                let subscriptions = getFromLocalStorage('newsletterSubscriptions', []);
-                if (!subscriptions.includes(email)) {
-                    subscriptions.push(email);
-                    saveToLocalStorage('newsletterSubscriptions', subscriptions);
+                try {
+                    // Check if email already exists
+                    const q = query(collection(db, "newsletterSubscriptions"), where("email", "==", email));
+                    const querySnapshot = await getDocs(q);
+                    if (!querySnapshot.empty) {
+                        showModal('Already Subscribed', 'This email is already subscribed to our newsletter.');
+                        return;
+                    }
+
+                    await addDoc(collection(db, "newsletterSubscriptions"), { 
+                        email, 
+                        subscribedAt: new Date().toISOString() 
+                    });
                     showModal('Subscribed!', `Thank you for subscribing, ${email}! You'll receive fresh updates.`);
                     document.querySelector('.newsletter-form').reset();
-                } else {
-                    showModal('Already Subscribed', 'This email is already subscribed to our newsletter.');
+                } catch (error) {
+                    console.error("Error subscribing to newsletter:", error);
+                    showModal('Error', 'Failed to subscribe. Please try again.');
                 }
             } else {
                 showModal('Error', 'Please enter a valid email address.');
             }
         }
 
-        // --- User Authentication UI Update ---
-        function updateAuthUI() {
+        // --- User Authentication UI Update & Profile Management (Firestore) ---
+        async function getUserProfile(uid) {
+            try {
+                const userDocRef = doc(db, "users", uid);
+                const userDocSnap = await getDoc(userDocRef);
+                return userDocSnap.exists() ? userDocSnap.data() : {};
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+                return {};
+            }
+        }
+
+        async function updateAuthUI() {
             if (firebaseUser) {
+                const userProfile = await getUserProfile(firebaseUser.uid);
                 authLinkContainer.innerHTML = `<li><a href="#" class="page-link" data-page="my-account">My Account (${firebaseUser.email})</a></li>`;
-                accountUsernameSpan.textContent = firebaseUser.email;
+                accountUsernameSpan.textContent = userProfile.fullname || firebaseUser.displayName || firebaseUser.email;
                 profileEmailSpan.textContent = firebaseUser.email;
+                profilePhoneSpan.textContent = userProfile.phoneNumber || 'N/A';
             } else {
                 authLinkContainer.innerHTML = `<li><a href="#" class="page-link" data-page="login">Login / Sign Up</a></li>`;
                 accountUsernameSpan.textContent = 'Guest';
                 profileEmailSpan.textContent = '';
+                profilePhoneSpan.textContent = '';
             }
             // Re-attach event listener for the new link
             const newAuthLink = authLinkContainer.querySelector('.page-link');
@@ -2401,14 +2457,12 @@
             forgotPasswordModal.style.display = 'none';
         }
 
-        // This function would be for updating Firebase user profile (e.g., displayName, phoneNumber)
-        // For simplicity, this mock only updates display name, not actual Firebase user data.
-        // For real profile updates, use Firebase's updateProfile or updateEmail.
-        function openEditProfileModal() {
+        async function openEditProfileModal() {
             if (firebaseUser) {
-                document.getElementById('edit-fullname').value = firebaseUser.displayName || '';
+                const userProfile = await getUserProfile(firebaseUser.uid);
+                document.getElementById('edit-fullname').value = userProfile.fullname || firebaseUser.displayName || '';
                 document.getElementById('edit-email').value = firebaseUser.email || '';
-                document.getElementById('edit-phone').value = firebaseUser.phoneNumber || ''; // Firebase phone number
+                document.getElementById('edit-phone').value = userProfile.phoneNumber || '';
                 document.getElementById('edit-password').value = ''; // Password changes are separate in Firebase
                 editProfileModal.style.display = 'flex';
             } else {
@@ -2439,19 +2493,21 @@
 
             try {
                 const updatePromises = [];
+                // Update Firebase Auth profile
                 if (newDisplayName !== (firebaseUser.displayName || '')) {
-                    updatePromises.push(firebaseUser.updateProfile({ displayName: newDisplayName }));
-                }
-                // Firebase does not have a direct updatePhoneNumber method for the user object.
-                // You'd typically store this in a Firestore user profile document.
-                // For this mock, we'll just show a message.
-                if (newPhoneNumber !== (firebaseUser.phoneNumber || '')) {
-                    // This is a placeholder. In a real app, you'd update this in Firestore.
-                    console.log("Phone number update requested:", newPhoneNumber);
+                    updatePromises.push(updateProfile(firebaseUser, { displayName: newDisplayName }));
                 }
                 if (newPassword) {
-                    updatePromises.push(firebaseUser.updatePassword(newPassword));
+                    updatePromises.push(updatePassword(firebaseUser, newPassword));
                 }
+
+                // Update Firestore user profile document
+                const userDocRef = doc(db, "users", firebaseUser.uid);
+                await setDoc(userDocRef, {
+                    fullname: newDisplayName,
+                    phoneNumber: newPhoneNumber,
+                    email: firebaseUser.email // Keep email in Firestore for consistency
+                }, { merge: true }); // Use merge to only update specified fields
 
                 await Promise.all(updatePromises);
                 showModal('Profile Updated', 'Your profile details have been saved.');
@@ -2463,84 +2519,88 @@
             }
         }
 
-        function updateAccountPage() {
+        async function updateAccountPage() {
             if (firebaseUser) {
-                accountUsernameSpan.textContent = firebaseUser.displayName || firebaseUser.email;
+                const userProfile = await getUserProfile(firebaseUser.uid);
+                accountUsernameSpan.textContent = userProfile.fullname || firebaseUser.displayName || firebaseUser.email;
                 profileEmailSpan.textContent = firebaseUser.email;
+                profilePhoneSpan.textContent = userProfile.phoneNumber || 'N/A';
             } else {
                 showModal('Access Denied', 'Please log in to view your account details.');
                 showPage('home-page');
             }
         }
 
-        // Render user's past orders on My Account page
-        function renderUserOrders() {
+        // Render user's past orders on My Account page (Firestore)
+        async function renderUserOrders() {
             const userOrdersListDiv = document.getElementById('user-orders-list');
-            userOrdersListDiv.innerHTML = '';
-            const allOrders = getFromLocalStorage('orders', []);
-
+            userOrdersListDiv.innerHTML = '<p style="text-align: center;">Loading your orders...</p>';
+            
             if (!firebaseUser) {
                 userOrdersListDiv.innerHTML = '<p style="text-align: center;">Please log in to view your past orders.</p>';
                 return;
             }
 
-            // Filter orders by the current Firebase user's email
-            const userOrders = allOrders.filter(order => order.userEmail === firebaseUser.email);
+            try {
+                const ordersCol = collection(db, "orders");
+                const q = query(ordersCol, where("userId", "==", firebaseUser.uid), orderBy("date", "desc"));
+                const querySnapshot = await getDocs(q);
 
-            if (userOrders.length === 0) {
-                userOrdersListDiv.innerHTML = '<p style="text-align: center;">You have no past orders.</p>';
-                return;
+                if (querySnapshot.empty) {
+                    userOrdersListDiv.innerHTML = '<p style="text-align: center;">You have no past orders.</p>';
+                    return;
+                }
+
+                userOrdersListDiv.innerHTML = ''; // Clear loading message
+                querySnapshot.forEach(doc => {
+                    const order = doc.data();
+                    const listItem = document.createElement('div');
+                    listItem.className = 'admin-list-item'; // Reusing admin-list-item style
+                    const itemsSummary = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+                    listItem.innerHTML = `
+                        <div>
+                            <strong>Order ID: ${doc.id}</strong><br>
+                            Status: <span class="${order.status === 'Delivered' ? 'status-delivered' : ''}">${order.status}</span><br>
+                            Date: ${new Date(order.date).toLocaleString()}<br>
+                            Subtotal: KES ${order.subtotal.toFixed(2)}<br>
+                            Transport Fee: KES ${order.transportationFee.toFixed(2)}<br>
+                            Grand Total: KES ${order.total.toFixed(2)}<br>
+                            Payment: ${order.paymentMethod}<br>
+                            <span class="order-items-list">Items: ${itemsSummary}</span>
+                        </div>
+                    `;
+                    userOrdersListDiv.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error("Error fetching user orders:", error);
+                userOrdersListDiv.innerHTML = '<p style="text-align: center; color: red;">Error loading your orders.</p>';
             }
-
-            // Sort orders by date, newest first
-            userOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            userOrders.forEach(order => {
-                const listItem = document.createElement('div');
-                listItem.className = 'admin-list-item'; // Reusing admin-list-item style
-                const itemsSummary = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
-                listItem.innerHTML = `
-                    <div>
-                        <strong>Order ID: ${order.id}</strong><br>
-                        Status: <span class="${order.status === 'Delivered' ? 'status-delivered' : ''}">${order.status}</span><br>
-                        Date: ${order.date}<br>
-                        Subtotal: KES ${order.subtotal.toFixed(2)}<br>
-                        Transport Fee: KES ${order.transportationFee.toFixed(2)}<br>
-                        Grand Total: KES ${order.total.toFixed(2)}<br>
-                        Payment: ${order.paymentMethod}<br>
-                        <span class="order-items-list">Items: ${itemsSummary}</span>
-                    </div>
-                `;
-                userOrdersListDiv.appendChild(listItem);
-            });
         }
 
 
-        // --- Admin Panel (Simplified for this file) ---
-        // Note: Admin login here is still a simple mock password.
-        // For a real application, admin authentication should be handled securely,
-        // e.g., by checking user roles in Firestore after Firebase login.
-        const ADMIN_PASSWORD = 'admin'; 
-        function loginAdmin() {
-            const email = document.getElementById('admin-email')?.value; // Get email from input
+        // --- Admin Panel Functions (Firestore) ---
+        const ADMIN_PASSWORD = 'admin'; // Still a mock password for this example
+        async function loginAdmin() {
+            const email = document.getElementById('admin-email')?.value || 'admin@princealex.com';
             const password = document.getElementById('admin-password').value;
-
-            // Simple mock check for admin, not using Firebase auth for this specific admin form
-            if (email === 'admin@princealex.com' && password === ADMIN_PASSWORD) {
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                // For a real app, you'd check user roles/claims here, e.g.:
+                // const idTokenResult = await auth.currentUser.getIdTokenResult();
+                // if (!!idTokenResult.claims.admin) { ... }
                 document.getElementById('admin-login').style.display = 'none';
                 document.getElementById('admin-content').style.display = 'block';
                 showModal('Admin Login', 'Welcome to the Admin Panel!');
-                // These functions are not defined in this file, they would be in admin.html
-                // renderAdminProducts();
-                // renderAdminOrders();
-                // renderAdminContactSubmissions();
-            } else {
-                showModal('Login Failed', 'Incorrect email or password.');
+                renderAdminProducts();
+                renderAdminOrders();
+                renderAdminContactSubmissions();
+            } catch (error) {
+                showModal('Admin Login Failed', 'Login failed: ' + error.message);
             }
         }
 
-        // Admin: Add Product (mock, would ideally use Firestore)
-        function addProduct(event) {
+        // Admin: Add Product (Firestore)
+        async function addProduct(event) {
             event.preventDefault();
             const name = document.getElementById('product-name').value;
             const image = document.getElementById('product-image').value;
@@ -2552,15 +2612,11 @@
             const stock = parseInt(document.getElementById('product-stock').value);
             const tagsInput = document.getElementById('product-tags').value;
             const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()) : [];
-            const category = defaultProducts.find(p => p.name === name)?.category || 'misc'; // Simple category assignment
+            const category = document.getElementById('product-category').value;
 
-            if (name && image && description && price > 0 && unit && rating >= 1 && rating <= 5 && stock >= 0) {
-                const products = getProducts();
-                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-                // Admin can optionally set an originalPrice for offers
+            if (name && image && description && price > 0 && unit && rating >= 1 && rating <= 5 && stock >= 0 && category) {
                 const originalPrice = prompt("Enter original price if this is an offer (leave blank otherwise):");
                 const newProduct = { 
-                    id: newId, 
                     name, 
                     image, 
                     description, 
@@ -2571,52 +2627,225 @@
                     stock, 
                     tags, 
                     category,
-                    originalPrice: originalPrice ? parseFloat(originalPrice) : undefined
+                    originalPrice: originalPrice ? parseFloat(originalPrice) : undefined,
+                    createdAt: new Date().toISOString() // Timestamp for ordering
                 };
-                products.push(newProduct);
-                saveProducts(products);
-                showModal('Product Added', `Product "${name}" added successfully!`);
-                document.querySelector('.admin-form').reset();
-                renderProducts(); // Refresh the shop page with the new product
-                // renderAdminProducts(); // This would be in admin.html
+                try {
+                    await addDoc(collection(db, "products"), newProduct);
+                    showModal('Product Added', `Product "${name}" added successfully!`);
+                    document.querySelector('.admin-form').reset();
+                    loadProductsFromFirestore(); // Re-load and re-render all products
+                    renderAdminProducts(); // Refresh admin product list
+                } catch (error) {
+                    console.error("Error adding product:", error);
+                    showModal('Error', 'Failed to add product. Please try again.');
+                }
             } else {
-                showModal('Error', 'Please fill out all fields correctly, including valid rating (1-5) and stock (>=0).');
+                showModal('Error', 'Please fill out all fields correctly, including valid rating (1-5), stock (>=0), and category.');
             }
         }
 
-        // Admin: Render Products for Management (mock, would be in admin.html)
-        function renderAdminProducts() {
+        // Admin: Render Products for Management (Firestore)
+        async function renderAdminProducts() {
             const adminProductList = document.getElementById('admin-product-list');
-            adminProductList.innerHTML = '<p style="text-align: center;">Product management functions are typically handled in the dedicated admin panel (admin.html).</p>';
+            adminProductList.innerHTML = '<p style="text-align: center;">Loading products for management...</p>';
+            try {
+                const productsCol = collection(db, "products");
+                const q = query(productsCol, orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    adminProductList.innerHTML = '<p style="text-align: center;">No products to manage.</p>';
+                    return;
+                }
+
+                adminProductList.innerHTML = ''; // Clear loading message
+                querySnapshot.forEach(doc => {
+                    const product = doc.data();
+                    const listItem = document.createElement('div');
+                    listItem.className = 'admin-list-item';
+                    listItem.innerHTML = `
+                        <div>
+                            <strong>${product.name}</strong> (KES ${product.price.toFixed(2)} / ${product.unit})<br>
+                            Stock: ${product.stock}, Category: ${product.category}<br>
+                            <small>ID: ${doc.id}</small>
+                        </div>
+                        <div>
+                            <button class="delete-btn" onclick="deleteProduct('${doc.id}')">Delete</button>
+                        </div>
+                    `;
+                    adminProductList.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error("Error rendering admin products:", error);
+                adminProductList.innerHTML = '<p style="text-align: center; color: red;">Error loading products for management.</p>';
+            }
         }
 
-        // Admin: Delete Product (mock, would be in admin.html)
-        function deleteProduct(productId) {
-            showModal('Action Blocked', 'Product deletion is handled in the dedicated admin panel (admin.html).');
+        // Admin: Delete Product (Firestore)
+        async function deleteProduct(productId) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                try {
+                    await deleteDoc(doc(db, "products", productId));
+                    showModal('Product Deleted', 'Product removed successfully!');
+                    loadProductsFromFirestore(); // Re-load and re-render all products
+                    renderAdminProducts(); // Refresh admin product list
+                } catch (error) {
+                    console.error("Error deleting product:", error);
+                    showModal('Error', 'Failed to delete product. Please try again.');
+                }
+            }
         }
 
-        // Admin: Render Orders for Management (mock, would be in admin.html)
-        function renderAdminOrders() {
+        // Admin: Render Orders for Management (Firestore)
+        async function renderAdminOrders() {
             const adminOrderList = document.getElementById('admin-order-list');
-            adminOrderList.innerHTML = '<p style="text-align: center;">Order management functions are typically handled in the dedicated admin panel (admin.html).</p>';
+            adminOrderList.innerHTML = '<p style="text-align: center;">Loading orders for management...</p>';
+            try {
+                const ordersCol = collection(db, "orders");
+                const q = query(ordersCol, orderBy("date", "desc"));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    adminOrderList.innerHTML = '<p style="text-align: center;">No orders to manage.</p>';
+                    return;
+                }
+
+                adminOrderList.innerHTML = ''; // Clear loading message
+                querySnapshot.forEach(doc => {
+                    const order = doc.data();
+                    const listItem = document.createElement('div');
+                    listItem.className = 'admin-list-item';
+                    const itemsSummary = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+                    const statusClass = order.status === 'Delivered' ? 'status-delivered' : '';
+                    listItem.innerHTML = `
+                        <div>
+                            <strong>Order ID: ${doc.id}</strong><br>
+                            Customer: ${order.customer.fullName} (${order.customer.phoneNumber})<br>
+                            Delivery: ${order.customer.deliveryLocation}, ${order.customer.houseName || 'N/A'}<br>
+                            Total: KES ${order.total.toFixed(2)} (${order.paymentMethod})<br>
+                            Status: <span class="${statusClass}">${order.status}</span><br>
+                            Date: ${new Date(order.date).toLocaleString()}<br>
+                            <span class="order-items-list">Items: ${itemsSummary}</span>
+                        </div>
+                        <div>
+                            ${order.status !== 'Delivered' ? `<button class="mark-delivered-btn" onclick="markOrderDelivered('${doc.id}')">Mark Delivered</button>` : ''}
+                        </div>
+                    `;
+                    adminOrderList.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error("Error rendering admin orders:", error);
+                adminOrderList.innerHTML = '<p style="text-align: center; color: red;">Error loading orders for management.</p>';
+            }
         }
 
-        // Admin: Mark Order as Delivered (mock, would be in admin.html)
-        function markOrderDelivered(orderId) {
-            showModal('Action Blocked', 'Order status updates are handled in the dedicated admin panel (admin.html).');
+        // Admin: Mark Order as Delivered (Firestore)
+        async function markOrderDelivered(orderId) {
+            if (confirm('Are you sure you want to mark this order as Delivered?')) {
+                try {
+                    await updateDoc(doc(db, "orders", orderId), { status: 'Delivered' });
+                    showModal('Order Status Updated', 'Order marked as delivered!');
+                    renderAdminOrders(); // Refresh admin order list
+                } catch (error) {
+                    console.error("Error updating order status:", error);
+                    showModal('Error', 'Failed to update order status. Please try again.');
+                }
+            }
         }
 
-        // Admin: Render Contact Form Submissions (mock, would be in admin.html)
-        function renderAdminContactSubmissions() {
+        // Admin: Render Contact Form Submissions (Firestore)
+        async function renderAdminContactSubmissions() {
             const adminContactSubmissions = document.getElementById('admin-contact-submissions');
-            adminContactSubmissions.innerHTML = '<p style="text-align: center;">Contact submissions are managed in the dedicated admin panel (admin.html).</p>';
+            adminContactSubmissions.innerHTML = '<p style="text-align: center;">Loading contact submissions...</p>';
+            try {
+                const submissionsCol = collection(db, "contactSubmissions");
+                const q = query(submissionsCol, orderBy("date", "desc"));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    adminContactSubmissions.innerHTML = '<p style="text-align: center;">No contact submissions.</p>';
+                    return;
+                }
+
+                adminContactSubmissions.innerHTML = ''; // Clear loading message
+                querySnapshot.forEach(doc => {
+                    const submission = doc.data();
+                    const listItem = document.createElement('div');
+                    listItem.className = 'admin-list-item'; // Reusing style
+                    listItem.innerHTML = `
+                        <div>
+                            <strong>From: ${submission.name} (${submission.email})</strong><br>
+                            Message: ${submission.message}<br>
+                            Date: ${new Date(submission.date).toLocaleString()}
+                        </div>
+                        <div>
+                            <button class="delete-btn" onclick="deleteContactSubmission('${doc.id}')">Delete</button>
+                        </div>
+                    `;
+                    adminContactSubmissions.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error("Error rendering contact submissions:", error);
+                adminContactSubmissions.innerHTML = '<p style="text-align: center; color: red;">Error loading contact submissions.</p>';
+            }
         }
 
-        // Admin: Delete Contact Submission (mock, would be in admin.html)
-        function deleteContactSubmission(index) {
-            showModal('Action Blocked', 'Contact submission deletion is handled in the dedicated admin panel (admin.html).');
+        // Admin: Delete Contact Submission (Firestore)
+        async function deleteContactSubmission(submissionId) {
+            if (confirm('Are you sure you want to delete this contact submission?')) {
+                try {
+                    await deleteDoc(doc(db, "contactSubmissions", submissionId));
+                    showModal('Deleted', 'Contact submission deleted!');
+                    renderAdminContactSubmissions(); // Refresh list
+                } catch (error) {
+                    console.error("Error deleting contact submission:", error);
+                    showModal('Error', 'Failed to delete submission. Please try again.');
+                }
+            }
         }
 
+        // --- Favorite Products (Firestore) ---
+        async function getFavorites() {
+            if (!firebaseUser) return []; // No favorites for guests
+            try {
+                const favDocRef = doc(db, "users", firebaseUser.uid);
+                const favDocSnap = await getDoc(favDocRef);
+                return favDocSnap.exists() && favDocSnap.data().favorites ? favDocSnap.data().favorites : [];
+            } catch (error) {
+                console.error("Error getting favorites:", error);
+                return [];
+            }
+        }
+
+        async function saveFavorites(favorites) {
+            if (!firebaseUser) return; // Cannot save favorites for guests to Firestore
+            try {
+                const userDocRef = doc(db, "users", firebaseUser.uid);
+                await setDoc(userDocRef, { favorites: favorites }, { merge: true });
+            } catch (error) {
+                console.error("Error saving favorites:", error);
+            }
+        }
+
+        async function toggleFavorite(productId, iconElement) {
+            if (!firebaseUser) {
+                showModal('Login Required', 'Please log in to manage your favorite products.');
+                openLoginModal();
+                return;
+            }
+            let favorites = await getFavorites();
+            if (favorites.includes(productId)) {
+                favorites = favorites.filter(id => id !== productId);
+                iconElement.classList.remove('fas');
+                iconElement.classList.add('far');
+            } else {
+                favorites.push(productId);
+                iconElement.classList.remove('far');
+                iconElement.classList.add('fas');
+            }
+            await saveFavorites(favorites);
+        }
 
         // --- Image Carousel Logic ---
         const heroImages = ['vegetable1.jpg', 'vegetable2.jpg', 'vegetable3.jpg'];
@@ -2665,10 +2894,11 @@
         }
 
         // --- Initialization ---
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             applyDarkModePreference();
-            renderProducts();
-            updateCartCount();
+            // Removed loadProductsFromFirestore() and updateCartCount() from here
+            // They will be called in onAuthStateChanged to ensure Firebase is ready.
+            
             // Check if there's a last order to display on confirmation page on load
             if (getFromLocalStorage('lastOrder', null)) {
                 displayLastOrderConfirmation();
@@ -2713,7 +2943,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, query, orderBy, doc, setDoc, addDoc, updateDoc, deleteDoc, where, getDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, updateProfile, updatePassword } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
   const firebaseConfig = {
@@ -2732,47 +2962,35 @@
   // Expose Firebase functions globally for use in inline scripts and event listeners
   window.auth = auth; // Make auth object accessible
   window.db = db;     // Make db object accessible
-
-  // Load products from Firestore (if you intend to use Firestore for products)
-  // Currently, the main script uses localStorage for products.
-  // If you want to use Firestore, you'd integrate this with renderProducts()
-  async function loadProductsFromFirestore() {
-    // This function is currently not called by the main script, as it uses localStorage.
-    // If you enable it, ensure product data is consistent.
-    const productList = document.getElementById("product-list");
-    // productList.innerHTML = ""; // Uncomment if you want Firestore to control product display
-    try {
-        const querySnapshot = await getDocs(collection(db, "products"));
-        querySnapshot.forEach((doc) => {
-            const product = doc.data();
-            // Example: Add product to a global array or render directly
-            // This would replace/merge with your defaultProducts array
-            console.log("Product from Firestore:", product.name);
-        });
-    } catch (error) {
-        console.error("Error loading products from Firestore:", error);
-    }
-  }
-  // loadProductsFromFirestore(); // Uncomment to enable Firestore product loading
+  window.doc = doc;
+  window.setDoc = setDoc;
+  window.addDoc = addDoc;
+  window.updateDoc = updateDoc;
+  window.deleteDoc = deleteDoc;
+  window.collection = collection;
+  window.getDocs = getDocs;
+  window.query = query;
+  window.orderBy = orderBy;
+  window.where = where;
+  window.getDoc = getDoc;
 
 
   // Firebase Authentication Functions exposed globally
   window.registerUser = async function (email, password, fullname, phoneNumber) {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      // Update user profile with display name and phone number
+      // Update Firebase Auth profile
       await updateProfile(userCredential.user, {
-        displayName: fullname,
-        phoneNumber: phoneNumber // Note: Firebase Auth user object only stores email/displayName/photoURL directly. Phone number is typically stored in Firestore.
+        displayName: fullname
       });
 
-      // Optional: Save additional user details to Firestore
-      // await setDoc(doc(db, "users", userCredential.user.uid), {
-      //   email: email,
-      //   fullname: fullname,
-      //   phoneNumber: phoneNumber,
-      //   createdAt: new Date()
-      // });
+      // Save additional user details to Firestore 'users' collection
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        email: email,
+        fullname: fullname,
+        phoneNumber: phoneNumber,
+        createdAt: new Date().toISOString()
+      });
 
       showModal('Registration Successful!', `Welcome, ${fullname || email}! You are now logged in.`);
       closeSignupModal();
@@ -2849,14 +3067,37 @@
 
 
   // Firebase Auth State Listener
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     firebaseUser = user; // Update the global firebaseUser variable
-    updateAuthUI(); // Update UI based on auth state
+    await updateAuthUI(); // Update UI based on auth state
+
+    // Load products and update cart count after Firebase is ready
+    await loadProductsFromFirestore();
+    await updateCartCount();
 
     // Handle pending checkout after Firebase login
     if (user && getFromLocalStorage('pendingCheckout', false)) {
         localStorage.removeItem('pendingCheckout');
         openCustomerDetailsModal(); // Resume checkout
+    }
+    // If a guest logs in, merge their local cart with their Firestore cart
+    if (user) {
+        const guestCart = getFromLocalStorage('guestCart', []);
+        if (guestCart.length > 0) {
+            let userCart = await getCart();
+            // Merge logic: add guest items to user cart, handling duplicates
+            guestCart.forEach(guestItem => {
+                const existingUserItem = userCart.find(item => item.id === guestItem.id);
+                if (existingUserItem) {
+                    existingUserItem.quantity += guestItem.quantity;
+                } else {
+                    userCart.push(guestItem);
+                }
+            });
+            await saveCart(userCart);
+            localStorage.removeItem('guestCart'); // Clear guest cart after merge
+            await updateCartCount();
+        }
     }
   });
 
