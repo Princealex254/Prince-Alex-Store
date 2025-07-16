@@ -654,7 +654,7 @@
             <h2 class="section-title">Admin Panel</h2>
             <div id="admin-login" class="admin-panel-login">
                 <p>Please log in to access the Admin Panel.</p>
-                <input type="email" id="admin-email" placeholder="Admin Email" value="admin@princealex.com">
+                <input type="email" id="admin-email" placeholder="Admin Email">
                 <input type="password" id="admin-password" placeholder="Password">
                 <button onclick="loginAdmin()">Login</button>
             </div>
@@ -897,9 +897,11 @@
             } catch (error) {
                 let errorMessage = 'Login failed. Please try again.';
                 if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                    errorMessage = 'Invalid email or password. Please check your credentials and ensure the user exists in Firebase Authentication.';
+                    errorMessage = 'Invalid email or password. Please check your credentials.';
                 } else if (error.code === 'auth/invalid-email') {
                     errorMessage = 'Invalid email format.';
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorMessage = 'Too many login attempts. Please try again later.';
                 }
                 showModal('Login Failed', errorMessage);
                 console.error("Admin login error:", error);
@@ -912,7 +914,7 @@
                 showModal('Logged Out', 'You have been successfully logged out.');
                 adminLoginDiv.style.display = 'block';
                 adminContentDiv.style.display = 'none';
-                document.getElementById('admin-email').value = 'admin@princealex.com'; // Reset email
+                document.getElementById('admin-email').value = ''; // Clear email
                 document.getElementById('admin-password').value = ''; // Clear password
                 showPage('admin-home-page'); // Go back to login screen
             } catch (error) {
@@ -1011,17 +1013,22 @@
         }
 
         async function deleteProduct(productId) {
-            if (confirm('Are you sure you want to delete this product?')) {
-                try {
-                    await deleteDoc(doc(db, "products", productId));
-                    showModal('Product Deleted', 'Product removed successfully!');
-                    renderAdminProducts(); // Refresh admin product list
-                } catch (error) {
-                    console.error("Error deleting product:", error);
-                    showModal('Error', 'Failed to delete product. Please try again.');
-                }
+            // Using a custom modal for confirmation instead of browser's confirm()
+            showModal('Confirm Deletion', 'Are you sure you want to delete this product? <br><br><button onclick="confirmDeleteProduct(\'' + productId + '\')">Yes, Delete</button> <button onclick="closeModal()">Cancel</button>');
+        }
+
+        async function confirmDeleteProduct(productId) {
+            closeModal(); // Close the confirmation modal
+            try {
+                await deleteDoc(doc(db, "products", productId));
+                showModal('Product Deleted', 'Product removed successfully!');
+                renderAdminProducts(); // Refresh admin product list
+            } catch (error) {
+                console.error("Error deleting product:", error);
+                showModal('Error', 'Failed to delete product. Please try again.');
             }
         }
+
 
         // --- Order Management (Firestore) ---
         async function renderAdminOrders() {
@@ -1066,15 +1073,19 @@
         }
 
         async function markOrderDelivered(orderId) {
-            if (confirm('Are you sure you want to mark this order as Delivered?')) {
-                try {
-                    await updateDoc(doc(db, "orders", orderId), { status: 'Delivered' });
-                    showModal('Order Status Updated', 'Order marked as delivered!');
-                    renderAdminOrders(); // Refresh admin order list
-                } catch (error) {
-                    console.error("Error updating order status:", error);
-                    showModal('Error', 'Failed to update order status. Please try again.');
-                }
+            // Using a custom modal for confirmation instead of browser's confirm()
+            showModal('Confirm Delivery', 'Are you sure you want to mark this order as Delivered? <br><br><button onclick="confirmMarkDelivered(\'' + orderId + '\')">Yes, Mark Delivered</button> <button onclick="closeModal()">Cancel</button>');
+        }
+
+        async function confirmMarkDelivered(orderId) {
+            closeModal(); // Close the confirmation modal
+            try {
+                await updateDoc(doc(db, "orders", orderId), { status: 'Delivered' });
+                showModal('Order Status Updated', 'Order marked as delivered!');
+                renderAdminOrders(); // Refresh admin order list
+            } catch (error) {
+                console.error("Error updating order status:", error);
+                showModal('Error', 'Failed to update order status. Please try again.');
             }
         }
 
@@ -1115,15 +1126,19 @@
         }
 
         async function deleteContactSubmission(submissionId) {
-            if (confirm('Are you sure you want to delete this contact submission?')) {
-                try {
-                    await deleteDoc(doc(db, "contactSubmissions", submissionId));
-                    showModal('Deleted', 'Contact submission deleted!');
-                    renderAdminContactSubmissions(); // Refresh list
-                } catch (error) {
-                    console.error("Error deleting contact submission:", error);
-                    showModal('Error', 'Failed to delete submission. Please try again.');
-                }
+            // Using a custom modal for confirmation instead of browser's confirm()
+            showModal('Confirm Deletion', 'Are you sure you want to delete this contact submission? <br><br><button onclick="confirmDeleteSubmission(\'' + submissionId + '\')">Yes, Delete</button> <button onclick="closeModal()">Cancel</button>');
+        }
+
+        async function confirmDeleteSubmission(submissionId) {
+            closeModal(); // Close the confirmation modal
+            try {
+                await deleteDoc(doc(db, "contactSubmissions", submissionId));
+                showModal('Deleted', 'Contact submission deleted!');
+                renderAdminContactSubmissions(); // Refresh list
+            } catch (error) {
+                console.error("Error deleting contact submission:", error);
+                showModal('Error', 'Failed to delete submission. Please try again.');
             }
         }
 
