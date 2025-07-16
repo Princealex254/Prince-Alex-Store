@@ -1,253 +1,764 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel - Prince Alex Store</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #4CAF50;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      background: #eee;
-      padding: 0.5rem 0;
-    }
-    nav button {
-      background: none;
-      border: none;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    section {
-      display: none;
-      padding: 1rem;
-    }
-    section.active {
-      display: block;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      text-align: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prince Alex Store Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4CAF50; /* A fresh green */
+            --secondary-color: #8BC34A; /* Lighter green */
+            --text-color: #333;
+            --light-bg: #f9f9f9;
+            --white: #fff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --border-color: #ddd;
+            --dark-text: #222;
+        }
+
+        /* Dark Mode Variables */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-color: #66BB6A;
+                --secondary-color: #9CCC65;
+                --text-color: #f1f1f1;
+                --light-bg: #1c1c1c;
+                --white: #2a2a2a;
+                --shadow: 0 4px 6px rgba(0,0,0,0.5);
+                --border-color: #444;
+                --dark-text: #ddd;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--light-bg);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        /* Forms */
+        .forms-container {
+            max-width: 500px;
+            margin: 0 auto 30px;
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .forms-container h3, .forms-container p {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--dark-text);
+        }
+
+        .auth-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-family: inherit;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+        }
+
+        .auth-form button {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+
+        .auth-form button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* Admin Content Navigation */
+        .admin-nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .admin-nav .cta-button {
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 50px;
+        }
+
+        /* Admin Sections */
+        .admin-section {
+            margin-top: 20px;
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            color: var(--dark-text);
+        }
+
+        .admin-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .admin-form input,
+        .admin-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-family: inherit;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+        }
+
+        .admin-form button {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+
+        .admin-form button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 40px 0;
+        }
+
+        .admin-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1.1em;
+        }
+
+        .admin-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .admin-list-item button {
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 0.9em;
+            margin-left: 10px; /* Spacing between buttons */
+        }
+
+        .admin-list-item .delete-btn {
+            background-color: #f44336;
+            color: var(--white);
+            border: none;
+        }
+
+        .admin-list-item .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .admin-list-item .mark-delivered-btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+        }
+
+        .admin-list-item .mark-delivered-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .admin-list-item .status-delivered {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .admin-list-item .status-pending {
+            color: #FFC107; /* Amber for pending */
+            font-weight: 600;
+        }
+
+        .admin-list-item .order-items-list {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            padding-left: 20px;
+        }
+        body.dark-mode .admin-list-item .order-items-list {
+            color: #ccc;
+        }
+
+        /* Modal Alerts */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            color: var(--dark-text);
+        }
+
+        .modal-content h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .modal-content button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .modal-content button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+        .close-button:hover {
+            color: var(--primary-color);
+        }
+
+        footer {
+            background-color: var(--dark-text);
+            color: var(--white);
+            padding: 20px 0;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .admin-nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .admin-nav .cta-button {
+                width: 100%;
+            }
+            .admin-list-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .admin-list-item button {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Admin Dashboard</h1>
-  </header>
-  <nav>
-    <button onclick="showPage('products-page')">Products</button>
-    <button onclick="showPage('orders-page')">Orders</button>
-    <button onclick="showPage('contacts-page')">Contacts</button>
-    <button onclick="logoutAdmin()">Logout</button>
-  </nav>
 
-  <section id="login-page" class="active">
-    <h2>Admin Login</h2>
-    <input type="email" id="admin-email" placeholder="Email"><br><br>
-    <input type="password" id="admin-password" placeholder="Password"><br><br>
-    <button onclick="loginAdmin()">Login</button>
-  </section>
+    <header>
+        <div class="container">
+            <div class="logo">Prince Alex Store Admin</div>
+        </div>
+    </header>
 
-  <section id="products-page">
-    <h2>Manage Products</h2>
-    <form onsubmit="addProduct(event)">
-      <input type="text" id="product-name" placeholder="Product Name" required />
-      <input type="text" id="product-image" placeholder="Image URL" required />
-      <input type="text" id="product-description" placeholder="Description" required />
-      <input type="number" id="product-price" placeholder="Price" required />
-      <input type="text" id="product-unit" placeholder="Unit (e.g., kg)" required />
-      <button type="submit">Add Product</button>
-    </form>
-    <div id="admin-product-list"></div>
-  </section>
+    <main class="container">
+        <h2 class="section-title">Admin Dashboard</h2>
 
-  <section id="orders-page">
-    <h2>Manage Orders</h2>
-    <div id="admin-order-list"></div>
-  </section>
+        <!-- Admin Login Section -->
+        <div id="admin-login-section" class="forms-container">
+            <h3>Admin Login</h3>
+            <p>Please log in with your admin credentials to access the dashboard.</p>
+            <form id="admin-login-form" class="auth-form">
+                <input type="email" id="admin-email" placeholder="Admin Email" required>
+                <input type="password" id="admin-password" placeholder="Password" required>
+                <button type="submit">Log In</button>
+            </form>
+        </div>
 
-  <section id="contacts-page">
-    <h2>Contact Submissions</h2>
-    <div id="admin-contact-list"></div>
-  </section>
+        <!-- Admin Content - Hidden by default -->
+        <div id="admin-content" style="display: none;">
+            <nav class="admin-nav">
+                <button class="cta-button admin-page-btn" data-page="products">Manage Products</button>
+                <button class="cta-button admin-page-btn" data-page="orders">Manage Orders</button>
+                <button class="cta-button admin-page-btn" data-page="contacts">Manage Messages</button>
+                <button class="cta-button" id="admin-logout-btn" style="background-color: #f44336;">Log Out</button>
+            </nav>
 
-  <div id="message-modal" class="modal">
-    <div class="modal-content">
-      <h3 id="modal-title"></h3>
-      <p id="modal-message"></p>
-      <button onclick="closeModal()">OK</button>
+            <!-- Manage Products Section -->
+            <div id="admin-products-section" class="admin-section admin-page active">
+                <h3>Add New Product</h3>
+                <form id="add-product-form" class="admin-form">
+                    <input type="text" id="product-name" placeholder="Product Name" required>
+                    <input type="url" id="product-image-url" placeholder="Image URL (e.g., https://.../image.jpg)" required>
+                    <textarea id="product-description" rows="3" placeholder="Product Description" required></textarea>
+                    <input type="number" id="product-price" placeholder="Price (KES)" step="0.01" required>
+                    <input type="text" id="product-unit" placeholder="Unit (e.g., per Kg)" required>
+                    <button type="submit">Add Product</button>
+                </form>
+                <hr>
+                <h3>Existing Products</h3>
+                <div id="products-list">
+                    <p style="text-align: center;">Loading products...</p>
+                </div>
+            </div>
+
+            <!-- Manage Orders Section -->
+            <div id="admin-orders-section" class="admin-section admin-page" style="display: none;">
+                <h3>Customer Orders</h3>
+                <div id="orders-list">
+                    <p style="text-align: center;">Loading orders...</p>
+                </div>
+            </div>
+
+            <!-- Manage Contact Submissions Section -->
+            <div id="admin-contacts-section" class="admin-section admin-page" style="display: none;">
+                <h3>Contact Messages</h3>
+                <div id="contact-submissions-list">
+                    <p style="text-align: center;">Loading messages...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Custom Message Modal -->
+    <div id="message-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title"></h3>
+            <p id="modal-message"></p>
+            <button onclick="closeModal()">OK</button>
+        </div>
     </div>
-  </div>
 
-  <!-- Firebase and Admin JS -->
-  <script type="module">
-    import {{ initializeApp }} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-    import {{
-      getFirestore, collection, getDocs, query, orderBy,
-      doc, setDoc, addDoc, updateDoc, deleteDoc, getDoc
-    }} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-    import {{
-      getAuth, signInWithEmailAndPassword, signOut
-    }} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    <footer>
+        <p>&copy; 2024 Prince Alex Store Admin. All Rights Reserved.</p>
+    </footer>
 
-    const firebaseConfig = {{
-      apiKey: "AIzaSyAlS1nqRKolwc-7mySezN6XBcwk5p2Al4U",
-      authDomain: "prince-alex-store.firebaseapp.com",
-      projectId: "prince-alex-store",
-      storageBucket: "prince-alex-store.firebasestorage.app",
-      messagingSenderId: "266163776280",
-      appId: "1:266163776280:web:fdd89c30f84ed03540cc6d"
-    }};
+    <script type="module">
+        // Firebase SDK Imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy, doc, setDoc, addDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth();
-    let firebaseUser = null;
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAlS1nqRKolwc-7mySezN6XBcwk5p2Al4U",
+            authDomain: "prince-alex-store.firebaseapp.com",
+            projectId: "prince-alex-store",
+            storageBucket: "prince-alex-store.firebasestorage.app",
+            messagingSenderId: "266163776280",
+            appId: "1:266163776280:web:fdd89c30f84ed03540cc6d"
+        };
 
-    function showModal(title, message) {{
-      document.getElementById('modal-title').innerText = title;
-      document.getElementById('modal-message').innerText = message;
-      document.getElementById('message-modal').style.display = 'flex';
-    }}
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-    function closeModal() {{
-      document.getElementById('message-modal').style.display = 'none';
-    }}
+        // Global variable to store current Firebase user
+        let firebaseUser = null;
 
-    function showPage(pageId) {{
-      document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
-      if (firebaseUser) {{
-        if (pageId === 'products-page') renderAdminProducts();
-        if (pageId === 'orders-page') renderAdminOrders();
-        if (pageId === 'contacts-page') renderAdminContactSubmissions();
-      }}
-    }}
+        // --- Modal Alert Functions ---
+        function showModal(title, message, isError = false) {
+            const modal = document.getElementById('message-modal');
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').innerHTML = message; // Use innerHTML for potential strong tags
+            const okButton = modal.querySelector('button');
+            okButton.style.backgroundColor = isError ? '#f44336' : 'var(--primary-color)';
+            modal.style.display = 'flex';
+        }
 
-    function loginAdmin() {{
-      const email = document.getElementById('admin-email').value;
-      const password = document.getElementById('admin-password').value;
-      signInWithEmailAndPassword(auth, email, password)
-        .then(userCred => {{
-          firebaseUser = userCred.user;
-          showModal('Success', 'Logged in successfully!');
-          showPage('products-page');
-        }})
-        .catch(err => showModal('Login Failed', 'Wrong credentials.'));
-    }}
+        function closeModal() {
+            document.getElementById('message-modal').style.display = 'none';
+        }
 
-    function logoutAdmin() {{
-      signOut(auth).then(() => {{
-        firebaseUser = null;
-        showPage('login-page');
-        showModal('Logged Out', 'You have been signed out.');
-      }});
-    }}
+        // --- Admin Page Switching Logic ---
+        function switchAdminPage(pageName) {
+            const adminPages = document.querySelectorAll('.admin-page');
+            adminPages.forEach(page => page.style.display = 'none'); // Hide all admin pages
 
-    async function addProduct(event) {{
-      event.preventDefault();
-      const name = document.getElementById('product-name').value;
-      const image = document.getElementById('product-image').value;
-      const description = document.getElementById('product-description').value;
-      const price = parseFloat(document.getElementById('product-price').value);
-      const unit = document.getElementById('product-unit').value;
-      try {{
-        await addDoc(collection(db, "products"), {{ name, image, description, price, unit, createdAt: new Date().toISOString() }});
-        showModal('Success', 'Product added successfully.');
-        event.target.reset();
-        renderAdminProducts();
-      }} catch (err) {{
-        showModal('Error', 'Failed to add product.');
-      }}
-    }}
+            const targetPage = document.getElementById(`admin-${pageName}-section`);
+            if (targetPage) {
+                targetPage.style.display = 'block'; // Show the requested page
+            }
 
-    async function renderAdminProducts() {{
-      const div = document.getElementById('admin-product-list');
-      div.innerHTML = 'Loading...';
-      const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
-      const snap = await getDocs(q);
-      div.innerHTML = '';
-      snap.forEach(docSnap => {{
-        const p = docSnap.data();
-        const el = document.createElement('div');
-        el.innerHTML = `<strong>${{p.name}}</strong> - KES ${{p.price}} <button onclick="deleteProduct('${{docSnap.id}}')">Delete</button>`;
-        div.appendChild(el);
-      }});
-    }}
+            // Auto-refresh data when switching pages
+            if (pageName === 'products') {
+                loadProducts();
+            } else if (pageName === 'orders') {
+                loadOrders();
+            } else if (pageName === 'contacts') {
+                loadContactSubmissions();
+            }
+        }
 
-    function deleteProduct(productId) {{
-      deleteDoc(doc(db, "products", productId)).then(() => {{
-        showModal('Deleted', 'Product removed.');
-        renderAdminProducts();
-      }});
-    }}
+        // --- UI Update based on Admin Authentication State ---
+        function updateAdminUI() {
+            const adminLoginSection = document.getElementById('admin-login-section');
+            const adminContentSection = document.getElementById('admin-content');
 
-    async function renderAdminOrders() {{
-      const div = document.getElementById('admin-order-list');
-      div.innerHTML = 'Loading...';
-      const q = query(collection(db, "orders"), orderBy("date", "desc"));
-      const snap = await getDocs(q);
-      div.innerHTML = '';
-      snap.forEach(docSnap => {{
-        const o = docSnap.data();
-        const el = document.createElement('div');
-        el.innerHTML = `<p><strong>Status:</strong> ${{o.status || 'Pending'}} <button onclick="markOrderDelivered('${{docSnap.id}}')">Mark Delivered</button></p>`;
-        div.appendChild(el);
-      }});
-    }}
+            // Check if user is logged in (any authenticated Firebase user is now considered an admin)
+            if (firebaseUser) {
+                adminLoginSection.style.display = 'none'; // Hide login form
+                adminContentSection.style.display = 'block'; // Show admin content
+                switchAdminPage('products'); // Default to products page on login
+            } else {
+                adminLoginSection.style.display = 'block'; // Show login form
+                adminContentSection.style.display = 'none'; // Hide admin content
+            }
+        }
 
-    function markOrderDelivered(orderId) {{
-      updateDoc(doc(db, "orders", orderId), {{ status: "Delivered" }}).then(() => {{
-        showModal('Updated', 'Order marked as delivered.');
-        renderAdminOrders();
-      }});
-    }}
+        // --- 🔐 1. Admin Login & Logout ---
+        document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
 
-    async function renderAdminContactSubmissions() {{
-      const div = document.getElementById('admin-contact-list');
-      div.innerHTML = 'Loading...';
-      const q = query(collection(db, "contactSubmissions"), orderBy("date", "desc"));
-      const snap = await getDocs(q);
-      div.innerHTML = '';
-      snap.forEach(docSnap => {{
-        const c = docSnap.data();
-        const el = document.createElement('div');
-        el.innerHTML = `<p><strong>${{c.name}}</strong>: ${{c.message}} <button onclick="deleteContactSubmission('${{docSnap.id}}')">Delete</button></p>`;
-        div.appendChild(el);
-      }});
-    }}
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                showModal('Success', 'Admin logged in successfully!');
+                // UI update handled by onAuthStateChanged listener
+            } catch (error) {
+                let errorMessage = 'Login failed. Please check your credentials.';
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    errorMessage = 'Invalid email or password.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'The email address is not valid.';
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorMessage = 'Too many login attempts. Please try again later.';
+                }
+                showModal('Error', errorMessage, true);
+                console.error("Admin login error:", error);
+            }
+        });
 
-    function deleteContactSubmission(id) {{
-      deleteDoc(doc(db, "contactSubmissions", id)).then(() => {{
-        showModal('Deleted', 'Submission removed.');
-        renderAdminContactSubmissions();
-      }});
-    }}
-  </script>
+        document.getElementById('admin-logout-btn').addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                showModal('Logged Out', 'You have been successfully logged out from the admin panel.');
+                // UI update handled by onAuthStateChanged listener
+            } catch (error) {
+                showModal('Error', `Logout failed: ${error.message}`, true);
+                console.error("Admin logout error:", error);
+            }
+        });
+
+        // Firebase Auth State Listener: Crucial for updating UI on login/logout
+        onAuthStateChanged(auth, (user) => {
+            firebaseUser = user; // Update the global user object
+            updateAdminUI(); // Call the UI update function
+        });
+
+        // --- Event Listeners for Admin Navigation Buttons ---
+        document.querySelectorAll('.admin-page-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                switchAdminPage(e.target.dataset.page);
+            });
+        });
+
+        // --- 🛒 2. Manage Products ---
+        document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const productName = document.getElementById('product-name').value;
+            const productImageUrl = document.getElementById('product-image-url').value;
+            const productDescription = document.getElementById('product-description').value;
+            const productPrice = parseFloat(document.getElementById('product-price').value);
+            const productUnit = document.getElementById('product-unit').value;
+
+            if (!productName || !productImageUrl || !productDescription || isNaN(productPrice) || !productUnit) {
+                showModal('Error', 'Please fill in all product details correctly.', true);
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "products"), {
+                    name: productName,
+                    image: productImageUrl, // Using 'image' to match existing frontend
+                    description: productDescription,
+                    price: productPrice,
+                    unit: productUnit,
+                    createdAt: new Date().toISOString(), // Store as ISO string for consistent sorting
+                    stock: 100, // Default stock for new products
+                    rating: 4.5, // Default rating
+                    category: "vegetables", // Default category
+                    tags: ["fresh", "organic"] // Default tags
+                });
+                showModal('Success', 'Product added successfully!');
+                document.getElementById('add-product-form').reset();
+                loadProducts(); // Reload the product list
+            } catch (error) {
+                showModal('Error', `Failed to add product: ${error.message}`, true);
+                console.error("Error adding product:", error);
+            }
+        });
+
+        async function loadProducts() {
+            const productsList = document.getElementById('products-list');
+            productsList.innerHTML = '<p style="text-align: center;">Loading products...</p>';
+            try {
+                const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    productsList.innerHTML = '<p style="text-align: center;">No products found.</p>';
+                    return;
+                }
+
+                productsList.innerHTML = ''; // Clear loading message
+                querySnapshot.forEach((doc) => {
+                    const product = doc.data();
+                    const productItem = document.createElement('div');
+                    productItem.className = 'admin-list-item';
+                    productItem.innerHTML = `
+                        <span>${product.name} - KES ${product.price.toFixed(2)} / ${product.unit}</span>
+                        <button class="delete-btn" onclick="deleteProduct('${doc.id}')">Delete</button>
+                    `;
+                    productsList.appendChild(productItem);
+                });
+            } catch (error) {
+                productsList.innerHTML = '<p style="text-align: center; color: red;">Error loading products.</p>';
+                showModal('Error', `Failed to load products: ${error.message}`, true);
+                console.error("Error loading products:", error);
+            }
+        }
+
+        // Expose deleteProduct to the global scope for onclick events
+        window.deleteProduct = async function(productId) {
+            // Using a custom modal for confirmation instead of browser's confirm()
+            showModal('Confirm Deletion', 'Are you sure you want to delete this product? <br><br><button onclick="confirmDeleteProduct(\'' + productId + '\')">Yes, Delete</button> <button onclick="closeModal()">Cancel</button>');
+        }
+
+        async function confirmDeleteProduct(productId) {
+            closeModal(); // Close the confirmation modal
+            try {
+                await deleteDoc(doc(db, "products", productId));
+                showModal('Success', 'Product deleted successfully!');
+                loadProducts(); // Reload the list
+            } catch (error) {
+                showModal('Error', `Failed to delete product: ${error.message}`, true);
+                console.error("Error deleting product:", error);
+            }
+        }
+
+        // --- 📦 3. Manage Orders ---
+        async function loadOrders() {
+            const ordersList = document.getElementById('orders-list');
+            ordersList.innerHTML = '<p style="text-align: center;">Loading orders...</p>';
+            try {
+                const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    ordersList.innerHTML = '<p style="text-align: center;">No orders found.</p>';
+                    return;
+                }
+
+                ordersList.innerHTML = ''; // Clear loading message
+                querySnapshot.forEach((orderDoc) => {
+                    const order = orderDoc.data();
+                    const orderItem = document.createElement('div');
+                    orderItem.className = 'admin-list-item';
+                    
+                    // Format items for display
+                    let itemsSummary = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+                    
+                    orderItem.innerHTML = `
+                        <div>
+                            <strong>Order ID:</strong> ${orderDoc.id}
+                            <br>
+                            <strong>Customer:</strong> ${order.customerName} (${order.customerEmail})
+                            <br>
+                            <strong>Status:</strong> <span class="status-${order.status.toLowerCase()}">${order.status}</span>
+                            <br>
+                            <strong>Total:</strong> KES ${order.totalAmount ? order.totalAmount.toFixed(2) : '0.00'}
+                            <br>
+                            <strong>Date:</strong> ${new Date(order.createdAt).toLocaleString()}
+                            <br>
+                            <span class="order-items-list">Items: ${itemsSummary}</span>
+                        </div>
+                        ${order.status === 'Pending' ? 
+                            `<button class="mark-delivered-btn" onclick="markOrderAsDelivered('${orderDoc.id}')">Mark as Delivered</button>` :
+                            ''
+                        }
+                    `;
+                    ordersList.appendChild(orderItem);
+                });
+            } catch (error) {
+                ordersList.innerHTML = '<p style="text-align: center; color: red;">Error loading orders.</p>';
+                showModal('Error', `Failed to load orders: ${error.message}`, true);
+                console.error("Error loading orders:", error);
+            }
+        }
+
+        // Expose markOrderAsDelivered to the global scope for onclick events
+        window.markOrderAsDelivered = async function(orderId) {
+            showModal('Confirm Delivery', 'Are you sure you want to mark this order as delivered? <br><br><button onclick="confirmMarkOrderAsDelivered(\'' + orderId + '\')">Yes, Mark Delivered</button> <button onclick="closeModal()">Cancel</button>');
+        }
+
+        async function confirmMarkOrderAsDelivered(orderId) {
+            closeModal(); // Close the confirmation modal
+            try {
+                const orderRef = doc(db, "orders", orderId);
+                await updateDoc(orderRef, { status: "Delivered" });
+                showModal('Success', 'Order status updated to Delivered!');
+                loadOrders(); // Reload the order list
+            } catch (error) {
+                showModal('Error', `Failed to update order status: ${error.message}`, true);
+                console.error("Error marking order as delivered:", error);
+            }
+        }
+
+        // --- 📩 4. Manage Contact Submissions ---
+        async function loadContactSubmissions() {
+            const messagesList = document.getElementById('contact-submissions-list');
+            messagesList.innerHTML = '<p style="text-align: center;">Loading messages...</p>';
+            try {
+                const q = query(collection(db, "contactSubmissions"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    messagesList.innerHTML = '<p style="text-align: center;">No messages found.</p>';
+                    return;
+                }
+
+                messagesList.innerHTML = ''; // Clear loading message
+                querySnapshot.forEach((msgDoc) => {
+                    const message = msgDoc.data();
+                    const messageItem = document.createElement('div');
+                    messageItem.className = 'admin-list-item';
+                    messageItem.innerHTML = `
+                        <div>
+                            <strong>From:</strong> ${message.name} (${message.email})
+                            <br>
+                            <strong>Message:</strong> ${message.message}
+                            <br>
+                            <small>Date: ${new Date(message.createdAt).toLocaleString()}</small>
+                        </div>
+                        <button class="delete-btn" onclick="deleteContactSubmission('${msgDoc.id}')">Delete</button>
+                    `;
+                    messagesList.appendChild(messageItem);
+                });
+            } catch (error) {
+                messagesList.innerHTML = '<p style="text-align: center; color: red;">Error loading messages.</p>';
+                showModal('Error', `Failed to load messages: ${error.message}`, true);
+                console.error("Error loading contact submissions:", error);
+            }
+        }
+
+        // Expose deleteContactSubmission to the global scope for onclick events
+        window.deleteContactSubmission = async function(messageId) {
+            showModal('Confirm Deletion', 'Are you sure you want to delete this message? <br><br><button onclick="confirmDeleteContactSubmission(\'' + messageId + '\')">Yes, Delete</button> <button onclick="closeModal()">Cancel</button>');
+        }
+
+        async function confirmDeleteContactSubmission(messageId) {
+            closeModal(); // Close the confirmation modal
+            try {
+                await deleteDoc(doc(db, "contactSubmissions", messageId));
+                showModal('Success', 'Message deleted successfully!');
+                loadContactSubmissions(); // Reload the list
+            } catch (error) {
+                showModal('Error', `Failed to delete message: ${error.message}`, true);
+                console.error("Error deleting contact submission:", error);
+            }
+        }
+
+        // Initial load of UI when the DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            updateAdminUI(); // Set initial visibility based on auth state
+        });
+
+    </script>
 </body>
 </html>
