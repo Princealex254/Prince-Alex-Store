@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
@@ -728,7 +727,6 @@
         body.dark-mode .admin-list-item .order-items-list {
             color: #ccc;
         }
-
         /* Product Ratings */
         .product-rating {
             color: var(--star-color);
@@ -738,7 +736,6 @@
         .product-rating .far { /* Empty star */
             color: #ccc;
         }
-
         /* Product Badges */
         .product-badge {
             position: absolute;
@@ -752,11 +749,18 @@
             font-weight: 600;
             z-index: 10;
         }
-        .product-badge.new { background-color: #2196F3; } /* Blue */
-        .product-badge.bestseller { background-color: #FFC107; } /* Amber */
-        .product-badge.organic { background-color: #4CAF50; } /* Green */
-        .product-badge.discount { background-color: #F44336; } /* Red */
-
+        .product-badge.new {
+            background-color: #2196F3;
+        } /* Blue */
+        .product-badge.bestseller {
+            background-color: #FFC107;
+        } /* Amber */
+        .product-badge.organic {
+            background-color: #4CAF50;
+        } /* Green */
+        .product-badge.discount {
+            background-color: #F44336;
+        } /* Red */
         /* Stock Indicator */
         .stock-indicator {
             font-size: 0.9em;
@@ -764,9 +768,12 @@
             margin-bottom: 10px;
             font-weight: 600;
         }
-        .stock-indicator.in-stock { color: var(--primary-color); }
-        .stock-indicator.sold-out { color: #f44336; }
-
+        .stock-indicator.in-stock {
+            color: var(--primary-color);
+        }
+        .stock-indicator.sold-out {
+            color: #f44336;
+        }
         /* Favorite Icon */
         .favorite-icon {
             position: absolute;
@@ -784,7 +791,6 @@
         .favorite-icon:hover {
             color: #E91E63;
         }
-
         /* Quick View Modal */
         #quick-view-modal .modal-content {
             max-width: 800px;
@@ -846,7 +852,6 @@
             border-radius: 5px;
             font-size: 0.9em;
         }
-
         .reviews-section {
             margin-top: 20px;
             border-top: 1px solid var(--border-color);
@@ -883,7 +888,6 @@
             padding: 8px 15px;
             font-size: 0.9em;
         }
-
         /* My Account Page Styling */
         #my-account-page .account-section {
             background-color: var(--white);
@@ -893,48 +897,40 @@
             margin-bottom: 30px;
             color: var(--dark-text);
         }
-
         #my-account-page .account-section h3 {
             color: var(--primary-color);
             margin-bottom: 20px;
             text-align: center;
         }
-
         #my-account-page .account-details-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
-
         #my-account-page .profile-info-card {
             background-color: var(--light-bg);
             padding: 20px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
         }
-
         #my-account-page .profile-info-card p {
             margin-bottom: 10px;
         }
-
         #my-account-page .profile-info-card strong {
             color: var(--primary-color);
         }
-
         #my-account-page .account-buttons {
             display: flex;
             justify-content: center;
             gap: 20px;
             margin-top: 30px;
         }
-
         #my-account-page .account-buttons .cta-button {
             width: auto;
             padding: 12px 25px;
             font-size: 16px;
         }
-
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .nav-links {
@@ -1009,7 +1005,8 @@
             #my-account-page .account-buttons {
                 flex-direction: column;
             }
-        </style>
+        }
+    </style>
 </head>
 <body>
 
@@ -1022,1930 +1019,274 @@
                     <li><a href="#" class="page-link" data-page="shop">Shop</a></li>
                     <li><a href="#" class="page-link" data-page="cart">Cart</a></li>
                     <li><a href="#" class="page-link" data-page="track-order">Track Order</a></li>
-                    <li><a href="#" class="page-link" data-page="contact">Contact Us</a></li>
-                    <li><a href="#" class="page-link" data-page="about">About Us</a></li>
-                    <li id="auth-link-container"><a href="#" class="page-link" data-page="login">Login / Sign Up</a></li>
+                    <li><a href="#" class="page-link" data-page="about">About</a></li>
+                    <li><a href="#" class="page-link" data-page="contact">Contact</a></li>
                 </ul>
                 <div class="nav-icons">
-                    <span id="cart-icon"><i class="fas fa-shopping-cart"></i><span id="cart-count">0</span></span>
-                    <button id="dark-mode-toggle"><i class="fas fa-moon"></i></button>
-                    <span class="hamburger-menu" id="hamburger-menu"><i class="fas fa-bars"></i></span>
+                    <span id="dark-mode-toggle" class="fas fa-moon"></span>
+                    <span class="fas fa-search" id="search-icon"></span>
+                    <span class="fas fa-heart" id="wishlist-icon"></span>
+                    <a href="#" class="cart-icon" data-page="cart">
+                        <span class="fas fa-shopping-cart"></span>
+                        <span class="cart-count" id="cart-count">0</span>
+                    </a>
+                    <a href="#" class="account-icon" data-page="auth">
+                        <span class="fas fa-user-circle"></span>
+                    </a>
+                    <div class="hamburger-menu" id="hamburger-menu">&#9776;</div>
                 </div>
             </nav>
         </div>
     </header>
 
     <main class="container">
-        
-        <!-- Home Page -->
         <section id="home-page" class="active">
             <div class="hero">
-                <img src="vegetable1.jpg" alt="Fresh Vegetables 1" class="hero-background-image active">
-                <img src="vegetable2.jpg" alt="Fresh Vegetables 2" class="hero-background-image">
-                <img src="vegetable3.jpg" alt="Fresh Vegetables 3" class="hero-background-image">
+                <img id="hero-bg-1" class="hero-background-image active" src="https://princealextrading.netlify.app/assets/farm-1-bg-p5lD3z2h.jpg" alt="Hero Background 1">
+                <img id="hero-bg-2" class="hero-background-image" src="https://princealextrading.netlify.app/assets/farm-2-bg-2r6E4z5t.jpg" alt="Hero Background 2">
                 <div class="hero-overlay"></div>
                 <div class="hero-content">
-                    <h1>Farm Fresh Vegetables, Delivered to Your Door!</h1>
-                    <p>Order fresh veggies today and taste the difference.</p>
-                    <a href="#" class="cta-button page-link" data-page="shop">Shop Now</a>
+                    <h1>Fresh & Healthy Groceries Delivered to Your Doorstep</h1>
+                    <p>Sourced directly from local farms in Kenya. Quality and freshness guaranteed.</p>
+                    <a href="#shop-page" class="cta-button page-link" data-page="shop">Shop Now</a>
                 </div>
             </div>
 
             <h2 class="section-title">Why Choose Us?</h2>
             <div class="features-grid">
                 <div class="feature-item">
-                    <i class="fas fa-seedling fa-3x" style="color: var(--primary-color);"></i>
+                    <span class="fas fa-leaf fa-3x" style="color: var(--primary-color);"></span>
                     <h4>Farm Fresh</h4>
-                    <p>Harvested daily to ensure maximum freshness and nutrition.</p>
+                    <p>Produce delivered within hours of harvest for maximum freshness and flavor.</p>
                 </div>
                 <div class="feature-item">
-                    <i class="fas fa-leaf fa-3x" style="color: var(--primary-color);"></i>
-                    <h4>Organic & Healthy</h4>
-                    <p>Grown without harmful chemicals, just as nature intended.</p>
-                </div>
-                <div class="feature-item">
-                    <i class="fas fa-truck fa-3x" style="color: var(--primary-color);"></i>
+                    <span class="fas fa-truck fa-3x" style="color: var(--primary-color);"></span>
                     <h4>Fast Delivery</h4>
-                    <p>Quick and reliable delivery across all major Kenyan counties.</p>
+                    <p>Same-day or next-day delivery options to get your groceries to you quickly.</p>
+                </div>
+                <div class="feature-item">
+                    <span class="fas fa-hand-holding-heart fa-3x" style="color: var(--primary-color);"></span>
+                    <h4>Supporting Local</h4>
+                    <p>We work directly with small-scale Kenyan farmers, ensuring fair prices and sustainability.</p>
                 </div>
             </div>
+
+            <h2 class="section-title">Our Best Sellers</h2>
+            <div class="product-grid" id="featured-products">
+                </div>
         </section>
 
-        <!-- Shop Page -->
         <section id="shop-page">
-            <h2 class="section-title">Our Fresh Products</h2>
+            <h2 class="section-title">Fresh Produce</h2>
             <div class="shop-controls">
-                <input type="text" id="search-input" placeholder="Search for veggies...">
-                <button onclick="filterProducts()">Search</button>
-                <select id="sort-by" onchange="sortProducts()">
-                    <option value="">Sort By</option>
-                    <option value="name-asc">Name (A-Z)</option>
-                    <option value="name-desc">Name (Z-A)</option>
-                    <option value="price-asc">Price (Low to High)</option>
-                    <option value="price-desc">Price (High to Low)</option>
-                </select>
-                <select id="filter-category" onchange="filterProducts()">
-                    <option value="">All Categories</option>
-                    <option value="leafy greens">Leafy Greens</option>
+                <input type="text" id="search-bar" placeholder="Search products...">
+                <select id="category-filter">
+                    <option value="all">All Categories</option>
+                    <option value="vegetables">Vegetables</option>
                     <option value="fruits">Fruits</option>
-                    <option value="roots">Roots</option>
-                    <option value="cruciferous">Cruciferous</option>
                     <option value="herbs">Herbs</option>
+                    <option value="grains">Grains</option>
+                    <option value="dairy">Dairy & Eggs</option>
+                    <option value="other">Other</option>
                 </select>
-                <button onclick="toggleView('grid')" id="grid-view-btn"><i class="fas fa-th-large"></i> Grid View</button>
-                <button onclick="toggleView('list')" id="list-view-btn"><i class="fas fa-list"></i> List View</button>
+                <select id="sort-by">
+                    <option value="default">Default Sort</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="rating-desc">Top Rated</option>
+                    <option value="newest">Newest First</option>
+                </select>
+                <button id="grid-view-btn" class="fas fa-th"></button>
+                <button id="list-view-btn" class="fas fa-list"></button>
             </div>
-            <div class="product-grid" id="product-list">
-                <!-- Products will be dynamically loaded here -->
-                <p style="text-align: center; width: 100%;">Loading products...</p>
-            </div>
+            <div class="product-grid" id="all-products">
+                </div>
         </section>
 
-        <!-- Cart Page -->
         <section id="cart-page">
-            <h2 class="section-title">Your Shopping Cart</h2>
-            <div id="cart-container">
+            <h2 class="section-title">Your Cart</h2>
+            <div id="cart-content">
                 <table class="cart-table">
                     <thead>
                         <tr>
                             <th>Product</th>
-                            <th>Name</th>
                             <th>Price</th>
                             <th>Quantity</th>
                             <th>Total</th>
-                            <th>Action</th>
+                            <th></th>
                         </tr>
                     </thead>
-                    <tbody id="cart-items">
-                        <!-- Cart items will be dynamically loaded here -->
-                    </tbody>
+                    <tbody id="cart-items-body">
+                        </tbody>
                 </table>
-                <div id="cart-summary">
-                    <div class="cart-summary-totals">
-                        <div>Subtotal: KES <span id="cart-subtotal-price">0.00</span></div>
-                        <div>Transportation Fee: KES <span id="cart-transport-fee">0.00</span></div>
-                        <div class="cart-total-grand">Grand Total: KES <span id="cart-grand-total-price">0.00</span></div>
-                    </div>
-                    <button class="checkout-btn" onclick="openCustomerDetailsModal()">Place Order</button>
+                <div id="cart-empty-message" style="text-align: center; display: none;">Your cart is empty.</div>
+                <div class="cart-summary-totals">
+                    <div>Subtotal: <span id="cart-subtotal">KES 0.00</span></div>
+                    <div>Delivery Fee: <span id="cart-delivery-fee">KES 0.00</span></div>
+                    <div class="cart-total-grand">Total: <span id="cart-total">KES 0.00</span></div>
+                    <button class="checkout-btn" id="checkout-button">Proceed to Checkout</button>
                 </div>
             </div>
         </section>
 
-        <!-- Order Confirmation Page -->
-        <section id="order-confirmation-page">
-            <h2 class="section-title">Order Confirmed!</h2>
-            <div class="order-details" id="last-order-details">
-                <p>Your order details will appear here.</p>
-            </div>
-        </section>
-
-        <!-- Order Tracking Page -->
         <section id="track-order-page">
             <h2 class="section-title">Track Your Order</h2>
             <div class="forms-container">
-                <form class="order-track-form" onsubmit="trackOrder(event)">
-                    <input type="text" id="order-id-input" placeholder="Enter your Order ID" required>
+                <form id="track-order-form">
+                    <input type="text" id="order-id-input" placeholder="Enter Order ID" required>
                     <button type="submit">Track Order</button>
                 </form>
                 <div id="order-status"></div>
             </div>
         </section>
 
-        <!-- Contact Us Page -->
-        <section id="contact-page">
-            <h2 class="section-title">Get in Touch</h2>
-            <div class="contact-form-container">
-                <form class="contact-form" onsubmit="submitContactForm(event)">
-                    <input type="text" id="contact-name" placeholder="Your Name" required>
-                    <input type="email" id="contact-email" placeholder="Your Email" required>
-                    <textarea id="contact-message" rows="5" placeholder="Your Message" required></textarea>
-                    <button type="submit">Send Message</button>
-                </form>
+        <section id="about-page">
+            <h2 class="section-title">About Prince Alex Online Store</h2>
+            <div class="about-content">
+                <p>Prince Alex Online Store is a family-owned business committed to bringing the freshest, highest-quality farm produce from local Kenyan farms directly to your home. We believe in sustainable agriculture, supporting local communities, and providing a convenient and reliable way to get healthy food.</p>
+                <p>Our mission is to bridge the gap between farmers and consumers, ensuring fair prices for our farmers and a transparent supply chain for our customers. Every purchase you make helps support local economies and promotes a healthier lifestyle.</p>
             </div>
             <div class="map-container">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15955.289139260586!2d36.81255535!3d-1.2842426999999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f1172d84d49a7%3A0xf7cf54a935de98e8!2sNairobi%2C%20Kenya!5e0!3m2!1sen!2ske!4v1700000000000!5m2!1sen!2ske" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-        </section>
-        
-        <!-- About Us Page -->
-        <section id="about-page">
-            <h2 class="section-title">Our Story</h2>
-            <div class="about-content">
-                <p><strong>Prince Alex Online Store</strong> was founded with a simple mission: to bring the freshest, most organic vegetables directly from the farm to your table. We believe that everyone deserves access to healthy, nutritious food without the hassle of a market trip.</p>
-                <p>We are currently operating primarily in <strong>Vihiga County</strong>, with our headquarter located at <strong>Tambua Ward</strong>. We are proud to partner with local Kenyan farmers who share our passion for sustainable and ethical farming. We carefully select each product to ensure it meets our high standards of quality and freshness.</p>
-                <p>Our vision is to expand our reach to more counties soon, becoming the leading online platform for farm-fresh produce in Kenya, empowering local farmers and providing our customers with a convenient and reliable source of healthy food. Thank you for supporting our mission!</p>
+                <img src="https://princealextrading.netlify.app/assets/map-placeholder-11234.png" alt="Map of Nairobi" style="width:100%; height:100%; object-fit: cover; border-radius: 10px;">
             </div>
         </section>
 
-        <!-- My Account Page -->
-        <section id="my-account-page">
-            <h2 class="section-title">My Account</h2>
-            <div class="account-section">
-                <p style="text-align: center;">Welcome, <strong id="account-username">Guest</strong>!</p>
-                <h3>Your Profile Details</h3>
-                <div class="account-details-grid">
-                    <div class="profile-info-card">
-                        <p><strong>Email:</strong> <span id="profile-email"></span></p>
-                        <p><strong>Phone:</strong> <span id="profile-phone"></span></p>
+        <section id="contact-page">
+            <h2 class="section-title">Contact Us</h2>
+            <div class="forms-container contact-form-container">
+                <form id="contact-form">
+                    <input type="text" id="contact-name" placeholder="Your Name" required>
+                    <input type="email" id="contact-email" placeholder="Your Email" required>
+                    <textarea id="contact-message" placeholder="Your Message" rows="6" required></textarea>
+                    <button type="submit">Send Message</button>
+                    <div id="contact-message-status" class="info-message" style="display:none;"></div>
+                </form>
+                <div class="contact-info">
+                    <div>
+                        <span class="fas fa-map-marker-alt" style="color: var(--primary-color);"></span>
+                        <p>Nairobi, Kenya</p>
                     </div>
-                    <!-- Add other profile details here if needed -->
-                </div>
-                <div class="account-buttons">
-                    <button class="cta-button" onclick="openEditProfileModal()">Edit Profile</button>
-                    <button class="cta-button" style="background-color: #f44336;" onclick="window.logoutUser()">Logout</button>
-                </div>
-            </div>
-
-            <div class="account-section">
-                <h3>Your Past Orders</h3>
-                <div id="user-orders-list">
-                    <!-- User's past orders will be loaded here -->
-                    <p style="text-align: center;">No past orders found.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Admin Product Upload & Management Page -->
-        <section id="upload-product-page">
-            <h2 class="section-title">Admin Panel</h2>
-            <div id="admin-login" class="admin-panel-login">
-                <p>Please enter admin password to continue.</p>
-                <input type="email" id="admin-email" placeholder="Admin Email" value="admin@princealex.com">
-                <input type="password" id="admin-password" placeholder="Password">
-                <button onclick="window.loginAdmin()">Login</button>
-            </div>
-            <div id="admin-content" style="display: none;">
-                <div id="product-upload-form" class="forms-container">
-                    <h3>Add a New Product</h3>
-                    <form class="admin-form" onsubmit="addProduct(event)">
-                        <input type="text" id="product-name" placeholder="Product Name" required>
-                        <input type="text" id="product-image" placeholder="Image URL (e.g., https://...)" required>
-                        <textarea id="product-description" rows="3" placeholder="Description" required></textarea>
-                        <input type="number" id="product-price" placeholder="Price (KES)" required step="0.01">
-                        <input type="text" id="product-unit" placeholder="Unit (e.g., per kg, per bunch)" required>
-                        <input type="number" id="product-rating" placeholder="Rating (1-5)" min="1" max="5" step="0.1" value="4.5">
-                        <input type="text" id="product-badge" placeholder="Badge (New, Best Seller, Organic, Discount, or leave empty)">
-                        <input type="number" id="product-stock" placeholder="Stock (quantity)" required min="0" value="100">
-                        <input type="text" id="product-tags" placeholder="Tags (comma-separated, e.g., Vitamin A-rich, Low calories)">
-                        <input type="text" id="product-category" placeholder="Category (e.g., leafy greens, fruits)" required>
-                        <button type="submit">Upload Product</button>
-                    </form>
-                </div>
-
-                <div class="admin-section">
-                    <h3>Manage Products</h3>
-                    <div id="admin-product-list">
-                        <!-- Admin products will be loaded here -->
-                        <p style="text-align: center;">Loading products...</p>
+                    <div>
+                        <span class="fas fa-phone" style="color: var(--primary-color);"></span>
+                        <p>+254 712 345 678</p>
                     </div>
-                </div>
-
-                <div class="admin-section">
-                    <h3>Manage Orders</h3>
-                    <div id="admin-order-list">
-                        <!-- Admin orders will be loaded here -->
-                        <p style="text-align: center;">Loading orders...</p>
-                    </div>
-                </div>
-
-                <div class="admin-section">
-                    <h3>Contact Submissions</h3>
-                    <div id="admin-contact-submissions">
-                        <!-- Contact submissions will be loaded here -->
-                        <p style="text-align: center;">Loading contact submissions...</p>
+                    <div>
+                        <span class="fas fa-envelope" style="color: var(--primary-color);"></span>
+                        <p>info@princealexstore.co.ke</p>
                     </div>
                 </div>
             </div>
         </section>
-    
-<!-- Login / Signup Page -->
-<section id="login-page">
-  <h2 class="section-title">Login or Sign Up</h2>
-  <div class="forms-container">
-    <h3>Sign Up</h3>
-    <form id="signup-form" class="auth-form">
-        <input type="email" id="signup-email" placeholder="Email" required>
-        <input type="password" id="signup-password" placeholder="Password" required>
-        <button type="submit">Sign Up</button>
-    </form>
-    <hr>
-    <h3>Login</h3>
-    <form id="login-form" class="auth-form">
-        <input type="email" id="login-email" placeholder="Email" required>
-        <input type="password" id="login-password" placeholder="Password" required>
-        <button type="submit">Login</button>
-    </form>
-  </div>
-</section>
 
-</main>
+        <div id="auth-modal" class="modal">
+            <div class="modal-content auth-modal-content">
+                <span class="close-button fas fa-times"></span>
+                <h3 id="auth-modal-title">Log In</h3>
+                <form id="auth-form">
+                    <input type="email" id="auth-email" placeholder="Email" required>
+                    <input type="password" id="auth-password" placeholder="Password" required>
+                    <button type="submit" id="auth-submit-btn">Log In</button>
+                </form>
+                <p style="text-align: center; margin-top: 15px;">
+                    <a href="#" id="auth-switch">Don't have an account? Sign Up</a>
+                </p>
+                <div id="auth-error-message" class="error-message"></div>
+            </div>
+        </div>
+
+        <div id="quick-view-modal" class="modal">
+            <div class="modal-content quick-view-modal-content">
+                <span class="close-button fas fa-times"></span>
+                <div id="quick-view-content">
+                    </div>
+            </div>
+        </div>
+
+        <div id="order-confirmation-modal" class="modal">
+            <div class="modal-content order-confirmation-modal-content">
+                <span class="close-button fas fa-times"></span>
+                <h3>Order Confirmed!</h3>
+                <p>Your order has been placed successfully.</p>
+                <p>Order ID: <strong id="order-id-display"></strong></p>
+                <p>We will send you a confirmation email shortly.</p>
+                <button class="cta-button close-modal">Close</button>
+            </div>
+        </div>
+
+        <div id="customer-details-modal" class="modal">
+            <div class="modal-content customer-details-modal-content">
+                <span class="close-button fas fa-times"></span>
+                <h3>Customer Details</h3>
+                <form id="customer-details-form">
+                    <input type="text" id="customer-name" placeholder="Full Name" required>
+                    <input type="tel" id="customer-phone" placeholder="Phone Number" required>
+                    <textarea id="customer-address" placeholder="Delivery Address" rows="3" required></textarea>
+                    <button type="submit">Continue to Payment</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="payment-modal" class="modal">
+            <div class="modal-content payment-modal-content">
+                <span class="close-button fas fa-times"></span>
+                <h3>Payment Method</h3>
+                <div class="payment-options">
+                    <label class="payment-option">
+                        <input type="radio" name="payment-method" value="mpesa" checked>
+                        <span>M-Pesa (Mobile Money)</span>
+                    </label>
+                    <label class="payment-option">
+                        <input type="radio" name="payment-method" value="cash-on-delivery">
+                        <span>Cash on Delivery</span>
+                    </label>
+                </div>
+                <button id="pay-now-btn">Pay Now</button>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="whatsapp-widget">
+        <a href="https://wa.me/254712345678" target="_blank" aria-label="Chat with us on WhatsApp" title="Chat with us on WhatsApp">
+            <span class="fab fa-whatsapp"></span>
+        </a>
+    </div>
 
     <footer>
         <div class="container footer-grid">
             <div class="footer-column">
+                <h4>About Us</h4>
+                <p>Providing the freshest farm produce directly from Kenya to your table.</p>
+            </div>
+            <div class="footer-column">
                 <h4>Quick Links</h4>
-                <a href="#" class="page-link" data-page="home">Home</a>
                 <a href="#" class="page-link" data-page="shop">Shop</a>
-                <a href="#" class="page-link" data-page="track-order">Track Order</a>
-                <a href="#" class="page-link" data-page="contact">Contact Us</a>
+                <a href="#" class="page-link" data-page="about">About</a>
+                <a href="#" class="page-link" data-page="contact">Contact</a>
             </div>
             <div class="footer-column">
                 <h4>Contact Info</h4>
-                <p><i class="fas fa-phone-alt"></i> 0717384875</p>
-                <p><i class="fas fa-envelope"></i> princealexdigital@gmail.com</p>
-                <p><i class="fab fa-whatsapp"></i> 0717384875</p>
+                <p>Nairobi, Kenya</p>
+                <p>+254 712 345 678</p>
+                <p>info@princealexstore.co.ke</p>
             </div>
             <div class="footer-column">
                 <h4>Follow Us</h4>
                 <div class="social-links">
-                    <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                    <a href="https://tiktok.com" target="_blank"><i class="fab fa-tiktok"></i></a>
-                    <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><span class="fab fa-facebook-f"></span></a>
+                    <a href="#"><span class="fab fa-twitter"></span></a>
+                    <a href="#"><span class="fab fa-instagram"></span></a>
                 </div>
-            </div>
-            <div class="footer-column">
-                <h4>Newsletter</h4>
-                <p>Subscribe to our newsletter for fresh updates and offers!</p>
-                <form class="newsletter-form" onsubmit="subscribeToNewsletter(event)">
-                    <input type="email" id="newsletter-email" placeholder="Your Email" required>
-                    <button type="submit">Subscribe</button>
-                </form>
             </div>
         </div>
     </footer>
-
-    <div class="whatsapp-widget">
-        <a href="https://wa.me/254717384875" target="_blank" title="Chat on WhatsApp">
-            <i class="fab fa-whatsapp"></i>
-        </a>
-    </div>
-
-    <!-- Custom Message Modal -->
-    <div id="message-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeModal()">&times;</span>
-            <h3 id="modal-title"></h3>
-            <p id="modal-message"></p>
-            <button onclick="closeModal()">OK</button>
-        </div>
-    </div>
-
-    <!-- Quick View Modal -->
-    <div id="quick-view-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeQuickViewModal()">&times;</span>
-            <div class="product-details">
-                <img id="qv-image" src="" alt="Product Image">
-                <div class="product-info-qv">
-                    <h3 id="qv-name"></h3>
-                    <div id="qv-rating" class="product-rating"></div>
-                    <p id="qv-price" class="price-qv"></p>
-                    <p id="qv-description" class="description-qv"></p>
-                    <div id="qv-stock" class="stock-indicator"></div>
-                    <div id="qv-tags" class="product-tags"></div>
-                    <button id="qv-add-to-cart-btn" class="add-to-cart-btn-qv">Add to Cart</button>
-                </div>
-            </div>
-            <div class="reviews-section">
-                <h4>Customer Reviews</h4>
-                <div id="qv-reviews-list">
-                    <!-- Reviews will be loaded here -->
-                </div>
-                <div id="add-review-container">
-                    <!-- Add Review Form will be loaded here if logged in -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Customer Details Modal -->
-    <div id="customer-details-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeCustomerDetailsModal()">&times;</span>
-            <h3>Your Delivery Details</h3>
-            <form id="checkout-form" class="checkout-form">
-                <input type="text" id="customer-full-name" placeholder="Full Name" required>
-                <input type="text" id="customer-id" placeholder="ID Number (National ID/Passport)" required>
-                <input type="tel" id="customer-phone" placeholder="Phone Number (e.g., 0712345678)" pattern="^07[0-9]{8}$" required>
-                <input type="text" id="customer-delivery-location" placeholder="Delivery Location (e.g., Street, Estate, Town)" required>
-                <input type="text" id="customer-house-name" placeholder="House Name/Number (Optional)">
-                <button type="submit">Continue to Payment</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Payment Method Modal -->
-    <div id="payment-method-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closePaymentMethodModal()">&times;</span>
-            <h3>Select Payment Method</h3>
-            <form id="payment-form" class="payment-form" onsubmit="processPayment(event)">
-                <div class="payment-options">
-                    <label class="payment-option">
-                        <input type="radio" name="payment-method" value="mpesa" checked>
-                        <span>M-Pesa</span>
-                    </label>
-                    <label class="payment-option">
-                        <input type="radio" name="payment-method" value="cash">
-                        <span>Cash on Delivery</span>
-                    </label>
-                    <label class="payment-option">
-                        <input type="radio" name="payment-method" value="card">
-                        <span>Card Payment</span>
-                    </label>
-                </div>
-
-                <div id="mpesa-details" class="payment-details-section">
-                    <input type="tel" id="mpesa-phone-number" placeholder="Your M-Pesa Phone Number (e.g., 0712345678)" pattern="^07[0-9]{8}$">
-                    <p>Amount to Pay: <strong>KES <span id="mpesa-amount">0.00</span></strong></p>
-                </div>
-
-                <div id="card-details" class="payment-details-section" style="display: none;">
-                    <input type="text" id="card-number" placeholder="Card Number" pattern="[0-9]{16}" maxlength="16">
-                    <input type="text" id="card-expiry" placeholder="MM/YY" pattern="(0[1-9]|1[0-2])\/?([0-9]{2})" maxlength="5">
-                    <input type="text" id="card-cvv" placeholder="CVV" pattern="[0-9]{3,4}" maxlength="4">
-                </div>
-
-                <button type="submit">Confirm Payment</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Login/Signup Modals -->
-    <div id="login-modal" class="modal">
-        <div class="modal-content auth-modal-content">
-            <span class="close-button" onclick="closeLoginModal()">&times;</span>
-            <h3>Login to Your Account</h3>
-            <form id="login-form-modal" class="auth-form">
-                <input type="email" id="login-email-modal" placeholder="Email" required>
-                <input type="password" id="login-password-modal" placeholder="Password" required>
-                <button type="submit">Login</button>
-                <p style="margin-top: 15px;">Don't have an account? <a href="#" onclick="openSignupModal(); return false;">Sign Up</a></p>
-                <p><a href="#" onclick="openForgotPasswordModal(); return false;">Forgot Password?</a></p>
-            </form>
-        </div>
-    </div>
-
-    <div id="signup-modal" class="modal">
-        <div class="modal-content auth-modal-content">
-            <span class="close-button" onclick="closeSignupModal()">&times;</span>
-            <h3>Create an Account</h3>
-            <form id="signup-form-modal" class="auth-form">
-                <input type="text" id="signup-fullname-modal" placeholder="Full Name" required>
-                <input type="email" id="signup-email-modal" placeholder="Email" required>
-                <input type="tel" id="signup-phone-modal" placeholder="Phone Number (e.g., 0712345678)" pattern="^07[0-9]{8}$" required>
-                <input type="password" id="signup-password-modal" placeholder="Password" required>
-                <button type="submit">Sign Up</button>
-                <p style="margin-top: 15px;">Already have an account? <a href="#" onclick="openLoginModal(); return false;">Login</a></p>
-            </form>
-        </div>
-    </div>
-
-    <!-- Forgot Password Modal -->
-    <div id="forgot-password-modal" class="modal">
-        <div class="modal-content auth-modal-content">
-            <span class="close-button" onclick="closeForgotPasswordModal()">&times;</span>
-            <h3>Reset Password</h3>
-            <form id="forgot-password-form" class="auth-form">
-                <p>Enter your email address to receive a password reset link.</p>
-                <input type="email" id="reset-email" placeholder="Your Email" required>
-                <button type="submit">Send Reset Link</button>
-                <p style="margin-top: 15px;"><a href="#" onclick="closeForgotPasswordModal(); openLoginModal(); return false;">Back to Login</a></p>
-            </form>
-        </div>
-    </div>
-
-    <!-- Edit Profile Modal -->
-    <div id="edit-profile-modal" class="modal">
-        <div class="modal-content auth-modal-content">
-            <span class="close-button" onclick="closeEditProfileModal()">&times;</span>
-            <h3>Edit Your Profile</h3>
-            <form id="edit-profile-form" class="auth-form">
-                <input type="text" id="edit-fullname" placeholder="Full Name" required>
-                <input type="email" id="edit-email" placeholder="Email" required readonly> <!-- Email usually not editable -->
-                <input type="tel" id="edit-phone" placeholder="Phone Number (e.g., 0712345678)" pattern="^07[0-9]{8}$" required>
-                <input type="password" id="edit-password" placeholder="New Password (leave blank to keep current)">
-                <button type="submit">Save Changes</button>
-            </form>
-        </div>
-    </div>
-
-
-    <script>
-        const pages = document.querySelectorAll('section');
-        const navLinks = document.querySelectorAll('.page-link');
-        const shopPage = document.getElementById('shop-page');
-        const cartCountSpan = document.getElementById('cart-count');
-        const cartItemsBody = document.getElementById('cart-items');
-        const cartSubtotalPriceSpan = document.getElementById('cart-subtotal-price');
-        const cartTransportFeeSpan = document.getElementById('cart-transport-fee');
-        const cartGrandTotalPriceSpan = document.getElementById('cart-grand-total-price');
-        const messageModal = document.getElementById('message-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalMessage = document.getElementById('modal-message');
-        const hamburgerMenu = document.getElementById('hamburger-menu');
-        const mobileNavLinks = document.getElementById('nav-links');
-        const darkModeToggle = document.getElementById('dark-mode-toggle');
-        const quickViewModal = document.getElementById('quick-view-modal');
-        const productListDiv = document.getElementById('product-list');
-
-        const customerDetailsModal = document.getElementById('customer-details-modal');
-        const paymentMethodModal = document.getElementById('payment-method-modal');
-        const mpesaDetailsDiv = document.getElementById('mpesa-details');
-        const cardDetailsDiv = document.getElementById('card-details');
-        const mpesaAmountSpan = document.getElementById('mpesa-amount');
-
-        const loginModal = document.getElementById('login-modal');
-        const signupModal = document.getElementById('signup-modal');
-        const forgotPasswordModal = document.getElementById('forgot-password-modal'); // New
-        const editProfileModal = document.getElementById('edit-profile-modal'); // New
-
-        const authLinkContainer = document.getElementById('auth-link-container');
-        const accountUsernameSpan = document.getElementById('account-username');
-        const profileEmailSpan = document.getElementById('profile-email');     // New
-        const profilePhoneSpan = document.getElementById('profile-phone'); // New
-
-        const TRANSPORT_FEE = 100.00; // Fixed transportation fee for Vihiga County
-        const MIN_ORDER_VALUE = 600.00; // Minimum order value for checkout
-
-        let currentView = 'grid'; // Default view
-        let firebaseUser = null; // Stores the currently logged in Firebase user object
-        let allProducts = []; // Array to store products fetched from Firestore
-
-        // --- Utility Functions for Local Storage (will be replaced by Firestore for most data) ---
-        function getFromLocalStorage(key, defaultValue) {
-            try {
-                const item = localStorage.getItem(key);
-                return item ? JSON.parse(item) : defaultValue;
-            } catch (e) {
-                console.error(`Error parsing localStorage item "${key}":`, e);
-                return defaultValue;
-            }
-        }
-
-        function saveToLocalStorage(key, data) {
-            try {
-                localStorage.setItem(key, JSON.stringify(data));
-            } catch (e) {
-                console.error(`Error saving to localStorage item "${key}":`, e);
-            }
-        }
-
-        // --- Message Modal Functions ---
-        function showModal(title, message) {
-            modalTitle.textContent = title;
-            modalMessage.innerHTML = message; // Use innerHTML for strong tags
-            messageModal.style.display = 'flex';
-        }
-
-        function closeModal() {
-            messageModal.style.display = 'none';
-        }
-
-        // --- Quick View Modal Functions ---
-        function openQuickViewModal(productId) {
-            const product = allProducts.find(p => p.id === productId);
-
-            if (!product) return;
-
-            document.getElementById('qv-image').src = product.image;
-            document.getElementById('qv-image').alt = product.name;
-            document.getElementById('qv-name').textContent = product.name;
-            
-            let qvPriceHtml = `KES ${product.price.toFixed(2)} ${product.unit}`;
-            if (product.originalPrice && product.originalPrice > product.price) {
-                qvPriceHtml = `<del>KES ${product.originalPrice.toFixed(2)}</del> KES ${product.price.toFixed(2)} ${product.unit}`;
-            }
-            document.getElementById('qv-price').innerHTML = qvPriceHtml;
-
-            document.getElementById('qv-description').textContent = product.description;
-
-            // Render rating stars
-            const qvRatingDiv = document.getElementById('qv-rating');
-            qvRatingDiv.innerHTML = generateStarRating(product.rating);
-
-            // Render stock indicator
-            const qvStockDiv = document.getElementById('qv-stock');
-            qvStockDiv.className = `stock-indicator ${product.stock > 0 ? 'in-stock' : 'sold-out'}`;
-            qvStockDiv.textContent = product.stock > 0 ? `In Stock (${product.stock})` : 'Sold Out';
-
-            // Render tags
-            const qvTagsDiv = document.getElementById('qv-tags');
-            qvTagsDiv.innerHTML = '';
-            if (product.tags && product.tags.length > 0) {
-                product.tags.forEach(tag => {
-                    const tagSpan = document.createElement('span');
-                    tagSpan.className = 'product-tag';
-                    tagSpan.textContent = tag;
-                    qvTagsDiv.appendChild(tagSpan);
-                });
-            }
-
-            // Set Add to Cart button for quick view
-            const qvAddToCartBtn = document.getElementById('qv-add-to-cart-btn');
-            qvAddToCartBtn.onclick = () => {
-                addToCart(product.id);
-                closeQuickViewModal();
-            };
-            qvAddToCartBtn.disabled = product.stock <= 0;
-            qvAddToCartBtn.textContent = product.stock <= 0 ? 'Sold Out' : 'Add to Cart';
-
-            // Render reviews and add review form
-            renderProductReviews(productId);
-
-            quickViewModal.style.display = 'flex';
-        }
-
-        function closeQuickViewModal() {
-            quickViewModal.style.display = 'none';
-        }
-
-        // --- Page Navigation ---
-        function showPage(pageId) {
-            pages.forEach(page => page.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            navLinks.forEach(link => link.classList.remove('active'));
-            const activeLink = document.querySelector(`.page-link[data-page="${pageId.replace('-page', '')}"]`);
-            if (activeLink) {
-                activeLink.classList.add('active');
-            }
-            // Close mobile menu if open
-            mobileNavLinks.classList.remove('active');
-
-            // Specific page rendering/updates
-            if (pageId === 'cart-page') {
-                renderCart();
-            } else if (pageId === 'shop-page') {
-                renderProducts();
-            } else if (pageId === 'upload-product-page') {
-                // Admin panel logic is handled in admin.html, this page is mostly for display here
-                // For this file, we assume admin login is separate or handled differently
-                // If you want to enable admin functions here, you'd need to integrate Firebase Admin SDK securely
-                renderAdminProducts();
-                renderAdminOrders();
-                renderAdminContactSubmissions();
-            } else if (pageId === 'order-confirmation-page') {
-                displayLastOrderConfirmation();
-            } else if (pageId === 'my-account-page') {
-                updateAccountPage();
-                renderUserOrders(); // Render user's past orders
-            } else if (pageId === 'login-page') { // Handle direct navigation to login
-                openLoginModal();
-            }
-        }
-
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const pageData = link.dataset.page;
-                if (pageData === 'login') {
-                    openLoginModal();
-                } else if (pageData === 'my-account') {
-                    showPage('my-account-page');
-                } else {
-                    showPage(pageData + '-page');
-                }
-            });
-        });
-        
-        document.getElementById('cart-icon').addEventListener('click', () => {
-            showPage('cart-page');
-        });
-
-        // --- Mobile Hamburger Menu ---
-        hamburgerMenu.addEventListener('click', () => {
-            mobileNavLinks.classList.toggle('active');
-        });
-
-        // --- Dark Mode Toggle ---
-        darkModeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            // Save preference to localStorage
-            const isDarkMode = document.body.classList.contains('dark-mode');
-            saveToLocalStorage('darkMode', isDarkMode);
-            // Update icon
-            darkModeToggle.querySelector('i').className = isDarkMode ? 'fas fa-sun' : 'fas fa-moon';
-        });
-
-        function applyDarkModePreference() {
-            const isDarkMode = getFromLocalStorage('darkMode', false); // Default to light mode
-            if (isDarkMode) {
-                document.body.classList.add('dark-mode');
-                darkModeToggle.querySelector('i').className = 'fas fa-sun';
-            } else {
-                document.body.classList.remove('dark-mode');
-                darkModeToggle.querySelector('i').className = 'fas fa-moon';
-            }
-        }
-
-        // --- Generate Star Rating HTML ---
-        function generateStarRating(rating) {
-            let starsHtml = '';
-            const fullStars = Math.floor(rating);
-            const hasHalfStar = rating % 1 !== 0;
-            for (let i = 0; i < fullStars; i++) {
-                starsHtml += '<i class="fas fa-star"></i>';
-            }
-            if (hasHalfStar) {
-                starsHtml += '<i class="fas fa-star-half-alt"></i>';
-            }
-            for (let i = 0; i < (5 - fullStars - (hasHalfStar ? 1 : 0)); i++) {
-                starsHtml += '<i class="far fa-star"></i>';
-            }
-            return starsHtml;
-        }
-
-        // --- Product Reviews (Firestore) ---
-        async function getProductReviews(productId) {
-            try {
-                const reviewsRef = collection(db, "products", productId, "reviews");
-                const q = query(reviewsRef, orderBy("date", "desc"));
-                const querySnapshot = await getDocs(q);
-                return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            } catch (error) {
-                console.error("Error getting product reviews:", error);
-                return [];
-            }
-        }
-
-        async function saveProductReview(productId, review) {
-            try {
-                const reviewsRef = collection(db, "products", productId, "reviews");
-                await addDoc(reviewsRef, review);
-                return true;
-            } catch (error) {
-                console.error("Error saving product review:", error);
-                return false;
-            }
-        }
-
-        async function renderProductReviews(productId) {
-            const qvReviewsList = document.getElementById('qv-reviews-list');
-            const addReviewContainer = document.getElementById('add-review-container');
-            const reviews = await getProductReviews(productId);
-
-            qvReviewsList.innerHTML = '';
-            if (reviews.length === 0) {
-                qvReviewsList.innerHTML = '<p>No reviews yet. Be the first to review this product!</p>';
-            } else {
-                reviews.forEach(review => {
-                    const reviewItem = document.createElement('div');
-                    reviewItem.className = 'review-item';
-                    reviewItem.innerHTML = `
-                        <p><strong>${review.username}</strong> <span class="review-rating">${generateStarRating(review.rating)}</span></p>
-                        <p>${review.comment}</p>
-                        <small>${new Date(review.date).toLocaleString()}</small>
-                    `;
-                    qvReviewsList.appendChild(reviewItem);
-                });
-            }
-
-            // Show add review form if logged in
-            if (firebaseUser) {
-                addReviewContainer.innerHTML = `
-                    <h4>Add Your Review</h4>
-                    <form class="add-review-form" onsubmit="submitProductReview(event, '${productId}')">
-                        <input type="number" id="review-rating-input" placeholder="Rating (1-5)" min="1" max="5" step="0.5" required>
-                        <textarea id="review-comment-input" rows="3" placeholder="Your comment..." required></textarea>
-                        <button type="submit">Submit Review</button>
-                    </form>
-                `;
-            } else {
-                addReviewContainer.innerHTML = '<p>Please <a href="#" onclick="openLoginModal(); closeQuickViewModal(); return false;">log in</a> to add a review.</p>';
-            }
-        }
-
-        async function submitProductReview(event, productId) {
-            event.preventDefault();
-            const rating = parseFloat(document.getElementById('review-rating-input').value);
-            const comment = document.getElementById('review-comment-input').value;
-
-            if (rating < 1 || rating > 5 || !comment) {
-                showModal('Error', 'Please provide a rating between 1 and 5 and a comment.');
-                return;
-            }
-
-            const newReview = {
-                username: firebaseUser.displayName || firebaseUser.email, // Use Firebase user info
-                rating: rating,
-                comment: comment,
-                date: new Date().toISOString()
-            };
-            const success = await saveProductReview(productId, newReview);
-            if (success) {
-                showModal('Review Submitted', 'Thank you for your review!');
-                document.querySelector('.add-review-form').reset();
-                renderProductReviews(productId); // Re-render reviews
-            } else {
-                showModal('Error', 'Failed to submit review. Please try again.');
-            }
-        }
-
-        // --- Product Data Management (Firestore) ---
-        async function loadProductsFromFirestore() {
-            try {
-                const productsCol = collection(db, "products");
-                const q = query(productsCol, orderBy("createdAt", "desc"));
-                const querySnapshot = await getDocs(q);
-                allProducts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderProducts(); // Render products once loaded
-            } catch (error) {
-                console.error("Error loading products from Firestore:", error);
-                productListDiv.innerHTML = '<p style="text-align: center; width: 100%; color: red;">Failed to load products. Please check console for errors.</p>';
-            }
-        }
-
-        // --- Render Products on Shop Page ---
-        function renderProducts() {
-            productListDiv.innerHTML = '';
-            let productsToDisplay = [...allProducts]; // Create a mutable copy
-            const favorites = getFavorites(); // Still using localStorage for favorites for now
-
-            // Apply search filter
-            const query = document.getElementById('search-input').value.toLowerCase();
-            if (query) {
-                productsToDisplay = productsToDisplay.filter(p => 
-                    p.name.toLowerCase().includes(query) || 
-                    p.description.toLowerCase().includes(query) ||
-                    (p.tags && p.tags.some(tag => tag.toLowerCase().includes(query)))
-                );
-            }
-
-            // Apply category filter
-            const categoryFilter = document.getElementById('filter-category').value;
-            if (categoryFilter) {
-                productsToDisplay = productsToDisplay.filter(p => p.category && p.category.toLowerCase() === categoryFilter.toLowerCase());
-            }
-
-            // Apply sorting
-            const sortBy = document.getElementById('sort-by').value;
-            if (sortBy) {
-                productsToDisplay.sort((a, b) => {
-                    if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
-                    if (sortBy === 'name-desc') return b.name.localeCompare(a.name);
-                    if (sortBy === 'price-asc') return a.price - b.price;
-                    if (sortBy === 'price-desc') return b.price - a.price;
-                    return 0;
-                });
-            }
-            
-            if (productsToDisplay.length === 0) {
-                productListDiv.innerHTML = '<p style="text-align: center; width: 100%;">No products found matching your criteria.</p>';
-                return;
-            }
-
-            // Apply view mode
-            productListDiv.classList.remove('grid-view', 'list-view');
-            productListDiv.classList.add(`${currentView}-view`);
-
-            productsToDisplay.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
-
-                const isFavorite = favorites.includes(product.id);
-                const favoriteIconClass = isFavorite ? 'fas' : 'far';
-                const stockStatusClass = product.stock > 0 ? 'in-stock' : 'sold-out';
-                const stockText = product.stock > 0 ? `In Stock (${product.stock})` : 'Sold Out';
-                const addToCartDisabled = product.stock <= 0 ? 'disabled' : '';
-                const addToCartText = product.stock <= 0 ? 'Sold Out' : 'Add to Cart';
-
-                let badgeHtml = '';
-                if (product.badge) {
-                    const badgeClass = product.badge.toLowerCase().replace(/\s/g, '');
-                    badgeHtml = `<span class="product-badge ${badgeClass}">${product.badge}</span>`;
-                }
-
-                let tagsHtml = '';
-                if (product.tags && product.tags.length > 0) {
-                    tagsHtml = `<div class="product-tags">${product.tags.map(tag => `<span class="product-tag">${tag}</span>`).join('')}</div>`;
-                }
-
-                let priceHtml = `<p class="price">KES ${product.price.toFixed(2)} ${product.unit}</p>`;
-                if (product.originalPrice && product.originalPrice > product.price) {
-                    priceHtml = `<p class="price"><del>KES ${product.originalPrice.toFixed(2)}</del> KES ${product.price.toFixed(2)} ${product.unit}</p>`;
-                }
-
-
-                if (currentView === 'grid') {
-                    productCard.innerHTML = `
-                        ${badgeHtml}
-                        <i class="${favoriteIconClass} fa-heart favorite-icon" onclick="toggleFavorite('${product.id}', this)"></i>
-                        <img src="${product.image}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/150x150/cccccc/333333?text=No+Image';">
-                        <h3>${product.name}</h3>
-                        <div class="product-rating">${generateStarRating(product.rating)}</div>
-                        ${priceHtml}
-                        <p class="stock-indicator ${stockStatusClass}">${stockText}</p>
-                        ${tagsHtml}
-                        <button class="add-to-cart-btn" onclick="addToCart('${product.id}')" ${addToCartDisabled}>${addToCartText}</button>
-                        <button class="add-to-cart-btn" style="background-color: #03A9F4; margin-top: 10px;" onclick="openQuickViewModal('${product.id}')">Quick View</button>
-                    `;
-                } else { // List view
-                    productCard.innerHTML = `
-                        ${badgeHtml}
-                        <i class="${favoriteIconClass} fa-heart favorite-icon" onclick="toggleFavorite('${product.id}', this)"></i>
-                        <img src="${product.image}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/120x120/cccccc/333333?text=No+Image';">
-                        <div class="product-info">
-                            <h3>${product.name}</h3>
-                            <div class="product-rating">${generateStarRating(product.rating)}</div>
-                            ${priceHtml}
-                            <p class="stock-indicator ${stockStatusClass}">${stockText}</p>
-                            <p>${product.description}</p>
-                            ${tagsHtml}
-                        </div>
-                        <div class="product-actions">
-                            <button class="add-to-cart-btn" onclick="addToCart('${product.id}')" ${addToCartDisabled}>${addToCartText}</button>
-                            <button class="add-to-cart-btn" style="background-color: #03A9F4;" onclick="openQuickViewModal('${product.id}')">Quick View</button>
-                        </div>
-                    `;
-                }
-                
-                productListDiv.appendChild(productCard);
-            });
-        }
-        
-        function filterProducts() {
-            renderProducts(); // Re-render with current search input and category filter
-        }
-
-        function sortProducts() {
-            renderProducts(); // Re-render with current sort selection
-        }
-
-        function toggleView(view) {
-            currentView = view;
-            renderProducts();
-        }
-        
-        // --- Shopping Cart functionality (Firestore) ---
-        async function getCart() {
-            if (!firebaseUser) {
-                return getFromLocalStorage('guestCart', []); // Use local storage for guest cart
-            }
-            try {
-                const cartDocRef = doc(db, "carts", firebaseUser.uid);
-                const cartDocSnap = await getDoc(cartDocRef);
-                return cartDocSnap.exists() ? cartDocSnap.data().items : [];
-            } catch (error) {
-                console.error("Error getting cart from Firestore:", error);
-                return [];
-            }
-        }
-
-        async function saveCart(cart) {
-            if (!firebaseUser) {
-                saveToLocalStorage('guestCart', cart); // Save to local storage for guests
-            } else {
-                try {
-                    const cartDocRef = doc(db, "carts", firebaseUser.uid);
-                    await setDoc(cartDocRef, { items: cart });
-                } catch (error) {
-                    console.error("Error saving cart to Firestore:", error);
-                }
-            }
-            updateCartCount();
-        }
-
-        async function updateCartCount() {
-            const cart = await getCart();
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            cartCountSpan.textContent = totalItems;
-        }
-
-        async function addToCart(productId) {
-            const cart = await getCart();
-            const productToAdd = allProducts.find(p => p.id === productId);
-
-            if (!productToAdd) return;
-            if (productToAdd.stock <= 0) {
-                showModal('Out of Stock', `${productToAdd.name} is currently out of stock.`);
-                return;
-            }
-
-            const existingItem = cart.find(item => item.id === productId);
-            if (existingItem) {
-                if (existingItem.quantity >= productToAdd.stock) {
-                    showModal('Stock Limit Reached', `You cannot add more ${productToAdd.name}. Only ${productToAdd.stock} available.`);
-                    return;
-                }
-                existingItem.quantity += 1;
-            } else {
-                cart.push({ ...productToAdd, quantity: 1, price: productToAdd.price });
-            }
-            await saveCart(cart);
-            showModal('Success!', `${productToAdd.name} added to cart!`);
-        }
-
-        async function renderCart() {
-            const cart = await getCart();
-            cartItemsBody.innerHTML = '';
-            let subTotal = 0;
-
-            if (cart.length === 0) {
-                cartItemsBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Your cart is empty.</td></tr>';
-                cartSubtotalPriceSpan.textContent = '0.00';
-                cartTransportFeeSpan.textContent = '0.00';
-                cartGrandTotalPriceSpan.textContent = '0.00';
-                return;
-            }
-
-            cart.forEach(item => {
-                const row = document.createElement('tr');
-                const itemTotal = item.price * item.quantity;
-                subTotal += itemTotal;
-                row.innerHTML = `
-                    <td class="cart-item-image"><img src="${item.image}" alt="${item.name}" onerror="this.onerror=null;this.src='https://placehold.co/50x50/cccccc/333333?text=No+Image';"></td>
-                    <td>${item.name}</td>
-                    <td>KES ${item.price.toFixed(2)} ${item.unit}</td>
-                    <td>
-                        <div class="quantity-controls">
-                            <button onclick="updateQuantity('${item.id}', -1)"><i class="fas fa-minus"></i></button>
-                            <span>${item.quantity}</span>
-                            <button onclick="updateQuantity('${item.id}', 1)"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </td>
-                    <td>KES ${itemTotal.toFixed(2)}</td>
-                    <td><button onclick="removeFromCart('${item.id}')" style="color: red; border: none; background: transparent; cursor: pointer;"><i class="fas fa-trash-alt"></i></button></td>
-                `;
-                cartItemsBody.appendChild(row);
-            });
-            
-            const grandTotal = subTotal + TRANSPORT_FEE;
-            cartSubtotalPriceSpan.textContent = subTotal.toFixed(2);
-            cartTransportFeeSpan.textContent = TRANSPORT_FEE.toFixed(2);
-            cartGrandTotalPriceSpan.textContent = grandTotal.toFixed(2);
-        }
-
-        async function updateQuantity(productId, change) {
-            const cart = await getCart();
-            const productInStore = allProducts.find(p => p.id === productId);
-            const item = cart.find(i => i.id === productId);
-
-            if (item) {
-                if (change > 0 && item.quantity >= productInStore.stock) {
-                    showModal('Stock Limit Reached', `You cannot add more ${item.name}. Only ${productInStore.stock} available.`);
-                    return;
-                }
-                item.quantity += change;
-                if (item.quantity <= 0) {
-                    await removeFromCart(productId);
-                } else {
-                    await saveCart(cart);
-                    renderCart();
-                }
-            }
-        }
-
-        async function removeFromCart(productId) {
-            let cart = await getCart();
-            cart = cart.filter(item => item.id !== productId);
-            await saveCart(cart);
-            renderCart();
-            showModal('Removed!', 'Item removed from cart.');
-        }
-        
-        // --- Checkout Flow Functions ---
-        async function openCustomerDetailsModal() {
-            const cart = await getCart();
-            const cartSubtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
-            if (cart.length === 0) {
-                showModal('Cart Empty', 'Your cart is empty. Please add items before placing an order.');
-                return;
-            }
-            if (cartSubtotal < MIN_ORDER_VALUE) {
-                showModal('Minimum Order Required', `The minimum order value is KES ${MIN_ORDER_VALUE.toFixed(2)}. Your current subtotal is KES ${cartSubtotal.toFixed(2)}.`);
-                return;
-            }
-
-            if (!firebaseUser) {
-                showModal('Login Required', 'Please log in or sign up to continue with your order.');
-                openLoginModal();
-                saveToLocalStorage('pendingCheckout', true); // Set flag to resume checkout after login
-                return;
-            }
-
-            // Pre-fill customer details from user profile if available
-            const userProfile = await getUserProfile(firebaseUser.uid);
-            document.getElementById('customer-full-name').value = userProfile.fullname || firebaseUser.displayName || '';
-            document.getElementById('customer-phone').value = userProfile.phoneNumber || firebaseUser.phoneNumber || '';
-            // ID number and delivery location might not be stored in user profile by default,
-            // so they remain empty for user to fill.
-
-            customerDetailsModal.style.display = 'flex';
-        }
-
-        function closeCustomerDetailsModal() {
-            customerDetailsModal.style.display = 'none';
-            document.getElementById('checkout-form').reset(); // Clear form on close
-        }
-
-        async function collectCustomerDetails(event) {
-            event.preventDefault();
-            const fullName = document.getElementById('customer-full-name').value;
-            const idNumber = document.getElementById('customer-id').value;
-            const phoneNumber = document.getElementById('customer-phone').value;
-            const deliveryLocation = document.getElementById('customer-delivery-location').value;
-            const houseName = document.getElementById('customer-house-name').value;
-
-            if (!fullName || !idNumber || !phoneNumber || !deliveryLocation) {
-                showModal('Missing Information', 'Please fill in all required customer details.');
-                return;
-            }
-
-            // Basic phone number validation (Kenyan format 07XXXXXXXX)
-            const phoneRegex = /^07[0-9]{8}$/;
-            if (!phoneRegex.test(phoneNumber)) {
-                showModal('Invalid Phone Number', 'Please enter a valid Kenyan phone number starting with 07 (e.g., 0712345678).');
-                return;
-            }
-
-            const customerDetails = { fullName, idNumber, phoneNumber, deliveryLocation, houseName };
-            saveToLocalStorage('lastCustomerDetails', customerDetails); // Still using localStorage for this temporary detail
-            
-            closeCustomerDetailsModal();
-            openPaymentMethodModal(customerDetails); // Pass customerDetails to the next step
-        }
-
-        async function openPaymentMethodModal(customerDetails) {
-            const currentCartSubtotal = (await getCart()).reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const grandTotal = currentCartSubtotal + TRANSPORT_FEE;
-            mpesaAmountSpan.textContent = grandTotal.toFixed(2); // Auto-fill Mpesa amount
-            
-            // Reset payment method selection to Mpesa by default
-            document.querySelector('input[name="payment-method"][value="mpesa"]').checked = true;
-            mpesaDetailsDiv.style.display = 'block';
-            cardDetailsDiv.style.display = 'none';
-
-            // Add event listener for radio button changes
-            document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
-                radio.addEventListener('change', (event) => {
-                    if (event.target.value === 'mpesa') {
-                        mpesaDetailsDiv.style.display = 'block';
-                        cardDetailsDiv.style.display = 'none';
-                    } else if (event.target.value === 'card') {
-                        mpesaDetailsDiv.style.display = 'none';
-                        cardDetailsDiv.style.display = 'block';
-                    } else { // Cash on Delivery
-                        mpesaDetailsDiv.style.display = 'none';
-                        cardDetailsDiv.style.display = 'none';
-                    }
-                });
-            });
-
-            paymentMethodModal.style.display = 'flex';
-        }
-
-        function closePaymentMethodModal() {
-            paymentMethodModal.style.display = 'none';
-            document.getElementById('payment-form').reset(); // Clear form on close
-        }
-
-        async function processPayment(event) {
-            event.preventDefault();
-            const selectedMethod = document.querySelector('input[name="payment-method"]:checked').value;
-            const currentCartSubtotal = (await getCart()).reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const grandTotal = currentCartSubtotal + TRANSPORT_FEE;
-            const customerDetails = getFromLocalStorage('lastCustomerDetails', {});
-
-            if (selectedMethod === 'mpesa') {
-                const mpesaPhoneNumber = document.getElementById('mpesa-phone-number').value;
-                const phoneRegex = /^07[0-9]{8}$/;
-                if (!phoneRegex.test(mpesaPhoneNumber)) {
-                    showModal('Invalid M-Pesa Number', 'Please enter a valid M-Pesa phone number starting with 07.');
-                    return;
-                }
-                // Updated message for M-Pesa payment
-                showModal('M-Pesa Payment', `Prompt successful! Check your phone (${mpesaPhoneNumber}) and enter your M-Pesa PIN to complete the payment of KES ${grandTotal.toFixed(2)}.`);
-                // Simulate payment completion after a short delay
-                setTimeout(async () => {
-                    await placeOrderFinal(selectedMethod, customerDetails, TRANSPORT_FEE, grandTotal);
-                }, 3000); // Simulate network delay
-            } else if (selectedMethod === 'cash') {
-                showModal('Cash on Delivery', 'Your order will be processed, and payment will be collected upon delivery. Thank you!');
-                await placeOrderFinal(selectedMethod, customerDetails, TRANSPORT_FEE, grandTotal);
-            } else if (selectedMethod === 'card') {
-                const cardNumber = document.getElementById('card-number').value;
-                const cardExpiry = document.getElementById('card-expiry').value;
-                const cardCvv = document.getElementById('card-cvv').value;
-
-                if (!cardNumber || !cardExpiry || !cardCvv) {
-                    showModal('Missing Card Details', 'Please enter all card details.');
-                    return;
-                }
-                // Basic mock validation for card details
-                if (!/^[0-9]{16}$/.test(cardNumber) || !/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(cardExpiry) || !/^[0-9]{3,4}$/.test(cardCvv)) {
-                    showModal('Invalid Card Details', 'Please enter valid card number (16 digits), expiry (MM/YY), and CVV (3-4 digits).');
-                    return;
-                }
-
-                showModal('Card Payment', `Processing your card payment of KES ${grandTotal.toFixed(2)}. This is a simulated transaction.`);
-                // Simulate payment completion after a short delay
-                setTimeout(async () => {
-                    await placeOrderFinal(selectedMethod, customerDetails, TRANSPORT_FEE, grandTotal);
-                }, 3000); // Simulate network delay
-            }
-            closePaymentMethodModal();
-        }
-
-        async function placeOrderFinal(paymentMethod, customerDetails, transportationFee, grandTotal) {
-            const cart = await getCart();
-            if (cart.length === 0) {
-                showModal('Cart Empty', 'Your cart is empty. Please add items before placing an order.');
-                return;
-            }
-            
-            // Deduct stock
-            let stockProblem = false;
-            for (const cartItem of cart) {
-                const productRef = doc(db, "products", cartItem.id);
-                try {
-                    const productSnap = await getDoc(productRef);
-                    if (productSnap.exists()) {
-                        const currentStock = productSnap.data().stock;
-                        if (currentStock < cartItem.quantity) {
-                            stockProblem = true;
-                            showModal('Stock Error', `Not enough ${cartItem.name} in stock. Available: ${currentStock}`);
-                            break; // Exit loop if stock issue found
-                        }
-                        await updateDoc(productRef, { stock: currentStock - cartItem.quantity });
-                    } else {
-                        stockProblem = true;
-                        showModal('Product Not Found', `Product ${cartItem.name} not found in store.`);
-                        break;
-                    }
-                } catch (error) {
-                    console.error("Error updating stock:", error);
-                    stockProblem = true;
-                    showModal('Stock Update Error', `Failed to update stock for ${cartItem.name}.`);
-                    break;
-                }
-            }
-
-            if (stockProblem) {
-                return; // Stop order placement if stock is insufficient or error occurred
-            }
-            
-            // Save order to Firestore
-            try {
-                const ordersCol = collection(db, "orders");
-                const newOrderRef = await addDoc(ordersCol, { 
-                    items: cart, 
-                    status: 'Pending', 
-                    date: new Date().toISOString(),
-                    subtotal: grandTotal - transportationFee,
-                    transportationFee: transportationFee,
-                    total: grandTotal,
-                    customer: customerDetails,
-                    paymentMethod: paymentMethod,
-                    userEmail: firebaseUser ? firebaseUser.email : null,
-                    userId: firebaseUser ? firebaseUser.uid : null // Link to Firebase User ID
-                });
-                const orderId = newOrderRef.id;
-
-                // Clear cart after order
-                await saveCart([]); // Clear user's cart in Firestore
-                updateCartCount();
-
-                // Save last order for confirmation page
-                saveToLocalStorage('lastOrder', { ...newOrderRef.data(), id: orderId }); // Store in local storage for immediate display
-
-                showModal('Order Placed!', `Your order has been placed successfully! Your Order ID is: <strong>${orderId}</strong>.<br><br>Delivery will be done in the next 30 minutes to your pinned location!`);
-                showPage('order-confirmation-page');
-            } catch (error) {
-                console.error("Error placing order:", error);
-                showModal('Order Failed', 'There was an error placing your order. Please try again.');
-            }
-        }
-
-        // --- Order Confirmation Page ---
-        function displayLastOrderConfirmation() {
-            const lastOrder = getFromLocalStorage('lastOrder', null);
-            const lastOrderDetailsDiv = document.getElementById('last-order-details');
-            if (lastOrder) {
-                let itemsHtml = lastOrder.items.map(item => `<li>${item.name} (x${item.quantity}) - KES ${item.price.toFixed(2)} ${item.unit}</li>`).join('');
-                lastOrderDetailsDiv.innerHTML = `
-                    <h3>Thank You for Your Order!</h3>
-                    <p>Order ID: <strong>${lastOrder.id}</strong></p>
-                    <p>Status: <strong>${lastOrder.status}</strong></p>
-                    <p>Date Placed: ${new Date(lastOrder.date).toLocaleString()}</p>
-                    <p>Subtotal: <strong>KES ${lastOrder.subtotal.toFixed(2)}</strong></p>
-                    <p>Transportation Fee: <strong>KES ${lastOrder.transportationFee.toFixed(2)}</strong></p>
-                    <p>Grand Total: <strong>KES ${lastOrder.total.toFixed(2)}</strong></p>
-                    <p>Payment Method: <strong>${lastOrder.paymentMethod}</strong></p>
-                    <h4>Customer Details:</h4>
-                    <ul>
-                        <li>Name: ${lastOrder.customer.fullName}</li>
-                        <li>Phone: ${lastOrder.customer.phoneNumber}</li>
-                        <li>Delivery: ${lastOrder.customer.deliveryLocation}, ${lastOrder.customer.houseName || 'N/A'}</li>
-                    </ul>
-                    <h4>Items Ordered:</h4>
-                    <ul>${itemsHtml}</ul>
-                    <p>Delivery will be done in the next 30 minutes to your pinned location. Please be available to meet our rider!</p>
-                    <button class="cta-button" onclick="showPage('track-order-page')">Track My Order</button>
-                `;
-            } else {
-                lastOrderDetailsDiv.innerHTML = '<p>No recent order found. Please place an order first.</p>';
-            }
-        }
-
-        // --- Order Tracking Simulation (Firestore) ---
-        async function trackOrder(event) {
-            if (event) event.preventDefault();
-            const orderIdInput = document.getElementById('order-id-input').value.trim();
-            const statusDiv = document.getElementById('order-status');
-            const idToTrack = orderIdInput;
-
-            if (!idToTrack) {
-                statusDiv.innerHTML = '<p style="color: red;">Please enter a valid Order ID.</p>';
-                return;
-            }
-
-            try {
-                const orderDocRef = doc(db, "orders", idToTrack);
-                const orderDocSnap = await getDoc(orderDocRef);
-
-                if (orderDocSnap.exists()) {
-                    const order = orderDocSnap.data();
-                    let itemsHtml = order.items.map(item => `<li>${item.name} (x${item.quantity})</li>`).join('');
-                    statusDiv.innerHTML = `
-                        <p>Order ID: <strong>${orderDocSnap.id}</strong></p>
-                        <p>Status: <strong>${order.status}</strong></p>
-                        <p>Date Placed: ${new Date(order.date).toLocaleString()}</p>
-                        <p>Subtotal: KES ${order.subtotal.toFixed(2)}</p>
-                        <p>Transportation Fee: KES ${order.transportationFee.toFixed(2)}</p>
-                        <p>Grand Total: KES ${order.total.toFixed(2)}</p>
-                        <p>Payment Method: ${order.paymentMethod}</p>
-                        <p>Delivery to: ${order.customer.fullName}, ${order.customer.deliveryLocation}, ${order.customer.houseName || 'N/A'}</p>
-                        <h4>Items:</h4>
-                        <ul>${itemsHtml}</ul>
-                        <p>Your order is currently being processed and will be shipped soon. Thank you for your patience!</p>
-                    `;
-                } else {
-                    statusDiv.innerHTML = '<p style="color: red;">Order not found. Please check your Order ID.</p>';
-                }
-            } catch (error) {
-                console.error("Error tracking order:", error);
-                statusDiv.innerHTML = '<p style="color: red;">Error tracking order. Please try again.</p>';
-            }
-        }
-        
-        // --- Contact Form (Firestore) ---
-        async function submitContactForm(event) {
-            event.preventDefault();
-            const name = document.getElementById('contact-name').value;
-            const email = document.getElementById('contact-email').value;
-            const message = document.getElementById('contact-message').value;
-            
-            // Basic validation
-            if (name && email && message) {
-                try {
-                    await addDoc(collection(db, "contactSubmissions"), { 
-                        name, 
-                        email, 
-                        message, 
-                        date: new Date().toISOString() 
-                    });
-                    showModal('Message Sent!', `Thank you, ${name}! Your message has been sent. We will get back to you shortly.`);
-                    document.querySelector('.contact-form').reset();
-                } catch (error) {
-                    console.error("Error submitting contact form:", error);
-                    showModal('Error', 'Failed to send message. Please try again.');
-                }
-            } else {
-                showModal('Error', 'Please fill out all fields.');
-            }
-        }
-
-        // --- Newsletter Subscription (Firestore) ---
-        async function subscribeToNewsletter(event) {
-            event.preventDefault();
-            const email = document.getElementById('newsletter-email').value;
-            if (email) {
-                try {
-                    // Check if email already exists
-                    const q = query(collection(db, "newsletterSubscriptions"), where("email", "==", email));
-                    const querySnapshot = await getDocs(q);
-                    if (!querySnapshot.empty) {
-                        showModal('Already Subscribed', 'This email is already subscribed to our newsletter.');
-                        return;
-                    }
-
-                    await addDoc(collection(db, "newsletterSubscriptions"), { 
-                        email, 
-                        subscribedAt: new Date().toISOString() 
-                    });
-                    showModal('Subscribed!', `Thank you for subscribing, ${email}! You'll receive fresh updates.`);
-                    document.querySelector('.newsletter-form').reset();
-                } catch (error) {
-                    console.error("Error subscribing to newsletter:", error);
-                    showModal('Error', 'Failed to subscribe. Please try again.');
-                }
-            } else {
-                showModal('Error', 'Please enter a valid email address.');
-            }
-        }
-
-        // --- User Authentication UI Update & Profile Management (Firestore) ---
-        async function getUserProfile(uid) {
-            try {
-                const userDocRef = doc(db, "users", uid);
-                const userDocSnap = await getDoc(userDocRef);
-                return userDocSnap.exists() ? userDocSnap.data() : {};
-            } catch (error) {
-                console.error("Error fetching user profile:", error);
-                return {};
-            }
-        }
-
-        async function updateAuthUI() {
-            if (firebaseUser) {
-                const userProfile = await getUserProfile(firebaseUser.uid);
-                authLinkContainer.innerHTML = `<li><a href="#" class="page-link" data-page="my-account">My Account (${firebaseUser.email})</a></li>`;
-                accountUsernameSpan.textContent = userProfile.fullname || firebaseUser.displayName || firebaseUser.email;
-                profileEmailSpan.textContent = firebaseUser.email;
-                profilePhoneSpan.textContent = userProfile.phoneNumber || 'N/A';
-            } else {
-                authLinkContainer.innerHTML = `<li><a href="#" class="page-link" data-page="login">Login / Sign Up</a></li>`;
-                accountUsernameSpan.textContent = 'Guest';
-                profileEmailSpan.textContent = '';
-                profilePhoneSpan.textContent = '';
-            }
-            // Re-attach event listener for the new link
-            const newAuthLink = authLinkContainer.querySelector('.page-link');
-            if (newAuthLink) {
-                newAuthLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const pageData = newAuthLink.dataset.page;
-                    if (pageData === 'login') {
-                        openLoginModal();
-                    } else if (pageData === 'my-account') {
-                        showPage('my-account-page');
-                    }
-                });
-            }
-        }
-
-        function openLoginModal() {
-            closeSignupModal(); // Ensure signup modal is closed
-            closeForgotPasswordModal(); // Ensure forgot password modal is closed
-            loginModal.style.display = 'flex';
-            document.getElementById('login-form-modal').reset();
-        }
-
-        function closeLoginModal() {
-            loginModal.style.display = 'none';
-        }
-
-        function openSignupModal() {
-            closeLoginModal(); // Ensure login modal is closed
-            closeForgotPasswordModal(); // Ensure forgot password modal is closed
-            signupModal.style.display = 'flex';
-            document.getElementById('signup-form-modal').reset();
-        }
-
-        function closeSignupModal() {
-            signupModal.style.display = 'none';
-        }
-
-        function openForgotPasswordModal() {
-            closeLoginModal();
-            forgotPasswordModal.style.display = 'flex';
-            document.getElementById('forgot-password-form').reset();
-        }
-
-        function closeForgotPasswordModal() {
-            forgotPasswordModal.style.display = 'none';
-        }
-
-        async function openEditProfileModal() {
-            if (firebaseUser) {
-                const userProfile = await getUserProfile(firebaseUser.uid);
-                document.getElementById('edit-fullname').value = userProfile.fullname || firebaseUser.displayName || '';
-                document.getElementById('edit-email').value = firebaseUser.email || '';
-                document.getElementById('edit-phone').value = userProfile.phoneNumber || '';
-                document.getElementById('edit-password').value = ''; // Password changes are separate in Firebase
-                editProfileModal.style.display = 'flex';
-            } else {
-                showModal('Error', 'You must be logged in to edit your profile.');
-            }
-        }
-
-        function closeEditProfileModal() {
-            editProfileModal.style.display = 'none';
-        }
-
-        async function saveProfileDetails(event) {
-            event.preventDefault();
-            if (!firebaseUser) {
-                showModal('Error', 'No user logged in.');
-                return;
-            }
-
-            const newDisplayName = document.getElementById('edit-fullname').value;
-            const newPhoneNumber = document.getElementById('edit-phone').value;
-            const newPassword = document.getElementById('edit-password').value; // For password change
-
-            const phoneRegex = /^07[0-9]{8}$/;
-            if (newPhoneNumber && !phoneRegex.test(newPhoneNumber)) {
-                showModal('Invalid Phone Number', 'Please enter a valid Kenyan phone number starting with 07 (e.g., 0712345678).');
-                return;
-            }
-
-            try {
-                const updatePromises = [];
-                // Update Firebase Auth profile
-                if (newDisplayName !== (firebaseUser.displayName || '')) {
-                    updatePromises.push(updateProfile(firebaseUser, { displayName: newDisplayName }));
-                }
-                if (newPassword) {
-                    updatePromises.push(updatePassword(firebaseUser, newPassword));
-                }
-
-                // Update Firestore user profile document
-                const userDocRef = doc(db, "users", firebaseUser.uid);
-                await setDoc(userDocRef, {
-                    fullname: newDisplayName,
-                    phoneNumber: newPhoneNumber,
-                    email: firebaseUser.email // Keep email in Firestore for consistency
-                }, { merge: true }); // Use merge to only update specified fields
-
-                await Promise.all(updatePromises);
-                showModal('Profile Updated', 'Your profile details have been saved.');
-                closeEditProfileModal();
-                // onAuthStateChanged will re-trigger and update UI
-            } catch (error) {
-                showModal('Update Failed', 'Failed to update profile: ' + error.message);
-                console.error("Profile update error:", error);
-            }
-        }
-
-        async function updateAccountPage() {
-            if (firebaseUser) {
-                const userProfile = await getUserProfile(firebaseUser.uid);
-                accountUsernameSpan.textContent = userProfile.fullname || firebaseUser.displayName || firebaseUser.email;
-                profileEmailSpan.textContent = firebaseUser.email;
-                profilePhoneSpan.textContent = userProfile.phoneNumber || 'N/A';
-            } else {
-                showModal('Access Denied', 'Please log in to view your account details.');
-                showPage('home-page');
-            }
-        }
-
-        // Render user's past orders on My Account page (Firestore)
-        async function renderUserOrders() {
-            const userOrdersListDiv = document.getElementById('user-orders-list');
-            userOrdersListDiv.innerHTML = '<p style="text-align: center;">Loading your orders...</p>';
-            
-            if (!firebaseUser) {
-                userOrdersListDiv.innerHTML = '<p style="text-align: center;">Please log in to view your past orders.</p>';
-                return;
-            }
-
-            try {
-                const ordersCol = collection(db, "orders");
-                const q = query(ordersCol, where("userId", "==", firebaseUser.uid), orderBy("date", "desc"));
-                const querySnapshot = await getDocs(q);
-
-                if (querySnapshot.empty) {
-                    userOrdersListDiv.innerHTML = '<p style="text-align: center;">You have no past orders.</p>';
-                    return;
-                }
-
-                userOrdersListDiv.innerHTML = ''; // Clear loading message
-                querySnapshot.forEach(doc => {
-                    const order = doc.data();
-                    const listItem = document.createElement('div');
-                    listItem.className = 'admin-list-item'; // Reusing admin-list-item style
-                    const itemsSummary = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
-                    listItem.innerHTML = `
-                        <div>
-                            <strong>Order ID: ${doc.id}</strong><br>
-                            Status: <span class="${order.status === 'Delivered' ? 'status-delivered' : ''}">${order.status}</span><br>
-                            Date: ${new Date(order.date).toLocaleString()}<br>
-                            Subtotal: KES ${order.subtotal.toFixed(2)}<br>
-                            Transport Fee: KES ${order.transportationFee.toFixed(2)}<br>
-                            Grand Total: KES ${order.total.toFixed(2)}<br>
-                            Payment: ${order.paymentMethod}<br>
-                            <span class="order-items-list">Items: ${itemsSummary}</span>
-                        </div>
-                    `;
-                    userOrdersListDiv.appendChild(listItem);
-                });
-            } catch (error) {
-                console.error("Error fetching user orders:", error);
-                userOrdersListDiv.innerHTML = '<p style="text-align: center; color: red;">Error loading your orders.</p>';
-            }
-        }
-
-
-        // --- Admin Panel Functions (Firestore) ---
-        const ADMIN_PASSWORD = 'admin'; // Still a mock password for this example
-        async function loginAdmin() {
-            const email = document.getElementById('admin-email')?.value || 'admin@princealex.com';
-            const password = document.getElementById('admin-password').value;
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                // For a real app, you'd check user roles/claims here, e.g.:
-                // const idTokenResult = await auth.currentUser.getIdTokenResult();
-                // if (!!idTokenResult.claims.admin) { ... }
-                document.getElementById('admin-login').style.display = 'none';
-                document.getElementById('admin-content').style.display = 'block';
-                showModal('Admin Login', 'Welcome to the Admin Panel!');
-                renderAdminProducts();
-                renderAdminOrders();
-                renderAdminContactSubmissions();
-            } catch (error) {
-                showModal('Admin Login Failed', 'Login failed: ' + error.message);
-            }
-        }
-
-        // Admin: Add Product (Firestore)
-        async function addProduct(event) {
-            event.preventDefault();
-            const name = document.getElementById('product-name').value;
-            const image = document.getElementById('product-image').value;
-            const description = document.getElementById('product-description').value;
-            const price = parseFloat(document.getElementById('product-price').value);
-            const unit = document.getElementById('product-unit').value;
-            const rating = parseFloat(document.getElementById('product-rating').value);
-            const badge = document.getElementById('product-badge').value;
-            const stock = parseInt(document.getElementById('product-stock').value);
-            const tagsInput = document.getElementById('product-tags').value;
-            const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()) : [];
-            const category = document.getElementById('product-category').value;
-
-            if (name && image && description && price > 0 && unit && rating >= 1 && rating <= 5 && stock >= 0 && category) {
-                const originalPrice = prompt("Enter original price if this is an offer (leave blank otherwise):");
-                const newProduct = { 
-                    name, 
-                    image, 
-                    description, 
-                    price, 
-                    unit, 
-                    rating, 
-                    badge, 
-                    stock, 
-                    tags, 
-                    category,
-                    originalPrice: originalPrice ? parseFloat(originalPrice) : undefined,
-                    createdAt: new Date().toISOString() // Timestamp for ordering
-                };
-                try {
-                    await addDoc(collection(db, "products"), newProduct);
-                    showModal('Product Added', `Product "${name}" added successfully!`);
-                    document.querySelector('.admin-form').reset();
-                    loadProductsFromFirestore(); // Re-load and re-render all products
-                    renderAdminProducts(); // Refresh admin product list
-                } catch (error) {
-                    console.error("Error adding product:", error);
-                    showModal('Error', 'Failed to add product. Please try again.');
-                }
-            } else {
-                showModal('Error', 'Please fill out all fields correctly, including valid rating (1-5), stock (>=0), and category.');
-            }
-        }
-
-        // Admin: Render Products for Management (Firestore)
-        async function renderAdminProducts() {
-            const adminProductList = document.getElementById('admin-product-list');
-            adminProductList.innerHTML = '<p style="text-align: center;">Loading products for management...</p>';
-            try {
-                const productsCol = collection(db, "products");
-                const q = query(productsCol, orderBy("createdAt", "desc"));
-                const querySnapshot = await getDocs(q);
-
-                if (querySnapshot.empty) {
-                    adminProductList.innerHTML = '<p style="text-align: center;">No products to manage.</p>';
-                    return;
-                }
-
-                adminProductList.innerHTML = ''; // Clear loading message
-                querySnapshot.forEach(doc => {
-                    const product = doc.data();
-                    const listItem = document.createElement('div');
-                    listItem.className = 'admin-list-item';
-                    listItem.innerHTML = `
-                        <div>
-                            <strong>${product.name}</strong> (KES ${product.price.toFixed(2)} / ${product.unit})<br>
-                            Stock: ${product.stock}, Category: ${product.category}<br>
-                            <small>ID: ${doc.id}</small>
-                        </div>
-                        <div>
-                            <button class="delete-btn" onclick="deleteProduct('${doc.id}')">Delete</button>
-                        </div>
-                    `;
-                    adminProductList.appendChild(listItem);
-                });
-            } catch (error) {
-                console.error("Error rendering admin products:", error);
-                adminProductList.innerHTML = '<p style="text-align: center; color: red;">Error loading products for management.</p>';
-            }
-        }
-
-        // Admin: Delete Product (Firestore)
-        async function deleteProduct(productId) {
-            if (confirm('Are you sure you want to delete this product?')) {
-                try {
-                    await deleteDoc(doc(db, "products", productId));
-                    showModal('Product Deleted', 'Product removed successfully!');
-                    loadProductsFromFirestore(); // Re-load and re-render all products
-                    renderAdminProducts(); // Refresh admin product list
-                } catch (error) {
-                    console.error("Error deleting product:", error);
-                    showModal('Error', 'Failed to delete product. Please try again.');
-                }
-            }
-        }
-
-        // Admin: Render Orders for Management (Firestore)
-        async function renderAdminOrders() {
-            const adminOrderList = document.getElementById('admin-order-list');
-            adminOrderList.innerHTML = '<p style="text-align: center;">Loading orders for management...</p>';
-            try {
-                const ordersCol = collection(db, "orders");
-                const q = query(ordersCol, orderBy("date", "desc"));
-                const querySnapshot = await getDocs(q);
-
-                if (querySnapshot.empty) {
-                    adminOrderList.innerHTML = '<p style="text-align: center;">No orders to manage.</p>';
-                    return;
-                }
-
-                adminOrderList.innerHTML = ''; // Clear loading message
-                querySnapshot.forEach(doc => {
-                    const order = doc.data();
-                    const listItem = document.createElement('div');
-                    listItem.className = 'admin-list-item';
-                    const itemsSummary = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
-                    const statusClass = order.status === 'Delivered' ? 'status-delivered' : '';
-                    listItem.innerHTML = `
-                        <div>
-                            <strong>Order ID: ${doc.id}</strong><br>
-                            Customer: ${order.customer.fullName} (${order.customer.phoneNumber})<br>
-                            Delivery: ${order.customer.deliveryLocation}, ${order.customer.houseName || 'N/A'}<br>
-                            Total: KES ${order.total.toFixed(2)} (${order.paymentMethod})<br>
-                            Status: <span class="${statusClass}">${order.status}</span><br>
-                            Date: ${new Date(order.date).toLocaleString()}<br>
-                            <span class="order-items-list">Items: ${itemsSummary}</span>
-                        </div>
-                        <div>
-                            ${order.status !== 'Delivered' ? `<button class="mark-delivered-btn" onclick="markOrderDelivered('${doc.id}')">Mark Delivered</button>` : ''}
-                        </div>
-                    `;
-                    adminOrderList.appendChild(listItem);
-                });
-            } catch (error) {
-                console.error("Error rendering admin orders:", error);
-                adminOrderList.innerHTML = '<p style="text-align: center; color: red;">Error loading orders for management.</p>';
-            }
-        }
-
-        // Admin: Mark Order as Delivered (Firestore)
-        async function markOrderDelivered(orderId) {
-            if (confirm('Are you sure you want to mark this order as Delivered?')) {
-                try {
-                    await updateDoc(doc(db, "orders", orderId), { status: 'Delivered' });
-                    showModal('Order Status Updated', 'Order marked as delivered!');
-                    renderAdminOrders(); // Refresh admin order list
-                } catch (error) {
-                    console.error("Error updating order status:", error);
-                    showModal('Error', 'Failed to update order status. Please try again.');
-                }
-            }
-        }
-
-        // Admin: Render Contact Form Submissions (Firestore)
-        async function renderAdminContactSubmissions() {
-            const adminContactSubmissions = document.getElementById('admin-contact-submissions');
-            adminContactSubmissions.innerHTML = '<p style="text-align: center;">Loading contact submissions...</p>';
-            try {
-                const submissionsCol = collection(db, "contactSubmissions");
-                const q = query(submissionsCol, orderBy("date", "desc"));
-                const querySnapshot = await getDocs(q);
-
-                if (querySnapshot.empty) {
-                    adminContactSubmissions.innerHTML = '<p style="text-align: center;">No contact submissions.</p>';
-                    return;
-                }
-
-                adminContactSubmissions.innerHTML = ''; // Clear loading message
-                querySnapshot.forEach(doc => {
-                    const submission = doc.data();
-                    const listItem = document.createElement('div');
-                    listItem.className = 'admin-list-item'; // Reusing style
-                    listItem.innerHTML = `
-                        <div>
-                            <strong>From: ${submission.name} (${submission.email})</strong><br>
-                            Message: ${submission.message}<br>
-                            Date: ${new Date(submission.date).toLocaleString()}
-                        </div>
-                        <div>
-                            <button class="delete-btn" onclick="deleteContactSubmission('${doc.id}')">Delete</button>
-                        </div>
-                    `;
-                    adminContactSubmissions.appendChild(listItem);
-                });
-            } catch (error) {
-                console.error("Error rendering contact submissions:", error);
-                adminContactSubmissions.innerHTML = '<p style="text-align: center; color: red;">Error loading contact submissions.</p>';
-            }
-        }
-
-        // Admin: Delete Contact Submission (Firestore)
-        async function deleteContactSubmission(submissionId) {
-            if (confirm('Are you sure you want to delete this contact submission?')) {
-                try {
-                    await deleteDoc(doc(db, "contactSubmissions", submissionId));
-                    showModal('Deleted', 'Contact submission deleted!');
-                    renderAdminContactSubmissions(); // Refresh list
-                } catch (error) {
-                    console.error("Error deleting contact submission:", error);
-                    showModal('Error', 'Failed to delete submission. Please try again.');
-                }
-            }
-        }
-
-        // --- Favorite Products (Firestore) ---
-        async function getFavorites() {
-            if (!firebaseUser) return []; // No favorites for guests
-            try {
-                const favDocRef = doc(db, "users", firebaseUser.uid);
-                const favDocSnap = await getDoc(favDocRef);
-                return favDocSnap.exists() && favDocSnap.data().favorites ? favDocSnap.data().favorites : [];
-            } catch (error) {
-                console.error("Error getting favorites:", error);
-                return [];
-            }
-        }
-
-        async function saveFavorites(favorites) {
-            if (!firebaseUser) return; // Cannot save favorites for guests to Firestore
-            try {
-                const userDocRef = doc(db, "users", firebaseUser.uid);
-                await setDoc(userDocRef, { favorites: favorites }, { merge: true });
-            } catch (error) {
-                console.error("Error saving favorites:", error);
-            }
-        }
-
-        async function toggleFavorite(productId, iconElement) {
-            if (!firebaseUser) {
-                showModal('Login Required', 'Please log in to manage your favorite products.');
-                openLoginModal();
-                return;
-            }
-            let favorites = await getFavorites();
-            if (favorites.includes(productId)) {
-                favorites = favorites.filter(id => id !== productId);
-                iconElement.classList.remove('fas');
-                iconElement.classList.add('far');
-            } else {
-                favorites.push(productId);
-                iconElement.classList.remove('far');
-                iconElement.classList.add('fas');
-            }
-            await saveFavorites(favorites);
-        }
-
-        // --- Image Carousel Logic ---
-        const heroImages = ['vegetable1.jpg', 'vegetable2.jpg', 'vegetable3.jpg'];
-        let currentImageIndex = 0;
-
-        function changeHeroImage() {
-            const images = document.querySelectorAll('.hero-background-image');
-            images.forEach((img, index) => {
-                if (index === currentImageIndex) {
-                    img.classList.add('active');
-                } else {
-                    img.classList.remove('active');
-                }
-            });
-            currentImageIndex = (currentImageIndex + 1) % heroImages.length;
-        }
-
-        // --- Google Maps Autocomplete Initialization ---
-        // This function will be called by the Google Maps API script once it's loaded
-        function initAutocomplete() {
-            const deliveryLocationInput = document.getElementById('customer-delivery-location');
-            if (deliveryLocationInput) {
-                // Bias the search results towards Kenya (Nairobi coordinates for a general Kenya bias)
-                const defaultBounds = new google.maps.LatLngBounds(
-                    new google.maps.LatLng(-4.8, 33.9), // Southwest corner of Kenya
-                    new google.maps.LatLng(4.6, 41.9)  // Northeast corner of Kenya
-                );
-
-                const autocomplete = new google.maps.places.Autocomplete(deliveryLocationInput, {
-                    bounds: defaultBounds,
-                    componentRestrictions: { country: 'ke' }, // Restrict to Kenya
-                    types: ['geocode', 'establishment'] // Suggest addresses and businesses
-                });
-
-                autocomplete.addListener('place_changed', () => {
-                    const place = autocomplete.getPlace();
-                    if (!place.geometry) {
-                        // User entered the name of a Place that was not suggested and pressed the Enter key.
-                        console.log("No details available for input: '" + place.name + "'");
-                        return;
-                    }
-                    // Set the input field's value to the selected place's formatted address
-                    deliveryLocationInput.value = place.formatted_address;
-                });
-            }
-        }
-
-        // --- Initialization ---
-        document.addEventListener('DOMContentLoaded', async () => {
-            applyDarkModePreference();
-            // Removed loadProductsFromFirestore() and updateCartCount() from here
-            // They will be called in onAuthStateChanged to ensure Firebase is ready.
-            
-            // Check if there's a last order to display on confirmation page on load
-            if (getFromLocalStorage('lastOrder', null)) {
-                displayLastOrderConfirmation();
-            }
-
-            // Start image carousel
-            changeHeroImage(); // Show first image immediately
-            setInterval(changeHeroImage, 5000); // Change image every 5 seconds
-
-            // Attach form submission listeners for modals
-            document.getElementById('login-form-modal').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = document.getElementById('login-email-modal').value;
-                const password = document.getElementById('login-password-modal').value;
-                await window.loginUser(email, password); // Call global Firebase login
-            });
-
-            document.getElementById('signup-form-modal').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const fullname = document.getElementById('signup-fullname-modal').value;
-                const email = document.getElementById('signup-email-modal').value;
-                const phoneNumber = document.getElementById('signup-phone-modal').value;
-                const password = document.getElementById('signup-password-modal').value;
-                await window.registerUser(email, password, fullname, phoneNumber); // Call global Firebase register
-            });
-            
-            document.getElementById('forgot-password-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const email = document.getElementById('reset-email').value;
-                await window.resetPassword(email);
-            });
-
-            document.getElementById('edit-profile-form').addEventListener('submit', saveProfileDetails);
-            document.getElementById('checkout-form').addEventListener('submit', collectCustomerDetails);
-
-        });
-    </script>
-    <!-- Google Maps API Script -->
-    <!-- IMPORTANT: Replace 'YOUR_GOOGLE_MAPS_API_KEY' with your actual Google Maps API Key -->
-    <!-- You can get one from the Google Cloud Console: https://console.cloud.google.com/apis/credentials -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&callback=initAutocomplete"></script>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, query, orderBy, doc, setDoc, addDoc, updateDoc, deleteDoc, where, getDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, updateProfile, updatePassword } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, doc, getDoc, updateDoc, where, setDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyAlS1nqRKolwc-7mySezN6XBcwk5p2Al4U",
     authDomain: "prince-alex-store.firebaseapp.com",
@@ -2955,153 +1296,682 @@
     appId: "1:266163776280:web:fdd89c30f84ed03540cc6d"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth(app);
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-  // Expose Firebase functions globally for use in inline scripts and event listeners
-  window.auth = auth; // Make auth object accessible
-  window.db = db;     // Make db object accessible
-  window.doc = doc;
-  window.setDoc = setDoc;
-  window.addDoc = addDoc;
-  window.updateDoc = updateDoc;
-  window.deleteDoc = deleteDoc;
-  window.collection = collection;
-  window.getDocs = getDocs;
-  window.query = query;
-  window.orderBy = orderBy;
-  window.where = where;
-  window.getDoc = getDoc;
+        // --- Global Variables ---
+        let firebaseUser = null;
+        let products = [];
+        let cart = [];
+        const deliveryFee = 250;
 
+        // --- DOM Elements ---
+        const navLinks = document.getElementById('nav-links');
+        const hamburgerMenu = document.getElementById('hamburger-menu');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const cartCountSpan = document.getElementById('cart-count');
+        const authButton = document.getElementById('auth-button');
+        const authModal = document.getElementById('auth-modal');
+        const authSwitch = document.getElementById('auth-switch');
+        const authForm = document.getElementById('auth-form');
+        const authTitle = document.getElementById('auth-modal-title');
+        const authEmail = document.getElementById('auth-email');
+        const authPassword = document.getElementById('auth-password');
+        const authSubmitBtn = document.getElementById('auth-submit-btn');
+        const authError = document.getElementById('auth-error-message');
+        const customerDetailsModal = document.getElementById('customer-details-modal');
+        const customerDetailsForm = document.getElementById('customer-details-form');
+        const paymentModal = document.getElementById('payment-modal');
+        const payNowBtn = document.getElementById('pay-now-btn');
+        const cartContentDiv = document.getElementById('cart-content');
+        const cartEmptyMessage = document.getElementById('cart-empty-message');
+        const cartItemsBody = document.getElementById('cart-items-body');
+        const cartSubtotalSpan = document.getElementById('cart-subtotal');
+        const cartDeliveryFeeSpan = document.getElementById('cart-delivery-fee');
+        const cartTotalSpan = document.getElementById('cart-total');
+        const checkoutButton = document.getElementById('checkout-button');
+        const quickViewModal = document.getElementById('quick-view-modal');
+        const quickViewContent = document.getElementById('quick-view-content');
+        const orderConfirmationModal = document.getElementById('order-confirmation-modal');
+        const orderIdDisplay = document.getElementById('order-id-display');
+        const trackOrderForm = document.getElementById('track-order-form');
+        const orderStatusDiv = document.getElementById('order-status');
+        const contactForm = document.getElementById('contact-form');
+        const contactStatus = document.getElementById('contact-message-status');
+        const searchBar = document.getElementById('search-bar');
+        const categoryFilter = document.getElementById('category-filter');
+        const sortBy = document.getElementById('sort-by');
+        const allProductsGrid = document.getElementById('all-products');
+        const featuredProductsGrid = document.getElementById('featured-products');
+        const gridViewBtn = document.getElementById('grid-view-btn');
+        const listViewBtn = document.getElementById('list-view-btn');
 
-  // Firebase Authentication Functions exposed globally
-  window.registerUser = async function (email, password, fullname, phoneNumber) {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      // Update Firebase Auth profile
-      await updateProfile(userCredential.user, {
-        displayName: fullname
-      });
+        // --- Dark Mode ---
+        function applyDarkModePreference() {
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const savedMode = localStorage.getItem('theme');
+            if (savedMode === 'dark' || (!savedMode && prefersDark)) {
+                document.body.classList.add('dark-mode');
+                darkModeToggle.classList.remove('fa-moon');
+                darkModeToggle.classList.add('fa-sun');
+            } else {
+                document.body.classList.remove('dark-mode');
+                darkModeToggle.classList.remove('fa-sun');
+                darkModeToggle.classList.add('fa-moon');
+            }
+        }
+        
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                darkModeToggle.classList.remove('fa-moon');
+                darkModeToggle.classList.add('fa-sun');
+            } else {
+                localStorage.setItem('theme', 'light');
+                darkModeToggle.classList.remove('fa-sun');
+                darkModeToggle.classList.add('fa-moon');
+            }
+        });
 
-      // Save additional user details to Firestore 'users' collection
-      await setDoc(doc(db, "users", userCredential.user.uid), {
-        email: email,
-        fullname: fullname,
-        phoneNumber: phoneNumber,
-        createdAt: new Date().toISOString()
-      });
+        // --- Page Navigation ---
+        document.querySelectorAll('.page-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = e.target.dataset.page;
+                document.querySelectorAll('section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                document.getElementById(`${pageId}-page`).style.display = 'block';
+                document.querySelectorAll('.page-link').forEach(l => l.classList.remove('active'));
+                e.target.classList.add('active');
 
-      showModal('Registration Successful!', `Welcome, ${fullname || email}! You are now logged in.`);
-      closeSignupModal();
-      // Check if there's a pending checkout
-      if (getFromLocalStorage('pendingCheckout', false)) {
-          localStorage.removeItem('pendingCheckout');
-          openCustomerDetailsModal(); // Resume checkout
-      } else {
-          showPage('home-page'); // Or redirect to a dashboard
-      }
-    } catch (error) {
-      showModal('Registration Failed', 'Error: ' + error.message);
-      console.error("Registration error:", error);
-    }
-  };
-
-  window.loginUser = async function (email, password) {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      showModal('Login Successful!', `Welcome back, ${auth.currentUser.displayName || auth.currentUser.email}!`);
-      closeLoginModal();
-      // Check if there's a pending checkout
-      if (getFromLocalStorage('pendingCheckout', false)) {
-          localStorage.removeItem('pendingCheckout');
-          openCustomerDetailsModal(); // Resume checkout
-      } else {
-          showPage('home-page'); // Or redirect to a dashboard
-      }
-    } catch (error) {
-      showModal('Login Failed', 'Login failed: ' + error.message);
-      console.error("Login error:", error);
-    }
-  };
-
-  window.logoutUser = async function () {
-    try {
-      await signOut(auth);
-      showModal('Logged Out', 'You have been successfully logged out.');
-      showPage('home-page'); // Redirect to home after logout
-    } catch (error) {
-      showModal('Logout Failed', 'Error logging out: ' + error.message);
-      console.error("Logout error:", error);
-    }
-  };
-
-  window.resetPassword = async function(email) {
-    try {
-        await sendPasswordResetEmail(auth, email);
-        showModal('Password Reset', `A password reset link has been sent to ${email}. Please check your inbox.`);
-        closeForgotPasswordModal();
-        openLoginModal();
-    } catch (error) {
-        showModal('Password Reset Failed', 'Error sending reset email: ' + error.message);
-        console.error("Password reset error:", error);
-    }
-  };
-
-  // Admin login is a separate function, still using the hardcoded email for now.
-  // For a production app, you'd manage admin roles within Firebase/Firestore.
-  window.loginAdmin = async function () {
-    const email = document.getElementById('admin-email')?.value || 'admin@princealex.com';
-    const password = document.getElementById('admin-password').value;
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      // You would add logic here to check if the logged-in user has admin privileges
-      // For now, it simply hides the login and shows content
-      document.getElementById('admin-login').style.display = 'none';
-      document.getElementById('admin-content').style.display = 'block';
-      showModal('Admin Login', 'Welcome to the Admin Panel!');
-    } catch (error) {
-      showModal('Admin Login Failed', 'Login failed: ' + error.message);
-    }
-  };
-
-
-  // Firebase Auth State Listener
-  onAuthStateChanged(auth, async (user) => {
-    firebaseUser = user; // Update the global firebaseUser variable
-    await updateAuthUI(); // Update UI based on auth state
-
-    // Load products and update cart count after Firebase is ready
-    await loadProductsFromFirestore();
-    await updateCartCount();
-
-    // Handle pending checkout after Firebase login
-    if (user && getFromLocalStorage('pendingCheckout', false)) {
-        localStorage.removeItem('pendingCheckout');
-        openCustomerDetailsModal(); // Resume checkout
-    }
-    // If a guest logs in, merge their local cart with their Firestore cart
-    if (user) {
-        const guestCart = getFromLocalStorage('guestCart', []);
-        if (guestCart.length > 0) {
-            let userCart = await getCart();
-            // Merge logic: add guest items to user cart, handling duplicates
-            guestCart.forEach(guestItem => {
-                const existingUserItem = userCart.find(item => item.id === guestItem.id);
-                if (existingUserItem) {
-                    existingUserItem.quantity += guestItem.quantity;
-                } else {
-                    userCart.push(guestItem);
+                // Re-render components for specific pages
+                if (pageId === 'cart') {
+                    renderCart();
+                } else if (pageId === 'shop') {
+                    renderProducts(products);
+                } else if (pageId === 'auth' && firebaseUser) {
+                    // If user is logged in, show account page
+                    document.getElementById('auth-page').style.display = 'none';
+                    document.getElementById('my-account-page').style.display = 'block';
+                    renderAccountDetails();
                 }
             });
-            await saveCart(userCart);
-            localStorage.removeItem('guestCart'); // Clear guest cart after merge
-            await updateCartCount();
-        }
-    }
-  });
+        });
 
-</script>
+        // --- Modal Control ---
+        document.querySelectorAll('.modal .close-button, .modal .close-modal').forEach(button => {
+            button.addEventListener('click', () => {
+                button.closest('.modal').style.display = 'none';
+            });
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        });
+        
+        // --- Utility Functions ---
+        function getFromLocalStorage(key, defaultValue) {
+            const value = localStorage.getItem(key);
+            try {
+                return value ? JSON.parse(value) : defaultValue;
+            } catch (e) {
+                console.error("Error parsing localStorage item", key, e);
+                return defaultValue;
+            }
+        }
+        function saveToLocalStorage(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+
+        // --- Authentication ---
+        async function updateAuthUI() {
+            if (firebaseUser) {
+                authButton.textContent = 'Log Out';
+                authButton.removeEventListener('click', openAuthModal);
+                authButton.addEventListener('click', handleLogout);
+                document.querySelector('[data-page="auth"]').dataset.page = 'my-account';
+                document.querySelector('[data-page="my-account"]').style.display = 'block';
+            } else {
+                authButton.textContent = 'Log In';
+                authButton.removeEventListener('click', handleLogout);
+                authButton.addEventListener('click', openAuthModal);
+                document.querySelector('[data-page="auth"]').dataset.page = 'auth';
+                document.querySelector('[data-page="my-account"]').style.display = 'none';
+            }
+        }
+        function openAuthModal() {
+            authModal.style.display = 'flex';
+        }
+        async function handleLogout() {
+            try {
+                await signOut(auth);
+                showModal('logout-success-modal');
+            } catch (error) {
+                console.error("Logout Error:", error);
+            }
+        }
+
+        authSwitch.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isLogin = authTitle.textContent === 'Log In';
+            authTitle.textContent = isLogin ? 'Sign Up' : 'Log In';
+            authSubmitBtn.textContent = isLogin ? 'Sign Up' : 'Log In';
+            authSwitch.innerHTML = isLogin ? 'Already have an account? Log In' : 'Don\'t have an account? Sign Up';
+            authForm.dataset.mode = isLogin ? 'signup' : 'login';
+            authError.textContent = '';
+        });
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = authEmail.value;
+            const password = authPassword.value;
+            const mode = authForm.dataset.mode || 'login';
+
+            try {
+                if (mode === 'signup') {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    await setDoc(doc(db, "users", auth.currentUser.uid), {
+                        email: email,
+                        cart: [],
+                        wishlist: [],
+                        createdAt: new Date().toISOString()
+                    });
+                    showModal('signup-success-modal');
+                } else {
+                    await signInWithEmailAndPassword(auth, email, password);
+                }
+                authModal.style.display = 'none';
+            } catch (error) {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.error("Auth Error:", errorCode, errorMessage);
+                authError.textContent = 'Error: ' + errorMessage;
+            }
+        });
+
+        // --- Cart Functions ---
+        async function getCart() {
+            if (firebaseUser) {
+                try {
+                    const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+                    return userDoc.exists() ? userDoc.data().cart || [] : [];
+                } catch (e) {
+                    console.error("Error fetching cart from Firestore:", e);
+                    return [];
+                }
+            } else {
+                return getFromLocalStorage('guestCart', []);
+            }
+        }
+
+        async function saveCart(newCart) {
+            if (firebaseUser) {
+                try {
+                    await updateDoc(doc(db, "users", firebaseUser.uid), {
+                        cart: newCart
+                    });
+                } catch (e) {
+                    console.error("Error saving cart to Firestore:", e);
+                }
+            } else {
+                saveToLocalStorage('guestCart', newCart);
+            }
+            cart = newCart; // Update global cart
+            updateCartCount();
+        }
+
+        async function addToCart(productId) {
+            const productToAdd = products.find(p => p.id === productId);
+            if (!productToAdd) return;
+            let currentCart = await getCart();
+            const existingItem = currentCart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                currentCart.push({ id: productId, quantity: 1 });
+            }
+
+            await saveCart(currentCart);
+            renderCart();
+            showModal('add-to-cart-success-modal');
+        }
+
+        async function updateCartQuantity(productId, newQuantity) {
+            let currentCart = await getCart();
+            const item = currentCart.find(item => item.id === productId);
+            if (item) {
+                item.quantity = newQuantity;
+                if (item.quantity <= 0) {
+                    currentCart = currentCart.filter(item => item.id !== productId);
+                }
+            }
+            await saveCart(currentCart);
+            renderCart();
+        }
+
+        function updateCartCount() {
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCountSpan.textContent = totalCount;
+        }
+
+        function renderCart() {
+            cartItemsBody.innerHTML = '';
+            let subtotal = 0;
+            if (cart.length === 0) {
+                cartEmptyMessage.style.display = 'block';
+                cartContentDiv.style.display = 'none';
+            } else {
+                cartEmptyMessage.style.display = 'none';
+                cartContentDiv.style.display = 'block';
+
+                cart.forEach(item => {
+                    const product = products.find(p => p.id === item.id);
+                    if (!product) return;
+                    const itemTotal = product.price * item.quantity;
+                    subtotal += itemTotal;
+                    const row = document.createElement('tr');
+                    row.className = 'cart-item';
+                    row.innerHTML = `
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <img src="${product.image}" alt="${product.name}">
+                                <span>${product.name}</span>
+                            </div>
+                        </td>
+                        <td>KES ${product.price}</td>
+                        <td>
+                            <div class="quantity-controls">
+                                <button class="decrease-quantity" data-id="${item.id}">-</button>
+                                <span>${item.quantity}</span>
+                                <button class="increase-quantity" data-id="${item.id}">+</button>
+                            </div>
+                        </td>
+                        <td>KES ${itemTotal.toFixed(2)}</td>
+                        <td><button class="remove-from-cart" data-id="${item.id}"><i class="fas fa-trash-alt"></i></button></td>
+                    `;
+                    cartItemsBody.appendChild(row);
+                });
+            }
+
+            const total = subtotal + deliveryFee;
+            cartSubtotalSpan.textContent = `KES ${subtotal.toFixed(2)}`;
+            cartDeliveryFeeSpan.textContent = `KES ${deliveryFee.toFixed(2)}`;
+            cartTotalSpan.textContent = `KES ${total.toFixed(2)}`;
+
+            document.querySelectorAll('.increase-quantity').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const id = e.target.dataset.id;
+                    const item = cart.find(i => i.id === id);
+                    if (item) {
+                        await updateCartQuantity(id, item.quantity + 1);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.decrease-quantity').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const id = e.target.dataset.id;
+                    const item = cart.find(i => i.id === id);
+                    if (item && item.quantity > 1) {
+                        await updateCartQuantity(id, item.quantity - 1);
+                    } else {
+                        await updateCartQuantity(id, 0); // Remove if quantity becomes 0
+                    }
+                });
+            });
+
+            document.querySelectorAll('.remove-from-cart').forEach(button => {
+                button.addEventListener('click', async (e) => {
+                    const id = e.target.closest('button').dataset.id;
+                    let currentCart = await getCart();
+                    currentCart = currentCart.filter(item => item.id !== id);
+                    await saveCart(currentCart);
+                    renderCart();
+                });
+            });
+        }
+
+        // --- Product Display ---
+        function renderProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            if (product.badge) {
+                card.innerHTML += `<span class="product-badge">${product.badge}</span>`;
+            }
+            card.innerHTML += `
+                <span class="favorite-icon far fa-heart" data-id="${product.id}"></span>
+                <img src="${product.image}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p class="product-rating">${renderStars(product.rating)}</p>
+                <div class="price">KES ${product.price}</div>
+                <div class="stock-indicator ${product.stock > 0 ? 'in-stock' : 'sold-out'}">
+                    ${product.stock > 0 ? `${product.stock} in stock` : 'Sold Out'}
+                </div>
+                <button class="add-to-cart-btn" data-id="${product.id}" ${product.stock === 0 ? 'disabled' : ''}>Add to Cart</button>
+                <button class="quick-view-btn" data-id="${product.id}">Quick View</button>
+            `;
+            return card;
+        }
+
+        function renderProducts(productList, targetElement) {
+            targetElement.innerHTML = '';
+            if (productList.length === 0) {
+                targetElement.innerHTML = '<p style="text-align: center;">No products found.</p>';
+                return;
+            }
+            productList.forEach(product => {
+                targetElement.appendChild(renderProductCard(product));
+            });
+            // Add event listeners for new buttons
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    addToCart(e.target.dataset.id);
+                });
+            });
+            document.querySelectorAll('.quick-view-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    openQuickViewModal(e.target.dataset.id);
+                });
+            });
+        }
+
+        function renderStars(rating) {
+            let starsHtml = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    starsHtml += `<span class="fas fa-star"></span>`;
+                } else {
+                    starsHtml += `<span class="far fa-star"></span>`;
+                }
+            }
+            return starsHtml;
+        }
+        
+        async function loadProductsFromFirestore() {
+            const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+            
+            console.log("Loading products...");
+            const querySnapshot = await getDocs(q);
+            console.log("Products fetched:", querySnapshot.docs.length);
+
+            products = [];
+            querySnapshot.forEach((doc) => {
+                products.push({ id: doc.id, ...doc.data() });
+            });
+            
+            // Render all products
+            renderProducts(products, allProductsGrid);
+            
+            // Render featured products (e.g., first 4)
+            const featuredProducts = products.slice(0, 4);
+            renderProducts(featuredProducts, featuredProductsGrid);
+        }
+
+        // Search, Filter, Sort
+        function filterAndSortProducts() {
+            const searchTerm = searchBar.value.toLowerCase();
+            const category = categoryFilter.value;
+            const sortOption = sortBy.value;
+
+            let filteredProducts = products.filter(product => {
+                const nameMatch = product.name.toLowerCase().includes(searchTerm);
+                const categoryMatch = category === 'all' || product.category === category;
+                return nameMatch && categoryMatch;
+            });
+
+            if (sortOption === 'price-asc') {
+                filteredProducts.sort((a, b) => a.price - b.price);
+            } else if (sortOption === 'price-desc') {
+                filteredProducts.sort((a, b) => b.price - a.price);
+            } else if (sortOption === 'rating-desc') {
+                filteredProducts.sort((a, b) => b.rating - a.rating);
+            } else if (sortOption === 'newest') {
+                filteredProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            }
+            
+            renderProducts(filteredProducts, allProductsGrid);
+        }
+
+        searchBar.addEventListener('input', filterAndSortProducts);
+        categoryFilter.addEventListener('change', filterAndSortProducts);
+        sortBy.addEventListener('change', filterAndSortProducts);
+        
+        // Wishlist functionality
+        document.querySelectorAll('.favorite-icon').forEach(icon => {
+            icon.addEventListener('click', async (e) => {
+                const productId = e.target.dataset.id;
+                if (!firebaseUser) {
+                    showModal('login-required-modal'); // Or some login prompt
+                    return;
+                }
+                const userDocRef = doc(db, "users", firebaseUser.uid);
+                await updateDoc(userDocRef, {
+                    wishlist: arrayUnion(productId)
+                });
+                e.target.classList.add('fas');
+                e.target.classList.remove('far');
+            });
+        });
+
+        // Quick View Modal
+        function openQuickViewModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            quickViewContent.innerHTML = `
+                <div class="product-details">
+                    <img src="${product.image}" alt="${product.name}">
+                    <div class="product-info-qv">
+                        <h3>${product.name}</h3>
+                        <p class="product-rating">${renderStars(product.rating)}</p>
+                        <div class="price-qv">KES ${product.price}</div>
+                        <p class="description-qv">${product.description}</p>
+                        <p><strong>Category:</strong> ${product.category}</p>
+                        <p><strong>Unit:</strong> ${product.unit}</p>
+                        <div class="product-tags">
+                            ${product.tags.map(tag => `<span class="product-tag">${tag}</span>`).join('')}
+                        </div>
+                        <button class="add-to-cart-btn-qv" data-id="${product.id}">Add to Cart</button>
+                    </div>
+                </div>
+            `;
+            quickViewModal.style.display = 'flex';
+            document.querySelector('.add-to-cart-btn-qv').addEventListener('click', (e) => {
+                addToCart(e.target.dataset.id);
+                quickViewModal.style.display = 'none';
+            });
+        }
+        
+        // Checkout Process
+        checkoutButton.addEventListener('click', () => {
+            if (!firebaseUser) {
+                // If not logged in, prompt to log in and save cart to local storage
+                saveToLocalStorage('pendingCheckout', true);
+                openAuthModal();
+            } else {
+                openCustomerDetailsModal();
+            }
+        });
+
+        function openCustomerDetailsModal() {
+            customerDetailsModal.style.display = 'flex';
+        }
+
+        customerDetailsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const customerName = document.getElementById('customer-name').value;
+            const customerPhone = document.getElementById('customer-phone').value;
+            const customerAddress = document.getElementById('customer-address').value;
+            
+            // Save details to user profile
+            const userDocRef = doc(db, "users", firebaseUser.uid);
+            await updateDoc(userDocRef, {
+                name: customerName,
+                phone: customerPhone,
+                address: customerAddress
+            });
+
+            customerDetailsModal.style.display = 'none';
+            paymentModal.style.display = 'flex';
+        });
+
+        payNowBtn.addEventListener('click', async () => {
+            try {
+                // Get the latest cart
+                const currentCart = await getCart();
+                const totalAmount = currentCart.reduce((sum, item) => {
+                    const product = products.find(p => p.id === item.id);
+                    return sum + (product.price * item.quantity);
+                }, 0) + deliveryFee;
+
+                // Create the order in Firestore
+                const orderRef = await addDoc(collection(db, "orders"), {
+                    userId: firebaseUser.uid,
+                    customerName: document.getElementById('customer-name').value,
+                    customerEmail: firebaseUser.email,
+                    customerAddress: document.getElementById('customer-address').value,
+                    customerPhone: document.getElementById('customer-phone').value,
+                    items: currentCart,
+                    totalAmount: totalAmount,
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                });
+                
+                // Clear cart in Firestore and local storage
+                await saveCart([]);
+
+                paymentModal.style.display = 'none';
+                orderIdDisplay.textContent = orderRef.id;
+                orderConfirmationModal.style.display = 'flex';
+            } catch (e) {
+                console.error("Error during checkout:", e);
+                // Handle error
+            }
+        });
+
+        // Track Order Functionality
+        trackOrderForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const orderId = document.getElementById('order-id-input').value;
+            orderStatusDiv.textContent = 'Searching for order...';
+            orderStatusDiv.style.color = '#333';
+            try {
+                const orderDoc = await getDoc(doc(db, "orders", orderId));
+                if (orderDoc.exists()) {
+                    const orderData = orderDoc.data();
+                    orderStatusDiv.innerHTML = `
+                        Order ID: <strong>${orderId}</strong><br>
+                        Status: <strong>${orderData.status.charAt(0).toUpperCase() + orderData.status.slice(1)}</strong><br>
+                        Total: <strong>KES ${orderData.totalAmount.toFixed(2)}</strong>
+                    `;
+                } else {
+                    orderStatusDiv.textContent = 'Order not found. Please check the ID.';
+                    orderStatusDiv.style.color = '#f44336';
+                }
+            } catch (e) {
+                console.error("Error fetching order:", e);
+                orderStatusDiv.textContent = 'Error tracking order. Please try again.';
+                orderStatusDiv.style.color = '#f44336';
+            }
+        });
+
+        // Contact Form
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const message = document.getElementById('contact-message').value;
+
+            try {
+                await addDoc(collection(db, "contactSubmissions"), {
+                    name,
+                    email,
+                    message,
+                    timestamp: new Date().toISOString()
+                });
+                contactStatus.textContent = "Thank you for your message! We'll get back to you soon.";
+                contactStatus.className = 'info-message success';
+                contactStatus.style.display = 'block';
+                contactForm.reset();
+            } catch (e) {
+                console.error("Error adding contact submission:", e);
+                contactStatus.textContent = "Failed to send message. Please try again.";
+                contactStatus.className = 'info-message error';
+                contactStatus.style.display = 'block';
+            }
+        });
+
+        // Other Utilities
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        // View Toggles
+        gridViewBtn.addEventListener('click', () => {
+            allProductsGrid.classList.remove('list-view');
+        });
+
+        listViewBtn.addEventListener('click', () => {
+            allProductsGrid.classList.add('list-view');
+        });
+
+        // Hero Image Carousel
+        let currentImageIndex = 0;
+        const heroImages = document.querySelectorAll('.hero-background-image');
+        function rotateHeroImages() {
+            heroImages[currentImageIndex].classList.remove('active');
+            currentImageIndex = (currentImageIndex + 1) % heroImages.length;
+            heroImages[currentImageIndex].classList.add('active');
+        }
+        setInterval(rotateHeroImages, 5000);
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            applyDarkModePreference();
+            // Initial page load, will be handled by onAuthStateChanged
+        });
+
+        onAuthStateChanged(auth, async (user) => {
+            firebaseUser = user; // Update the global firebaseUser variable
+            await updateAuthUI(); // Update UI based on auth state
+
+            // Load products and update cart count after Firebase is ready
+            await loadProductsFromFirestore();
+            await updateCartCount();
+
+            // Handle pending checkout after Firebase login
+            if (user && getFromLocalStorage('pendingCheckout', false)) {
+                localStorage.removeItem('pendingCheckout');
+                openCustomerDetailsModal(); // Resume checkout
+            }
+            // If a guest logs in, merge their local cart with their Firestore cart
+            if (user) {
+                const guestCart = getFromLocalStorage('guestCart', []);
+                if (guestCart.length > 0) {
+                    let userCart = await getCart();
+                    // Merge logic: add guest items to user cart, handling duplicates
+                    guestCart.forEach(guestItem => {
+                        const existingUserItem = userCart.find(item => item.id === guestItem.id);
+                        if (existingUserItem) {
+                            existingUserItem.quantity += guestItem.quantity;
+                        } else {
+                            userCart.push(guestItem);
+                        }
+                    });
+                    await saveCart(userCart);
+                    localStorage.removeItem('guestCart'); // Clear guest cart after merge
+                    await updateCartCount();
+                }
+            }
+        });
+
+    </script>
 
 </body>
 </html>
