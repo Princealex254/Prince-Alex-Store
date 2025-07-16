@@ -689,7 +689,7 @@
             <div class="admin-section">
                 <h3>Current Products</h3>
                 <div id="admin-product-list">
-                    <p style="text-align: center;">Loading products...</p>
+                    <p style="text-align: center;">Please log in to view products.</p>
                 </div>
             </div>
         </section>
@@ -700,7 +700,7 @@
             <div class="admin-section">
                 <h3>Customer Orders</h3>
                 <div id="admin-order-list">
-                    <p style="text-align: center;">Loading orders...</p>
+                    <p style="text-align: center;">Please log in to view orders.</p>
                 </div>
             </div>
         </section>
@@ -711,7 +711,7 @@
             <div class="admin-section">
                 <h3>Customer Messages</h3>
                 <div id="admin-contact-submissions">
-                    <p style="text-align: center;">Loading contact submissions...</p>
+                    <p style="text-align: center;">Please log in to view contact submissions.</p>
                 </div>
             </div>
         </section>
@@ -815,13 +815,20 @@
             // Close mobile menu if open
             document.getElementById('nav-links').classList.remove('active');
 
-            // Specific page rendering/updates
-            if (pageId === 'manage-products-page') {
-                renderAdminProducts();
-            } else if (pageId === 'manage-orders-page') {
-                renderAdminOrders();
-            } else if (pageId === 'contact-submissions-page') {
-                renderAdminContactSubmissions();
+            // Specific page rendering/updates - only if user is logged in
+            if (firebaseUser) {
+                if (pageId === 'manage-products-page') {
+                    renderAdminProducts();
+                } else if (pageId === 'manage-orders-page') {
+                    renderAdminOrders();
+                } else if (pageId === 'contact-submissions-page') {
+                    renderAdminContactSubmissions();
+                }
+            } else {
+                // If not logged in, ensure content areas show login prompt
+                adminProductListDiv.innerHTML = '<p style="text-align: center;">Please log in to view products.</p>';
+                adminOrderListDiv.innerHTML = '<p style="text-align: center;">Please log in to view orders.</p>';
+                adminContactSubmissionsDiv.innerHTML = '<p style="text-align: center;">Please log in to view contact submissions.</p>';
             }
         }
 
@@ -888,7 +895,13 @@
                 renderAdminOrders();
                 renderAdminContactSubmissions();
             } catch (error) {
-                showModal('Login Failed', 'Login failed: ' + error.message);
+                let errorMessage = 'Login failed. Please try again.';
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    errorMessage = 'Invalid email or password. Please check your credentials and ensure the user exists in Firebase Authentication.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Invalid email format.';
+                }
+                showModal('Login Failed', errorMessage);
                 console.error("Admin login error:", error);
             }
         }
@@ -1131,6 +1144,11 @@
                 // User is signed out
                 adminLoginDiv.style.display = 'block';
                 adminContentDiv.style.display = 'none';
+
+                // Clear content and show login prompt when logged out
+                adminProductListDiv.innerHTML = '<p style="text-align: center;">Please log in to view products.</p>';
+                adminOrderListDiv.innerHTML = '<p style="text-align: center;">Please log in to view orders.</p>';
+                adminContactSubmissionsDiv.innerHTML = '<p style="text-align: center;">Please log in to view contact submissions.</p>';
             }
         });
 
