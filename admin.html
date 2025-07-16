@@ -765,7 +765,7 @@
         const firebaseConfig = {
             apiKey: "AIzaSyAlS1nqRKolwc-7mySezN6XBcwk5p2Al4U",
             authDomain: "prince-alex-store.firebaseapp.com",
-            projectId: "prance-alex-store", // Corrected project ID
+            projectId: "prince-alex-store", // Corrected project ID
             storageBucket: "prince-alex-store.firebasestorage.app",
             messagingSenderId: "266163776280",
             appId: "1:266163776280:web:fdd89c30f84ed03540cc6d"
@@ -1157,6 +1157,10 @@
             applyDarkModePreference();
             // Initial page load, will be handled by onAuthStateChanged
         });
+
+        // Expose functions globally so they can be called from HTML onclick attributes
+        window.loginAdmin = loginAdmin;
+        window.logoutAdmin = logoutAdmin;
     </script>
 
 </body>
