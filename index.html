@@ -2166,7 +2166,7 @@
                 }, 3000); // Simulate network delay
             } else if (selectedMethod === 'cash') {
                 showModal('Cash on Delivery', 'Your order will be processed, and payment will be collected upon delivery. Thank you!');
-                placeOrderFinal(selectedMethod, customerDetails, TRANSPORT_FesaE, grandTotal);
+                placeOrderFinal(selectedMethod, customerDetails, TRANSPORT_FEE, grandTotal);
             } else if (selectedMethod === 'card') {
                 const cardNumber = document.getElementById('card-number').value;
                 const cardExpiry = document.getElementById('card-expiry').value;
