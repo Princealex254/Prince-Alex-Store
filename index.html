@@ -634,6 +634,8 @@
             background-color: var(--input-bg);
             color: var(--text-color);
             transition: border-color 0.3s, background-color 0.3s;
+            flex-grow: 1; /* Allow input/select to grow */
+            min-width: 180px; /* Minimum width for inputs */
         }
         .admin-form input:focus, .admin-form textarea:focus, .contact-form input:focus, .contact-form textarea:focus, .order-track-form input:focus, .admin-panel-login input:focus, .checkout-form input:focus, .payment-form input:focus, .auth-form input:focus, .add-review-form input:focus, .add-review-form textarea:focus, .newsletter-form input:focus, .loyalty-form input:focus {
             outline: none;
@@ -1658,8 +1660,9 @@
                 display: flex; /* Show when active */
                 transform: translateY(0%); /* Slide down */
             }
-            .nav-links li {
-                margin-bottom: 15px;
+            .nav-links-open { /* New class for menu open state */
+                display: flex; /* Show when active */
+                transform: translateY(0%); /* Slide down */
             }
             .hamburger-menu {
                 display: block; /* Show hamburger on mobile */
@@ -1799,9 +1802,9 @@
         <!-- Home Page -->
         <section id="home-page" class="active">
             <div class="hero">
-                <img src="vegetable1.jpg" alt="Fresh Vegetables 1" class="hero-background-image active">
-                <img src="vegetable2.jpg" alt="Fresh Vegetables 2" class="hero-background-image">
-                <img src="vegetable3.jpg" alt="Fresh Vegetables 3" class="hero-background-image">
+                <img src="https://placehold.co/1200x450/4CAF50/ffffff?text=Fresh+Veggies+1" alt="Fresh Vegetables 1" class="hero-background-image active">
+                <img src="https://placehold.co/1200x450/8BC34A/ffffff?text=Organic+Farm+Produce" alt="Fresh Vegetables 2" class="hero-background-image">
+                <img src="https://placehold.co/1200x450/4CAF50/ffffff?text=Healthy+Living" alt="Fresh Vegetables 3" class="hero-background-image">
                 <div class="hero-overlay"></div>
                 <div class="hero-content">
                     <h1>Farm Fresh Vegetables, Delivered to Your Door!</h1>
@@ -2697,11 +2700,20 @@
                 const productsCol = window.collection(window.db, "products");
                 const q = window.query(productsCol, window.orderBy("createdAt", "desc"));
                 const querySnapshot = await window.getDocs(q);
-                allProducts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderProducts(); // Render products once loaded
+                const firestoreProducts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // Only replace if Firestore actually returns products
+                if (firestoreProducts.length > 0) {
+                    allProducts = firestoreProducts;
+                    console.log("Products loaded from Firestore:", allProducts);
+                } else {
+                    console.log("No products from Firestore. Using dummy data.");
+                }
+                renderProducts(); // Render products once loaded (either dummy or firestore)
             } catch (error) {
                 console.error("Error loading products from Firestore:", error);
-                productListDiv.innerHTML = '<p style="text-align: center; width: 100%; color: red;">Failed to load products. Please check console for errors.</p>';
+                productListDiv.innerHTML = '<p style="text-align: center; width: 100%; color: red;">Failed to load products from database. Displaying dummy data.</p>';
+                // If Firestore fails, dummy data remains as fallback
             }
         }
 
@@ -2749,8 +2761,10 @@
             document.getElementById('list-view-btn').classList.toggle('active-view', currentView === 'list');
 
             // Apply view mode
-            productListDiv.classList.remove('grid-view', 'list-view');
-            productListDiv.classList.add(`${currentView}-view`);
+            productListDiv.classList.remove('product-grid'); // Remove grid view by default
+            productListDiv.classList.remove('list-view'); // Remove list view by default
+            productListDiv.classList.add('product-grid'); // Add grid view for base styling
+            productListDiv.classList.add(`${currentView}-view`); // Add specific view
 
             productsToDisplay.forEach(product => {
                 const productCard = document.createElement('div');
@@ -2771,11 +2785,12 @@
                     const badgeClass = product.badge.toLowerCase().replace(/\s/g, '');
                     badgeHtml = `<span class="product-badge ${badgeClass}">${product.badge}</span>`;
                 }
-
+                
                 let tagsHtml = '';
                 if (product.tags && product.tags.length > 0) {
                     tagsHtml = `<div class="product-tags">${product.tags.map(tag => `<span class="product-tag">${tag}</span>`).join('')}</div>`;
                 }
+
 
                 let priceHtml = `<p class="price">KES ${product.price.toFixed(2)} ${product.unit}</p>`;
                 if (product.originalPrice && product.originalPrice > product.price) {
@@ -3226,7 +3241,7 @@
                     total: grandTotal,
                     customer: customerDetails,
                     paymentMethod: paymentMethod,
-                    userEmail: firebaseUser ? firebase.User.email : null,
+                    userEmail: firebaseUser ? firebaseUser.email : null, // Corrected firebase.User.email to firebaseUser.email
                     userId: firebaseUser ? firebaseUser.uid : null 
                 });
 
@@ -3255,7 +3270,7 @@
                     total: grandTotal,
                     customer: customerDetails,
                     paymentMethod: paymentMethod,
-                    userEmail: firebaseUser ? firebase.User.email : null,
+                    userEmail: firebaseUser ? firebaseUser.email : null, // Corrected firebase.User.email to firebaseUser.email
                     userId: firebaseUser ? firebaseUser.uid : null
                 }); 
 
@@ -3875,6 +3890,144 @@
         document.addEventListener('DOMContentLoaded', async () => {
             applyDarkModePreference();
             
+            // Dummy product data (will be overridden by Firestore if available)
+            allProducts = [
+                {
+                    id: 'veg001',
+                    name: 'Organic Spinach',
+                    description: 'Freshly harvested organic spinach, rich in iron and vitamins. Perfect for smoothies or sautéing.',
+                    image: 'https://placehold.co/300x180/4CAF50/ffffff?text=Spinach',
+                    price: 150.00,
+                    originalPrice: 180.00,
+                    unit: 'per bunch',
+                    category: 'Leafy Greens',
+                    stock: 50,
+                    rating: 4.8,
+                    badge: 'Organic',
+                    tags: ['healthy', 'green', 'iron-rich']
+                },
+                {
+                    id: 'veg002',
+                    name: 'Sweet Carrots',
+                    description: 'Crunchy and naturally sweet carrots, excellent for juicing, salads, or cooking.',
+                    image: 'https://placehold.co/300x180/FF9800/ffffff?text=Carrots',
+                    price: 120.00,
+                    unit: 'per kg',
+                    category: 'Roots',
+                    stock: 75,
+                    rating: 4.5,
+                    badge: 'Bestseller',
+                    tags: ['vitamins', 'snack', 'juicing']
+                },
+                {
+                    id: 'veg003',
+                    name: 'Ripe Tomatoes',
+                    description: 'Juicy and flavorful red tomatoes, ideal for sauces, salads, or just snacking.',
+                    image: 'https://placehold.co/300x180/F44336/ffffff?text=Tomatoes',
+                    price: 90.00,
+                    unit: 'per kg',
+                    category: 'Fruits',
+                    stock: 120,
+                    rating: 4.7,
+                    badge: 'New',
+                    tags: ['versatile', 'sauce', 'salad']
+                },
+                {
+                    id: 'veg004',
+                    name: 'Broccoli Florets',
+                    description: 'Nutrient-packed broccoli florets, great for steaming, roasting, or stir-fries.',
+                    image: 'https://placehold.co/300x180/66BB6A/ffffff?text=Broccoli',
+                    price: 200.00,
+                    originalPrice: 240.00,
+                    unit: 'per head',
+                    category: 'Cruciferous',
+                    stock: 40,
+                    rating: 4.6,
+                    badge: 'Discount',
+                    tags: ['superfood', 'antioxidant', 'stir-fry']
+                },
+                {
+                    id: 'veg005',
+                    name: 'Fresh Coriander',
+                    description: 'Aromatic and fresh coriander, perfect for garnishing or adding flavor to various dishes.',
+                    image: 'https://placehold.co/300x180/8BC34A/ffffff?text=Coriander',
+                    price: 50.00,
+                    unit: 'per bunch',
+                    category: 'Herbs',
+                    stock: 60,
+                    rating: 4.9,
+                    badge: 'Organic',
+                    tags: ['flavor', 'garnish', 'aromatic']
+                },
+                {
+                    id: 'veg006',
+                    name: 'Red Onions',
+                    description: 'Sweet and pungent red onions, adding a vibrant touch to salads and cooked meals.',
+                    image: 'https://placehold.co/300x180/9C27B0/ffffff?text=Red+Onions',
+                    price: 80.00,
+                    unit: 'per kg',
+                    category: 'Roots',
+                    stock: 90,
+                    rating: 4.3,
+                    badge: '',
+                    tags: ['aromatic', 'cooking', 'salad']
+                },
+                {
+                    id: 'veg007',
+                    name: 'Green Capsicum',
+                    description: 'Crisp and sweet green capsicum, versatile for stir-fries, fajitas, or raw in salads.',
+                    image: 'https://placehold.co/300x180/8BC34A/ffffff?text=Capsicum',
+                    price: 130.00,
+                    unit: 'per kg',
+                    category: 'Fruits',
+                    stock: 55,
+                    rating: 4.4,
+                    badge: '',
+                    tags: ['stir-fry', 'crisp', 'sweet']
+                },
+                {
+                    id: 'veg008',
+                    name: 'Fresh Ginger',
+                    description: 'Zesty and fragrant ginger root, essential for culinary and medicinal uses.',
+                    image: 'https://placehold.co/300x180/FFC107/333333?text=Ginger',
+                    price: 180.00,
+                    originalPrice: 200.00,
+                    unit: 'per kg',
+                    category: 'Roots',
+                    stock: 35,
+                    rating: 4.7,
+                    badge: 'Discount',
+                    tags: ['spice', 'medicinal', 'fragrant']
+                },
+                {
+                    id: 'veg009',
+                    name: 'Cucumber',
+                    description: 'Cool and refreshing cucumbers, perfect for salads, snacks, or detox water.',
+                    image: 'https://placehold.co/300x180/4CAF50/ffffff?text=Cucumber',
+                    price: 70.00,
+                    unit: 'per piece',
+                    category: 'Fruits',
+                    stock: 100,
+                    rating: 4.6,
+                    badge: 'Bestseller',
+                    tags: ['refreshing', 'salad', 'hydration']
+                },
+                {
+                    id: 'veg010',
+                    name: 'Potatoes (Red)',
+                    description: 'Versatile red potatoes, firm texture ideal for roasting, mashing, or boiling.',
+                    image: 'https://placehold.co/300x180/B0BEC5/333333?text=Potatoes',
+                    price: 100.00,
+                    unit: 'per kg',
+                    category: 'Roots',
+                    stock: 150,
+                    rating: 4.2,
+                    badge: '',
+                    tags: ['staple', 'versatile', 'comfort-food']
+                }
+            ];
+
+
             // Check if there's a last order to display on confirmation page on load
             if (getFromLocalStorage('lastOrder', null)) {
                 displayLastOrderConfirmation();
@@ -3951,6 +4104,9 @@
                     saveToLocalStorage('newsletterSubscribed', true); // Treat closing as opting out for this session
                 }
             });
+
+            // Initial rendering of products with dummy data
+            renderProducts();
 
         });
     </script>
@@ -4112,7 +4268,7 @@
     }
 
     // Load products and update cart count after Firebase is ready
-    await loadProductsFromFirestore();
+    await loadProductsFromFirestore(); // This will now potentially override dummy data
     await updateCartCount();
 
     // Handle pending checkout after Firebase login
@@ -4145,3 +4301,4 @@
 
 </body>
 </html>
+
