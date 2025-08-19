@@ -231,7 +231,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* This is the key property for maintaining aspect ratio and filling space */
             opacity: 0;
             transition: opacity 1.5s ease-in-out;
             z-index: 1;
@@ -1799,9 +1799,9 @@
         <!-- Home Page -->
         <section id="home-page" class="active">
             <div class="hero">
-                <img src="https://placehold.co/1200x450/4CAF50/ffffff?text=Fresh+Veggies+1" alt="Fresh Vegetables 1" class="hero-background-image active">
-                <img src="https://placehold.co/1200x450/8BC34A/ffffff?text=Healthy+Farm+Produce" alt="Fresh Vegetables 2" class="hero-background-image">
-                <img src="https://placehold.co/1200x450/4CAF50/ffffff?text=Delivered+to+Your+Door" alt="Fresh Vegetables 3" class="hero-background-image">
+                <img src="assets/images/vegetable1.jpg" alt="Fresh Vegetables 1" class="hero-background-image active">
+                <img src="assets/images/vegetable2.jpg" alt="Healthy Farm Produce" class="hero-background-image">
+                <img src="assets/images/vegetable3.jpg" alt="Delivered to Your Door" class="hero-background-image">
                 <div class="hero-overlay"></div>
                 <div class="hero-content">
                     <h1>Farm Fresh Vegetables, Delivered to Your Door!</h1>
@@ -2429,7 +2429,7 @@
 
             if (!product) return;
 
-            document.getElementById('qv-image').src = product.image || `https://placehold.co/400x300/cccccc/333333?text=${product.name.replace(/\s/g, '+')}`;
+            document.getElementById('qv-image').src = product.imageUrl || `https://placehold.co/400x300/cccccc/333333?text=${product.name.replace(/\s/g, '+')}`;
             document.getElementById('qv-image').alt = product.name;
             document.getElementById('qv-name').textContent = product.name;
             
@@ -2791,7 +2791,7 @@
                             <i class="fas fa-eye" onclick="openQuickViewModal('${product.id}')"></i>
                             <i class="fas fa-cart-plus" onclick="addToCart('${product.id}')"></i>
                         </div>
-                        <img src="${product.image || `https://placehold.co/300x180/cccccc/333333?text=${product.name.replace(/\s/g, '+')}`}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/300x180/cccccc/333333?text=No+Image';">
+                        <img src="${product.imageUrl || `https://placehold.co/300x180/cccccc/333333?text=${product.name.replace(/\s/g, '+')}`}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/300x180/cccccc/333333?text=No+Image';">
                         <h3>${product.name}</h3>
                         <div class="product-rating">${generateStarRating(product.rating)}</div>
                         ${priceHtml}
@@ -2802,7 +2802,7 @@
                 } else { // List view
                     productCard.innerHTML = `
                         ${badgeHtml}
-                        <img src="${product.image || `https://placehold.co/150x150/cccccc/333333?text=${product.name.replace(/\s/g, '+')}`}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/150x150/cccccc/333333?text=No+Image';">
+                        <img src="${product.imageUrl || `https://placehold.co/150x150/cccccc/333333?text=${product.name.replace(/\s/g, '+')}`}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/150x150/cccccc/333333?text=No+Image';">
                         <div class="product-info">
                             <h3>${product.name}</h3>
                             <div class="product-rating">${generateStarRating(product.rating)}</div>
@@ -2923,7 +2923,7 @@
                 const itemTotal = item.price * item.quantity;
                 subTotal += itemTotal;
                 row.innerHTML = `
-                    <td class="cart-item-image"><img src="${item.image || `https://placehold.co/70x70/cccccc/333333?text=${item.name.replace(/\s/g, '+')}`}" alt="${item.name}" onerror="this.onerror=null;this.src='https://placehold.co/70x70/cccccc/333333?text=No+Image';"></td>
+                    <td class="cart-item-image"><img src="${item.imageUrl || `https://placehold.co/70x70/cccccc/333333?text=${item.name.replace(/\s/g, '+')}`}" alt="${item.name}" onerror="this.onerror=null;this.src='https://placehold.co/70x70/cccccc/333333?text=No+Image';"></td>
                     <td>${item.name}</td>
                     <td>KES ${item.price.toFixed(2)} ${item.unit || ''}</td>
                     <td>
@@ -3013,7 +3013,7 @@
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'cart-preview-item';
                 itemDiv.innerHTML = `
-                    <img src="${item.image || `https://placehold.co/70x70/cccccc/333333?text=${item.name.replace(/\s/g, '+')}`}" alt="${item.name}" onerror="this.onerror=null;this.src='https://placehold.co/70x70/cccccc/333333?text=No+Image';">
+                    <img src="${item.imageUrl || `https://placehold.co/70x70/cccccc/333333?text=${item.name.replace(/\s/g, '+')}`}" alt="${item.name}" onerror="this.onerror=null;this.src='https://placehold.co/70x70/cccccc/333333?text=No+Image';">
                     <div class="cart-preview-item-info">
                         <h4>${item.name}</h4>
                         <p>${item.quantity} x KES ${item.price.toFixed(2)} ${item.unit || ''} = KES ${itemTotal.toFixed(2)}</p>
@@ -3135,7 +3135,7 @@
             if (selectedMethod === 'mpesa') {
                 const mpesaPhoneNumber = document.getElementById('mpesa-phone-number').value;
                 const phoneRegex = /^07[0-9]{8}$/;
-                if (!phoneRegex.test(mpesaPhoneNumber)) {
+                if (!phoneRegex.test(mppesaPhoneNumber)) {
                     showModal('Invalid M-Pesa Number', 'Please enter a valid M-Pesa phone number starting with 07.');
                     return;
                 }
@@ -3210,10 +3210,14 @@
                 return; // Stop order placement if stock is insufficient or error occurred
             }
             
+            // Generate custom order ID
+            const orderId = "PA-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+
             // Save order to Firestore
             try {
                 const ordersCol = window.collection(window.db, "orders");
-                const newOrderRef = await window.addDoc(ordersCol, { 
+                const newOrderRef = window.doc(ordersCol, orderId); // Use generated ID as document ID
+                await window.setDoc(newOrderRef, { 
                     items: cart, 
                     status: 'Pending', 
                     date: new Date().toISOString(),
@@ -3225,8 +3229,7 @@
                     userEmail: firebaseUser ? firebaseUser.email : null,
                     userId: firebaseUser ? firebaseUser.uid : null // Link to Firebase User ID
                 });
-                const orderId = newOrderRef.id;
-
+                
                 // Award loyalty points (simplified for this example)
                 if (firebaseUser) {
                     const pointsEarned = Math.floor(grandTotal / 100) * 5; // 5 points per 100 KES spent
@@ -3812,7 +3815,7 @@
                         <i class="fas fa-eye" onclick="openQuickViewModal('${product.id}')"></i>
                         <i class="fas fa-cart-plus" onclick="addToCart('${product.id}')"></i>
                     </div>
-                    <img src="${product.image || `https://placehold.co/300x180/cccccc/333333?text=${product.name.replace(/\s/g, '+')}`}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/300x180/cccccc/333333?text=No+Image';">
+                    <img src="${product.imageUrl || `https://placehold.co/300x180/cccccc/333333?text=${product.name.replace(/\s/g, '+')}`}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/300x180/cccccc/333333?text=No+Image';">
                     <h3>${product.name}</h3>
                     <div class="product-rating">${generateStarRating(product.rating)}</div>
                     ${priceHtml}
@@ -3927,27 +3930,29 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
   import { getFirestore, collection, getDocs, query, orderBy, doc, setDoc, addDoc, updateDoc, deleteDoc, where, getDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, updateProfile, updatePassword, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+  import { getStorage } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js"; // Import Firebase Storage
 
   // Global variables provided by Canvas environment
   const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-  const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-      // Default config for local testing if __firebase_config is not available
-      apiKey: "YOUR_FIREBASE_API_KEY", // Replace with your actual Firebase API Key if testing locally
-      authDomain: "your-project-id.firebaseapp.com",
-      projectId: "your-project-id",
-      storageBucket: "your-project-id.appspot.com",
-      messagingSenderId: "your-sender-id",
-      appId: "your-app-id"
+  const firebaseConfig = {
+      apiKey: "AIzaSyBYfTWtl-N21DxVATxVnhCofgQsVu3xK4M",
+      authDomain: "store-e88d9.firebaseapp.com",
+      projectId: "store-e88d9",
+      storageBucket: "store-e88d9.firebasestorage.app",
+      messagingSenderId: "30797525855",
+      appId: "1:30797525855:web:335287605ec648f747fcea"
   };
   const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const auth = getAuth(app);
+  const storage = getStorage(app); // Initialize Firebase Storage
 
   // Expose Firebase functions globally for use in inline scripts and event listeners
   window.auth = auth; // Make auth object accessible
   window.db = db;     // Make db object accessible
+  window.storage = storage; // Make storage object accessible
   window.doc = doc;
   window.setDoc = setDoc;
   window.addDoc = addDoc;
