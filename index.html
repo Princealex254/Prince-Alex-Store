@@ -11,8 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- AOS Animate On Scroll Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <!-- Leaflet CSS for Map -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         :root {
             --primary-color: #4CAF50; /* Fresh Green */
@@ -616,7 +614,7 @@
             transform: translateY(-2px);
         }
 
-        .forms-container, .contact-form-container, .admin-panel-login, .auth-modal-content {
+        .forms-container, .contact-form-container, .admin-panel-login, .auth-modal-content, .newsletter-modal-content {
             max-width: 650px; /* Slightly wider forms */
             margin: 0 auto;
             background-color: var(--white);
@@ -626,7 +624,7 @@
             transition: background-color 0.3s, box-shadow 0.3s;
         }
         
-        .admin-form input, .admin-form textarea, .contact-form input, .contact-form textarea, .order-track-form input, .admin-panel-login input, .checkout-form input, .payment-form input, .auth-form input, .add-review-form input, .add-review-form textarea, .loyalty-form input {
+        .admin-form input, .admin-form textarea, .contact-form input, .contact-form textarea, .order-track-form input, .admin-panel-login input, .checkout-form input, .payment-form input, .auth-form input, .add-review-form input, .add-review-form textarea, .newsletter-form input, .loyalty-form input {
             width: 100%;
             padding: 15px; /* Larger inputs */
             margin-bottom: 20px;
@@ -637,7 +635,7 @@
             color: var(--text-color);
             transition: border-color 0.3s, background-color 0.3s;
         }
-        .admin-form input:focus, .admin-form textarea:focus, .contact-form input:focus, .contact-form textarea:focus, .order-track-form input:focus, .admin-panel-login input:focus, .checkout-form input:focus, .payment-form input:focus, .auth-form input:focus, .add-review-form input:focus, .add-review-form textarea:focus, .loyalty-form input:focus {
+        .admin-form input:focus, .admin-form textarea:focus, .contact-form input:focus, .contact-form textarea:focus, .order-track-form input:focus, .admin-panel-login input:focus, .checkout-form input:focus, .payment-form input:focus, .auth-form input:focus, .add-review-form input:focus, .add-review-form textarea:focus, .newsletter-form input:focus, .loyalty-form input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(76,175,80,0.3); /* Focus glow */
@@ -675,7 +673,7 @@
             background-color: #444;
         }
 
-        .admin-form button, .contact-form button, .order-track-form button, .admin-panel-login button, .checkout-form button, .payment-form button, .auth-form button, .add-review-form button, .loyalty-form button {
+        .admin-form button, .contact-form button, .order-track-form button, .admin-panel-login button, .checkout-form button, .payment-form button, .auth-form button, .newsletter-form button, .add-review-form button, .loyalty-form button {
             width: 100%;
             padding: 18px;
             background-color: var(--primary-color);
@@ -689,7 +687,7 @@
             box-shadow: var(--shadow);
         }
 
-        .admin-form button:hover, .contact-form button:hover, .order-track-form button:hover, .admin-panel-login button:hover, .checkout-form button:hover, .payment-form button:hover, .auth-form button:hover, .add-review-form button:hover, .loyalty-form button:hover {
+        .admin-form button:hover, .contact-form button:hover, .order-track-form button:hover, .admin-panel-login button:hover, .checkout-form button:hover, .payment-form button:hover, .auth-form button:hover, .newsletter-form button:hover, .add-review-form button:hover, .loyalty-form button:hover {
             background-color: var(--secondary-color);
             transform: translateY(-2px);
         }
@@ -906,6 +904,26 @@
             color: #f44336; /* Red on hover for close */
             transform: rotate(90deg);
         }
+
+        /* Newsletter Popup */
+        #newsletter-popup.modal .modal-content {
+            max-width: 600px;
+        }
+        #newsletter-popup h3 {
+            font-size: 32px;
+            color: var(--accent-color-orange);
+        }
+        #newsletter-popup p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        #newsletter-popup .newsletter-form button {
+            background-color: var(--accent-color-orange);
+        }
+        #newsletter-popup .newsletter-form button:hover {
+            background-color: #e68900;
+        }
+
 
         /* Order Confirmation Page Specific Styling */
         #order-confirmation-page .order-details {
@@ -1618,15 +1636,6 @@
             color: var(--primary-color);
         }
 
-        /* Leaflet Map Styling */
-        #map {
-            height: 300px;
-            margin-top: 20px; /* Adjusted margin top */
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -2117,6 +2126,20 @@
         </div>
     </div>
 
+    <!-- Newsletter Signup Modal -->
+    <div id="newsletter-popup" class="modal">
+        <div class="modal-content newsletter-modal-content">
+            <span class="close-button" onclick="closeNewsletterPopup()">&times;</span>
+            <i class="fas fa-envelope-open-text" style="font-size: 60px; color: var(--accent-color-orange); margin-bottom: 20px;"></i>
+            <h3>Join Our Fresh Family!</h3>
+            <p>Subscribe to our newsletter and get **10% OFF** your first order!</p>
+            <form class="newsletter-form" onsubmit="subscribeToNewsletter(event)">
+                <input type="email" id="newsletter-email" placeholder="Enter your email address" required>
+                <button type="submit">Subscribe & Get Discount</button>
+            </form>
+        </div>
+    </div>
+
 
     <!-- Quick View Modal -->
     <div id="quick-view-modal" class="modal">
@@ -2157,23 +2180,12 @@
         <div class="modal-content">
             <span class="close-button" onclick="closeCustomerDetailsModal()">&times;</span>
             <h3>Your Delivery Details</h3>
-            <form id="checkout-form" class="checkout-form" onsubmit="collectCustomerDetails(event)">
+            <form id="checkout-form" class="checkout-form">
                 <input type="text" id="customer-full-name" placeholder="Full Name" required>
                 <input type="text" id="customer-id" placeholder="ID Number (National ID/Passport)" required>
                 <input type="tel" id="customer-phone" placeholder="Phone Number (e.g., 0712345678)" pattern="^07[0-9]{8}$" required>
                 <input type="text" id="customer-delivery-location" placeholder="Delivery Location (e.g., Street, Estate, Town)" required>
                 <input type="text" id="customer-house-name" placeholder="House Name/Number (Optional)">
-                
-                <!-- Hidden inputs for Lat/Lng, City, Region, and Source -->
-                <input type="hidden" id="location-lat">
-                <input type="hidden" id="location-lng">
-                <input type="hidden" id="location-city">
-                <input type="hidden" id="location-region">
-                <input type="hidden" id="location-source">
-
-                <button type="button" onclick="shareLocation()" style="background-color: #2196F3; margin-bottom: 20px;">Share My Location</button>
-                <div id="map"></div> <!-- Leaflet map container -->
-
                 <button type="submit">Continue to Payment</button>
             </form>
         </div>
@@ -2265,7 +2277,7 @@
         <div class="modal-content auth-modal-content">
             <span class="close-button" onclick="closeEditProfileModal()">&times;</span>
             <h3>Edit Your Profile</h3>
-            <form id="edit-profile-form" class="auth-form" onsubmit="saveProfileDetails(event)">
+            <form id="edit-profile-form" class="auth-form">
                 <input type="text" id="edit-fullname" placeholder="Full Name" required>
                 <input type="email" id="edit-email" placeholder="Email" required readonly> <!-- Email usually not editable -->
                 <input type="tel" id="edit-phone" placeholder="Phone Number (e.g., 0712345678)" pattern="^07[0-9]{8}$" required>
@@ -2294,210 +2306,9 @@
         </div>
     </div>
 
+
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <!-- Leaflet JS for Map -->
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { 
-            getAuth, 
-            signInAnonymously, 
-            signInWithCustomToken, 
-            onAuthStateChanged, 
-            createUserWithEmailAndPassword, 
-            signInWithEmailAndPassword, 
-            signOut, 
-            sendPasswordResetEmail, 
-            updateProfile, 
-            updatePassword 
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { 
-            getFirestore, 
-            doc, 
-            getDoc, 
-            addDoc, 
-            setDoc, 
-            updateDoc, 
-            deleteDoc, 
-            onSnapshot, 
-            collection, 
-            query, 
-            where, 
-            getDocs, 
-            orderBy, 
-            serverTimestamp 
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Firebase config is now provided as a global variable by Canvas
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-
-        // Make Firebase objects globally accessible via window
-        window.db = db;
-        window.auth = auth;
-        window.collection = collection;
-        window.doc = doc;
-        window.getDoc = getDoc;
-        window.addDoc = addDoc;
-        window.setDoc = setDoc;
-        window.updateDoc = updateDoc;
-        window.deleteDoc = deleteDoc;
-        window.onSnapshot = onSnapshot;
-        window.query = query;
-        window.where = where;
-        window.getDocs = getDocs;
-        window.orderBy = orderBy;
-        window.serverTimestamp = serverTimestamp;
-        window.updateProfile = updateProfile;
-        window.updatePassword = updatePassword;
-        window.sendPasswordResetEmail = sendPasswordResetEmail;
-        window.signOutFirebase = signOut; // Rename to avoid conflict with local signOut
-        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
-
-
-        // Function to handle user logout
-        window.logoutUser = async function() {
-            try {
-                await signOut(auth);
-                showModal('Logged Out', 'You have been successfully logged out.');
-                showPage('home-page'); // Redirect to home or login page after logout
-                firebaseUser = null; // Clear firebaseUser state
-                updateAuthUI(); // Update UI for logged out state
-                saveToLocalStorage('pendingCheckout', false); // Clear any pending checkout state
-                await saveCart([]); // Clear cart on logout if it was tied to the user
-            } catch (error) {
-                console.error("Error logging out:", error);
-                showModal('Logout Failed', 'There was an error logging out. Please try again.');
-            }
-        };
-
-        // Authenticate anonymously or with custom token on startup
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                firebaseUser = user;
-                console.log("Authenticated with Firebase. User ID:", user.uid);
-                await updateAuthUI(); // Update UI immediately after auth state changes
-                
-                // If a guest logs in, merge their local cart with their Firestore cart
-                const guestCart = getFromLocalStorage('guestCart', []);
-                if (guestCart.length > 0) {
-                    let userCart = await getCart(); // Get user's existing cart from Firestore
-                    // Merge logic: add guest items to user cart, handling duplicates
-                    guestCart.forEach(guestItem => {
-                        const existingUserItem = userCart.find(item => item.id === guestItem.id);
-                        if (existingUserItem) {
-                            existingUserItem.quantity += guestItem.quantity;
-                        } else {
-                            userCart.push(guestItem);
-                        }
-                    });
-                    await saveCart(userCart); // Save merged cart to Firestore
-                    localStorage.removeItem('guestCart'); // Clear guest cart after merge
-                    await updateCartCount();
-                }
-
-                // Handle pending checkout after Firebase login
-                if (getFromLocalStorage('pendingCheckout', false)) {
-                    localStorage.removeItem('pendingCheckout');
-                    openCustomerDetailsModal(); // Resume checkout
-                }
-
-            } else {
-                firebaseUser = null; // No user logged in
-                console.log("No Firebase user. Signed in anonymously or awaiting custom token.");
-                try {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                } catch (error) {
-                    console.error("Error signing in with custom token/anonymously:", error);
-                    // Fallback to anonymous if custom token fails (e.g., expired)
-                    await signInAnonymously(auth);
-                }
-                updateAuthUI(); // Update UI for logged out state
-            }
-            // Load products and update cart count after Firebase is ready
-            await loadProductsFromFirestore();
-            await updateCartCount();
-        });
-
-
-        // Handle Login Form Submission
-        document.getElementById('login-form-modal').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email-modal').value;
-            const password = document.getElementById('login-password-modal').value;
-            try {
-                await window.signInWithEmailAndPassword(auth, email, password);
-                showModal('Login Successful', 'Welcome back!');
-                closeLoginModal();
-                // onAuthStateChanged listener will handle UI update and pending checkout
-            } catch (error) {
-                showModal('Login Failed', 'Error: ' + error.message);
-                console.error("Login error:", error);
-            }
-        });
-
-        // Handle Signup Form Submission
-        document.getElementById('signup-form-modal').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const fullName = document.getElementById('signup-fullname-modal').value;
-            const email = document.getElementById('signup-email-modal').value;
-            const phone = document.getElementById('signup-phone-modal').value;
-            const password = document.getElementById('signup-password-modal').value;
-
-            // Basic phone number validation (Kenyan format 07XXXXXXXX)
-            const phoneRegex = /^07[0-9]{8}$/;
-            if (!phoneRegex.test(phone)) {
-                showModal('Invalid Phone Number', 'Please enter a valid Kenyan phone number starting with 07 (e.g., 0712345678).');
-                return;
-            }
-
-            try {
-                const userCredential = await window.createUserWithEmailAndPassword(auth, email, password);
-                await window.updateProfile(userCredential.user, { displayName: fullName });
-                // Save additional user info to Firestore
-                await window.setDoc(window.doc(db, "users", userCredential.user.uid), {
-                    fullname: fullName,
-                    email: email,
-                    phoneNumber: phone,
-                    createdAt: window.serverTimestamp(),
-                    loyaltyPoints: 0 // Initialize loyalty points
-                });
-                showModal('Sign Up Successful!', 'Your account has been created. Welcome!');
-                closeSignupModal();
-                // onAuthStateChanged listener will handle UI update
-            } catch (error) {
-                showModal('Sign Up Failed', 'Error: ' + error.message);
-                console.error("Sign up error:", error);
-            }
-        });
-
-        // Handle Forgot Password
-        document.getElementById('forgot-password-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('reset-email').value;
-            try {
-                await window.sendPasswordResetEmail(auth, email);
-                showModal('Password Reset', 'If an account with that email exists, a password reset link has been sent to your email.');
-                closeForgotPasswordModal();
-            } catch (error) {
-                showModal('Password Reset Failed', 'Error: ' + error.message);
-                console.error("Password reset error:", error);
-            }
-        });
-
-        // Add event listener for Save Changes button in Edit Profile Modal
-        document.getElementById('edit-profile-form').addEventListener('submit', saveProfileDetails);
-
+    <script>
         // Initialize AOS
         document.addEventListener('DOMContentLoaded', () => {
             AOS.init({
@@ -2507,8 +2318,6 @@
             });
             // Set the current year in the copyright
             document.getElementById('current-year').textContent = new Date().getFullYear();
-
-            applyDarkModePreference(); // Apply dark mode preference on load
         });
 
         const pages = document.querySelectorAll('section');
@@ -2551,7 +2360,7 @@
         const cartPreviewDeliverySpan = document.getElementById('cart-preview-delivery');
         const cartPreviewTotalSpan = document.getElementById('cart-preview-total');
         
-        // Removed newsletterPopup variable as it's no longer needed
+        const newsletterPopup = document.getElementById('newsletter-popup'); // Newsletter popup
 
         const testimonialCarousel = document.getElementById('testimonial-carousel');
         const testimonialPrevBtn = document.getElementById('testimonial-prev-btn');
@@ -2566,85 +2375,13 @@
 
         const recommendedProductsList = document.getElementById('qv-recommended-list');
 
-        const locationLatInput = document.getElementById('location-lat');
-        const locationLngInput = document.getElementById('location-lng');
-        const locationCityInput = document.getElementById('location-city');
-        const locationRegionInput = document.getElementById('location-region');
-        const locationSourceInput = document.getElementById('location-source');
-        let map = null; // Leaflet map instance
-        let marker = null; // Leaflet map marker
 
         const TRANSPORT_FEE = 100.00; // Fixed transportation fee for Vihiga County
         const MIN_ORDER_VALUE = 600.00; // Minimum order value for checkout
 
         let currentView = 'grid'; // Default view
         let firebaseUser = null; // Stores the currently logged in Firebase user object
-        let allProducts = [
-            // Dummy Products for initial display
-            {
-                id: 'dummy1',
-                name: 'Organic Spinach',
-                description: 'Fresh, organic spinach from local farms. Perfect for healthy meals.',
-                image: 'https://placehold.co/300x180/4CAF50/ffffff?text=Spinach',
-                price: 150.00,
-                unit: 'per bunch',
-                category: 'Leafy Greens',
-                stock: 50,
-                rating: 4.5,
-                badge: 'Organic',
-                tags: ['healthy', 'green', 'farm fresh']
-            },
-            {
-                id: 'dummy2',
-                name: 'Sweet Potatoes',
-                description: 'Naturally sweet and nutritious sweet potatoes. Great for roasting or mashing.',
-                image: 'https://placehold.co/300x180/FF9800/ffffff?text=Sweet+Potatoes',
-                price: 200.00,
-                unit: 'per kg',
-                category: 'Roots',
-                stock: 75,
-                rating: 4.8,
-                badge: 'Bestseller',
-                tags: ['root', 'sweet', 'staple']
-            },
-            {
-                id: 'dummy3',
-                name: 'Fresh Tomatoes',
-                description: 'Juicy, ripe tomatoes, ideal for salads and cooking.',
-                image: 'https://placehold.co/300x180/F44336/ffffff?text=Tomatoes',
-                price: 100.00,
-                unit: 'per kg',
-                category: 'Fruits',
-                stock: 120,
-                rating: 4.2,
-                badge: 'New',
-                tags: ['fresh', 'salad', 'cooking']
-            },
-            {
-                id: 'dummy4',
-                name: 'Broccoli Florets',
-                description: 'Healthy and vibrant broccoli, perfect for steaming or stir-fries.',
-                image: 'https://placehold.co/300x180/8BC34A/ffffff?text=Broccoli',
-                price: 250.00,
-                unit: 'per head',
-                category: 'Cruciferous',
-                stock: 40,
-                rating: 4.6,
-                tags: ['superfood', 'green', 'cruciferous']
-            },
-            {
-                id: 'dummy5',
-                name: 'Fresh Coriander',
-                description: 'Aromatic coriander for enhancing your dishes with a fresh zest.',
-                image: 'https://placehold.co/300x180/AED581/ffffff?text=Coriander',
-                price: 50.00,
-                unit: 'per bunch',
-                category: 'Herbs',
-                stock: 90,
-                rating: 4.0,
-                tags: ['herb', 'aromatic', 'flavor']
-            }
-        ]; // Array to store products fetched from Firestore
+        let allProducts = []; // Array to store products fetched from Firestore
         let userLoyaltyPoints = 0; // User's loyalty points
 
         // --- Utility Functions for Local Storage (will be replaced by Firestore for most data) ---
@@ -2677,10 +2414,14 @@
             messageModal.style.display = 'none';
         }
 
-        // Removed Newsletter Popup functions:
-        // function openNewsletterPopup() { ... }
-        // function closeNewsletterPopup() { ... }
+        // --- Newsletter Popup Functions ---
+        function openNewsletterPopup() {
+            newsletterPopup.style.display = 'flex';
+        }
 
+        function closeNewsletterPopup() {
+            newsletterPopup.style.display = 'none';
+        }
 
         // --- Product Quick View Functions ---
         function openQuickViewModal(productId) {
@@ -2956,16 +2697,11 @@
                 const productsCol = window.collection(window.db, "products");
                 const q = window.query(productsCol, window.orderBy("createdAt", "desc"));
                 const querySnapshot = await window.getDocs(q);
-                // Merge dummy products with Firestore products if any
-                const firestoreProducts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                // Filter out dummy products from firestoreProducts if they somehow got there
-                const filteredFirestoreProducts = firestoreProducts.filter(fp => !allProducts.some(dp => dp.id === fp.id));
-                allProducts = [...allProducts, ...filteredFirestoreProducts];
+                allProducts = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 renderProducts(); // Render products once loaded
             } catch (error) {
                 console.error("Error loading products from Firestore:", error);
-                productListDiv.innerHTML = '<p style="text-align: center; width: 100%; color: red;">Failed to load products. Displaying dummy data.</p>';
-                renderProducts(); // Still render dummy products if Firestore fails
+                productListDiv.innerHTML = '<p style="text-align: center; width: 100%; color: red;">Failed to load products. Please check console for errors.</p>';
             }
         }
 
@@ -3215,16 +2951,13 @@
             const item = cart.find(i => i.id === productId);
 
             if (item) {
-                if (change > 0 && productInStore && item.quantity >= productInStore.stock) {
+                if (change > 0 && item.quantity >= productInStore.stock) {
                     showModal('Stock Limit Reached', `You cannot add more ${item.name}. Only ${productInStore.stock} available.`);
                     return;
                 }
                 item.quantity += change;
                 if (item.quantity <= 0) {
-                    // This will open another modal. Let's make it a direct removal if quantity goes to 0 or below.
-                    // The "confirmRemoveFromCart" function is typically used for a separate confirmation step.
-                    // For a seamless UX, it's better to simply remove it when quantity becomes 0 via the +/- buttons.
-                    await removeFromCart(productId);
+                    showModal('Remove Item', 'Are you sure you want to remove this item from your cart? <br><br><button onclick="confirmRemoveFromCart(\'' + productId + '\')">Yes, Remove</button> <button onclick="closeModal()">Cancel</button>');
                 } else {
                     await saveCart(cart);
                     renderCart();
@@ -3238,11 +2971,11 @@
             await saveCart(cart);
             renderCart();
             updateCartPreview(); // Also update sidebar
-            // showModal('Removed!', 'Item removed from cart.'); // Only show this if confirmed by a separate button
+            showModal('Removed!', 'Item removed from cart.');
         }
 
         async function confirmRemoveFromCart(productId) {
-            closeModal(); // Close the confirmation modal if it was open
+            closeModal(); // Close the confirmation modal
             let cart = await getCart();
             cart = cart.filter(item => item.id !== productId);
             await saveCart(cart);
@@ -3324,153 +3057,11 @@
             // so they remain empty for user to fill.
 
             customerDetailsModal.style.display = 'flex';
-            // Initialize map when modal is opened
-            setTimeout(() => { // Small delay to ensure modal is visible and map container has dimensions
-                initLeafletMap();
-            }, 100);
         }
 
         function closeCustomerDetailsModal() {
             customerDetailsModal.style.display = 'none';
             document.getElementById('checkout-form').reset(); // Clear form on close
-            // Clear map if it exists
-            if (map) {
-                map.remove();
-                map = null;
-                marker = null;
-            }
-            // Clear location inputs
-            locationLatInput.value = '';
-            locationLngInput.value = '';
-            locationCityInput.value = '';
-            locationRegionInput.value = '';
-            locationSourceInput.value = '';
-            document.getElementById('customer-delivery-location').value = ''; // Clear the visible input too
-        }
-
-        // --- Location Capture Functions ---
-        function initLeafletMap() {
-            if (map) {
-                map.remove(); // Remove existing map if any
-            }
-            // Set initial view to Nairobi or a general location if no prior location is known
-            const initialLat = parseFloat(locationLatInput.value) || -1.286389; // Default to Nairobi lat
-            const initialLng = parseFloat(locationLngInput.value) || 36.817292; // Default to Nairobi lng
-
-            map = L.map('map').setView([initialLat, initialLng], 13); // Default to Nairobi
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-
-            // Add existing marker if lat/lng are already set (e.g., from IP lookup or previous interaction)
-            if (locationLatInput.value && locationLngInput.value) {
-                updateMapMarker(initialLat, initialLng);
-            }
-
-            // Add a clickable event to the map to set marker
-            map.on('click', function(e) {
-                const lat = e.latlng.lat;
-                const lng = e.latlng.lng;
-                updateLocationInputs(lat, lng, 'Manual Click');
-                updateMapMarker(lat, lng);
-                reverseGeocode(lat, lng);
-            });
-
-            // Invalidate size after map container is visible to ensure it renders correctly
-            map.invalidateSize();
-        }
-
-        function updateMapMarker(lat, lng) {
-            if (marker) {
-                marker.setLatLng([lat, lng]);
-            } else {
-                marker = L.marker([lat, lng]).addTo(map);
-            }
-            map.setView([lat, lng], 16); // Zoom in on the new location
-        }
-
-        function updateLocationInputs(lat, lng, source, city = '', region = '') {
-            locationLatInput.value = lat;
-            locationLngInput.value = lng;
-            locationCityInput.value = city;
-            locationRegionInput.value = region;
-            locationSourceInput.value = source;
-            
-            // Update the visible delivery location input field
-            const displayValue = city && region ? `${city}, ${region}` : `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
-            document.getElementById('customer-delivery-location').value = displayValue;
-        }
-
-        async function shareLocation() {
-            showModal('Getting Location', 'Please allow location access...');
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    async (position) => {
-                        closeModal();
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
-                        updateLocationInputs(lat, lng, 'gps');
-                        updateMapMarker(lat, lng);
-                        await reverseGeocode(lat, lng); // Get city/region from coordinates
-                        showModal('Location Found', `Your location has been set to: Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}.`);
-                    },
-                    async (error) => {
-                        console.error("Geolocation error:", error);
-                        closeModal();
-                        showModal('Location Denied/Failed', 'Could not get precise location. Attempting IP-based lookup...');
-                        await fallbackToIPLocation();
-                    },
-                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-                );
-            } else {
-                closeModal();
-                showModal('Geolocation Not Supported', 'Your browser does not support Geolocation. Attempting IP-based lookup...');
-                await fallbackToIPLocation();
-            }
-        }
-
-        async function fallbackToIPLocation() {
-            try {
-                const response = await fetch("https://ipapi.co/json/");
-                const data = await response.json();
-                if (data.latitude && data.longitude) {
-                    const lat = data.latitude;
-                    const lng = data.longitude;
-                    const city = data.city || 'N/A';
-                    const region = data.region || 'N/A';
-                    updateLocationInputs(lat, lng, 'ip', city, region);
-                    updateMapMarker(lat, lng);
-                    showModal('Approximate Location', `Using approximate location: ${city}, ${region}. You can manually adjust the marker on the map.`);
-                } else {
-                    showModal('Location Error', 'Could not determine your location.');
-                    console.error("IP-based location failed:", data);
-                }
-            } catch (error) {
-                showModal('Location Error', 'Could not determine your location due to network error.');
-                console.error("IP API fetch error:", error);
-            }
-        }
-
-        async function reverseGeocode(lat, lng) {
-            try {
-                // Using OpenStreetMap Nominatim for reverse geocoding
-                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
-                const data = await response.json();
-                if (data.address) {
-                    const city = data.address.city || data.address.town || data.address.village || '';
-                    const region = data.address.state || data.address.county || '';
-                    // Update the hidden inputs with more detailed city/region if available
-                    locationCityInput.value = city;
-                    locationRegionInput.value = region;
-
-                    // Update the visible input with a more comprehensive address string
-                    const fullAddress = data.display_name || `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
-                    document.getElementById('customer-delivery-location').value = fullAddress;
-                }
-            } catch (error) {
-                console.error("Reverse geocoding error:", error);
-                // showModal('Geocoding Error', 'Could not get address details for your location.'); // Avoid spamming modals
-            }
         }
 
         async function collectCustomerDetails(event) {
@@ -3478,23 +3069,12 @@
             const fullName = document.getElementById('customer-full-name').value;
             const idNumber = document.getElementById('customer-id').value;
             const phoneNumber = document.getElementById('customer-phone').value;
-            const deliveryLocationText = document.getElementById('customer-delivery-location').value;
+            const deliveryLocation = document.getElementById('customer-delivery-location').value;
             const houseName = document.getElementById('customer-house-name').value;
 
-            // Captured location details from hidden inputs
-            const lat = parseFloat(locationLatInput.value);
-            const lng = parseFloat(locationLngInput.value);
-            const city = locationCityInput.value;
-            const region = locationRegionInput.value;
-            const source = locationSourceInput.value;
-
-            if (!fullName || !idNumber || !phoneNumber || !deliveryLocationText) {
+            if (!fullName || !idNumber || !phoneNumber || !deliveryLocation) {
                 showModal('Missing Information', 'Please fill in all required customer details.');
                 return;
-            }
-            if (isNaN(lat) || isNaN(lng) || !source) { // Check if location data is valid
-                 showModal('Location Required', 'Please share your location or manually select it on the map.');
-                 return;
             }
 
             // Basic phone number validation (Kenyan format 07XXXXXXXX)
@@ -3504,20 +3084,7 @@
                 return;
             }
 
-            const customerDetails = { 
-                fullName, 
-                idNumber, 
-                phoneNumber, 
-                deliveryLocationText, 
-                houseName,
-                location: { // Structured location object
-                    lat: lat,
-                    lng: lng,
-                    city: city,
-                    region: region,
-                    source: source
-                }
-            };
+            const customerDetails = { fullName, idNumber, phoneNumber, deliveryLocation, houseName };
             saveToLocalStorage('lastCustomerDetails', customerDetails); // Still using localStorage for this temporary detail
             
             closeCustomerDetailsModal();
@@ -3627,12 +3194,9 @@
                         }
                         await window.updateDoc(productRef, { stock: currentStock - cartItem.quantity });
                     } else {
-                        // Check if it's one of the dummy products. If so, don't treat as an error for stock deduction
-                        if (!allProducts.some(p => p.id === cartItem.id)) {
-                             stockProblem = true;
-                             showModal('Product Not Found', `Product ${cartItem.name} not found in store.`);
-                             break;
-                        }
+                        stockProblem = true;
+                        showModal('Product Not Found', `Product ${cartItem.name} not found in store.`);
+                        break;
                     }
                 } catch (error) {
                     console.error("Error updating stock:", error);
@@ -3662,8 +3226,7 @@
                     total: grandTotal,
                     customer: customerDetails,
                     paymentMethod: paymentMethod,
-                    location: customerDetails.location, // Save the captured location data
-                    userEmail: firebaseUser ? firebaseUser.email : null,
+                    userEmail: firebaseUser ? firebase.User.email : null,
                     userId: firebaseUser ? firebaseUser.uid : null 
                 });
 
@@ -3692,8 +3255,7 @@
                     total: grandTotal,
                     customer: customerDetails,
                     paymentMethod: paymentMethod,
-                    location: customerDetails.location, // Save the captured location data
-                    userEmail: firebaseUser ? firebaseUser.email : null,
+                    userEmail: firebaseUser ? firebase.User.email : null,
                     userId: firebaseUser ? firebaseUser.uid : null
                 }); 
 
@@ -3710,16 +3272,6 @@
             const lastOrderDetailsDiv = document.getElementById('last-order-details');
             if (lastOrder) {
                 let itemsHtml = lastOrder.items.map(item => `<li>${item.name} (x${item.quantity}) - KES ${item.price.toFixed(2)} ${item.unit || ''}</li>`).join('');
-                let locationDetails = '';
-                if (lastOrder.location && (lastOrder.location.lat || lastOrder.location.city)) {
-                    locationDetails = `
-                        <li>Lat: ${lastOrder.location.lat ? lastOrder.location.lat.toFixed(4) : 'N/A'}</li>
-                        <li>Lng: ${lastOrder.location.lng ? lastOrder.location.lng.toFixed(4) : 'N/A'}</li>
-                        <li>City: ${lastOrder.location.city || 'N/A'}</li>
-                        <li>Region: ${lastOrder.location.region || 'N/A'}</li>
-                        <li>Source: ${lastOrder.location.source || 'N/A'}</li>
-                    `;
-                }
                 lastOrderDetailsDiv.innerHTML = `
                     <h3>Thank You for Your Order!</h3>
                     <p>Order ID: <strong>${lastOrder.id}</strong></p>
@@ -3733,11 +3285,7 @@
                     <ul>
                         <li>Name: ${lastOrder.customer.fullName}</li>
                         <li>Phone: ${lastOrder.customer.phoneNumber}</li>
-                        <li>Delivery: ${lastOrder.customer.deliveryLocationText}, ${lastOrder.customer.houseName || 'N/A'}</li>
-                    </ul>
-                    <h4>Delivery Location Data:</h4>
-                    <ul>
-                        ${locationDetails}
+                        <li>Delivery: ${lastOrder.customer.deliveryLocation}, ${lastOrder.customer.houseName || 'N/A'}</li>
                     </ul>
                     <h4>Items Ordered:</h4>
                     <ul>${itemsHtml}</ul>
@@ -3768,14 +3316,6 @@
                 if (orderDocSnap.exists()) {
                     const order = orderDocSnap.data();
                     let itemsHtml = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
-                    let locationInfo = '';
-                    if (order.location && (order.location.lat || order.location.city)) {
-                        locationInfo = `
-                            <p>Delivery Location (Lat/Lng): ${order.location.lat ? order.location.lat.toFixed(4) : 'N/A'}, ${order.location.lng ? order.location.lng.toFixed(4) : 'N/A'}</p>
-                            <p>Approximation: ${order.location.city || 'N/A'}, ${order.location.region || 'N/A'} (Source: ${order.location.source || 'N/A'})</p>
-                        `;
-                    }
-
                     statusDiv.innerHTML = `
                         <p>Order ID: <strong>${orderDocSnap.id}</strong></p>
                         <p>Status: <strong>${order.status}</strong></p>
@@ -3784,8 +3324,7 @@
                         <p>Transportation Fee: KES ${order.transportationFee.toFixed(2)}</p>
                         <p>Grand Total: KES ${order.total.toFixed(2)}</p>
                         <p>Payment Method: ${order.paymentMethod}</p>
-                        <p>Delivery to: ${order.customer.fullName}, ${order.customer.deliveryLocationText}, ${order.customer.houseName || 'N/A'}</p>
-                        ${locationInfo}
+                        <p>Delivery to: ${order.customer.fullName}, ${order.customer.deliveryLocation}, ${order.customer.houseName || 'N/A'}</p>
                         <h4>Items:</h4>
                         <ul>${itemsHtml}</ul>
                         <p>Your order is currently being processed and will be shipped soon. Thank you for your patience!</p>
@@ -3826,8 +3365,35 @@
             }
         }
 
-        // Removed Newsletter Subscription functions as it's no longer needed:
-        // async function subscribeToNewsletter(event) { ... }
+        // --- Newsletter Subscription (Firestore) ---
+        async function subscribeToNewsletter(event) {
+            event.preventDefault();
+            const email = document.getElementById('newsletter-email').value;
+            if (email) {
+                try {
+                    // Check if email already exists
+                    const q = window.query(window.collection(window.db, "newsletterSubscriptions"), window.where("email", "==", email));
+                    const querySnapshot = await window.getDocs(q);
+                    if (!querySnapshot.empty) {
+                        showModal('Already Subscribed', 'This email is already subscribed to our newsletter.');
+                        return;
+                    }
+
+                    await window.addDoc(window.collection(window.db, "newsletterSubscriptions"), { 
+                        email, 
+                        subscribedAt: new Date().toISOString() 
+                    });
+                    showModal('Subscribed!', `Thank you for subscribing! Check your email for your 10% discount code.`);
+                    document.querySelector('.newsletter-form').reset();
+                    closeNewsletterPopup(); // Close the popup after successful subscription
+                } catch (error) {
+                    console.error("Error subscribing to newsletter:", error);
+                    showModal('Error', 'Failed to subscribe. Please try again.');
+                }
+            } else {
+                showModal('Error', 'Please enter a valid email address.');
+            }
+        }
 
         // --- User Authentication UI Update & Profile Management (Firestore) ---
         async function getUserProfile(uid) {
@@ -4007,13 +3573,6 @@
                     const listItem = document.createElement('div');
                     listItem.className = 'admin-list-item'; // Reusing admin-list-item style
                     const itemsSummary = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
-                    let locationInfo = '';
-                    if (order.location && (order.location.lat || order.location.city)) {
-                        locationInfo = `
-                            <p>Delivery Location (Lat/Lng): ${order.location.lat ? order.location.lat.toFixed(4) : 'N/A'}, ${order.location.lng ? order.location.lng.toFixed(4) : 'N/A'}</p>
-                            <p>Approx: ${order.location.city || 'N/A'}, ${order.location.region || 'N/A'} (Source: ${order.location.source || 'N/A'})</p>
-                        `;
-                    }
                     listItem.innerHTML = `
                         <div>
                             <strong>Order ID: ${doc.id}</strong><br>
@@ -4024,7 +3583,6 @@
                             Grand Total: KES ${order.total.toFixed(2)}<br>
                             Payment: ${order.paymentMethod}<br>
                             <span class="order-items-list">Items: ${itemsSummary}</span>
-                            ${locationInfo}
                         </div>
                     `;
                     userOrdersListDiv.appendChild(listItem);
@@ -4083,113 +3641,81 @@
 
         async function toggleFavorite(productId, iconElement) {
             if (!firebaseUser) {
-                showModal('Login Required', 'Please log in to manage your favorites.');
+                showModal('Login Required', 'Please log in to manage your favorite products.');
                 openLoginModal();
                 return;
             }
-
             let favorites = await getFavorites();
-            const index = favorites.indexOf(productId);
-            if (index > -1) {
-                favorites.splice(index, 1);
+            if (favorites.includes(productId)) {
+                favorites = favorites.filter(id => id !== productId);
                 iconElement.classList.remove('fas');
                 iconElement.classList.add('far');
-                showModal('Removed from Favorites', 'Product removed from your favorites.');
             } else {
                 favorites.push(productId);
                 iconElement.classList.remove('far');
                 iconElement.classList.add('fas');
-                showModal('Added to Favorites', 'Product added to your favorites!');
             }
             await saveFavorites(favorites);
         }
 
-        // --- Recommended Products (Quick View) ---
-        function renderRecommendedProducts(currentProductId) {
-            recommendedProductsList.innerHTML = '';
-            // Filter out the current product and show up to 3 random others
-            const filteredProducts = allProducts.filter(p => p.id !== currentProductId);
-            const shuffled = filteredProducts.sort(() => 0.5 - Math.random()); // Shuffle
-            const selected = shuffled.slice(0, 3); // Get first 3
-
-            if (selected.length === 0) {
-                recommendedProductsList.innerHTML = '<p style="text-align: center; width: 100%;">No recommendations at this time.</p>';
-                return;
-            }
-
-            selected.forEach(product => {
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
-                productCard.onclick = () => openQuickViewModal(product.id); // Clickable to open QV
-                productCard.innerHTML = `
-                    <img src="${product.image || `https://placehold.co/300x180/cccccc/333333?text=${product.name.replace(/\s/g, '+')}`}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/300x180/cccccc/333333?text=No+Image';">
-                    <h3>${product.name}</h3>
-                    <div class="product-rating">${generateStarRating(product.rating)}</div>
-                    <p class="price">KES ${product.price.toFixed(2)}</p>
-                    <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart('${product.id}')">Add to Cart</button>
-                `;
-                recommendedProductsList.appendChild(productCard);
-            });
-        }
-
-        // --- Hero Section Image Carousel ---
-        let currentHeroImageIndex = 0;
+        // --- Image Carousel Logic ---
         const heroImages = document.querySelectorAll('.hero-background-image');
+        let currentImageIndex = 0;
 
         function changeHeroImage() {
-            heroImages[currentHeroImageIndex].classList.remove('active');
-            currentHeroImageIndex = (currentHeroImageIndex + 1) % heroImages.length;
-            heroImages[currentHeroImageIndex].classList.add('active');
+            heroImages.forEach((img, index) => {
+                if (index === currentImageIndex) {
+                    img.classList.add('active');
+                } else {
+                    img.classList.remove('active');
+                }
+            });
+            currentImageIndex = (currentImageIndex + 1) % heroImages.length;
         }
 
-        setInterval(changeHeroImage, 5000); // Change image every 5 seconds
-
-        // --- Testimonial Carousel ---
-        let currentTestimonialIndex = 0;
-        let testimonialsData = [
+        // --- Testimonial Carousel Logic ---
+        const testimonialsData = [
             {
-                quote: "Prince Alex Store has revolutionized how I buy groceries! The vegetables are incredibly fresh, and the delivery is always on time. Highly recommended!",
-                author: "Jane W.",
-                company: "Nairobi Customer"
+                name: "Mercy Wanjiku",
+                photo: "https://placehold.co/100x100/A0D9B1/333333?text=MW",
+                quote: "Prince Alex Store has transformed my cooking! The vegetables are incredibly fresh, and the delivery is always on time. Highly recommend for anyone in Vihiga!"
             },
             {
-                quote: "As a busy professional, I appreciate the convenience and quality. The organic selection is fantastic, and my family loves the freshness of everything.",
-                author: "Mark O.",
-                company: "Tambua Resident"
+                name: "John Kamau",
+                photo: "https://placehold.co/100x100/98C1D9/333333?text=JK",
+                quote: "I've tried many online stores, but Prince Alex's produce stands out. It truly feels farm-fresh, and the convenience is unmatched. Their organic options are fantastic."
             },
             {
-                quote: "I've tried other delivery services, but Prince Alex Store stands out. Their customer service is excellent, and the produce lasts so much longer.",
-                author: "Sarah K.",
-                company: "Loyal Customer"
+                name: "Amina Hassan",
+                photo: "https://placehold.co/100x100/FFD1AA/333333?text=AH",
+                quote: "Finally, a reliable source for healthy veggies! The quality is consistently excellent, and their customer service is top-notch. My family loves the variety."
             }
-        ]; // Dummy testimonials
+        ];
+        let currentTestimonialIndex = 0;
+        let testimonialInterval;
 
         function renderTestimonials() {
             testimonialCarousel.innerHTML = '';
             testimonialIndicatorsContainer.innerHTML = '';
 
-            if (testimonialsData.length === 0) {
-                testimonialCarousel.innerHTML = '<p style="text-align: center; width: 100%;">No testimonials to display yet.</p>';
-                return;
-            }
-
             testimonialsData.forEach((testimonial, index) => {
-                const testimonialCard = document.createElement('div');
-                testimonialCard.className = 'testimonial-card';
-                testimonialCard.innerHTML = `
-                    <img src="https://placehold.co/100x100/4CAF50/ffffff?text=User" alt="${testimonial.author}">
+                const card = document.createElement('div');
+                card.className = 'testimonial-card';
+                card.setAttribute('data-index', index);
+                card.innerHTML = `
+                    <img src="${testimonial.photo}" alt="${testimonial.name}">
                     <p>"${testimonial.quote}"</p>
-                    <strong>${testimonial.author}</strong>
-                    <p>${testimonial.company}</p>
+                    <strong>- ${testimonial.name}</strong>
                 `;
-                testimonialCarousel.appendChild(testimonialCard);
+                testimonialCarousel.appendChild(card);
 
-                const indicator = document.createElement('span');
+                const indicator = document.createElement('div');
                 indicator.className = 'testimonial-indicator';
+                indicator.setAttribute('data-index', index);
                 indicator.addEventListener('click', () => showTestimonial(index));
                 testimonialIndicatorsContainer.appendChild(indicator);
             });
-            showTestimonial(currentTestimonialIndex); // Show the first testimonial
+            showTestimonial(0); // Show the first testimonial
         }
 
         function showTestimonial(index) {
@@ -4198,48 +3724,49 @@
 
             cards.forEach((card, i) => {
                 card.classList.remove('active');
-                if (i === index) {
-                    card.classList.add('active');
-                }
+                card.style.display = 'none'; // Hide all initially
             });
-            indicators.forEach((indicator, i) => {
-                indicator.classList.remove('active');
-                if (i === index) {
-                    indicator.classList.add('active');
-                }
-            });
+            indicators.forEach(indicator => indicator.classList.remove('active'));
 
+            cards[index].classList.add('active');
+            cards[index].style.display = 'flex'; // Show only the active one
+            indicators[index].classList.add('active');
             currentTestimonialIndex = index;
-            // Scroll to the active testimonial
-            testimonialCarousel.scrollTo({
-                left: cards[index].offsetLeft - (testimonialCarousel.offsetWidth - cards[index].offsetWidth) / 2,
-                behavior: 'smooth'
-            });
+            resetTestimonialInterval();
         }
 
-        testimonialPrevBtn.addEventListener('click', () => {
-            currentTestimonialIndex = (currentTestimonialIndex - 1 + testimonialsData.length) % testimonialsData.length;
-            showTestimonial(currentTestimonialIndex);
-        });
+        function nextTestimonial() {
+            let nextIndex = (currentTestimonialIndex + 1) % testimonialsData.length;
+            showTestimonial(nextIndex);
+        }
 
-        testimonialNextBtn.addEventListener('click', () => {
-            currentTestimonialIndex = (currentTestimonialIndex + 1) % testimonialsData.length;
-            showTestimonial(currentTestimonialIndex);
-        });
+        function prevTestimonial() {
+            let prevIndex = (currentTestimonialIndex - 1 + testimonialsData.length) % testimonialsData.length;
+            showTestimonial(prevIndex);
+        }
+
+        testimonialNextBtn.addEventListener('click', nextTestimonial);
+        testimonialPrevBtn.addEventListener('click', prevTestimonial);
+
+        function startTestimonialCarousel() {
+            testimonialInterval = setInterval(nextTestimonial, 7000); // Change every 7 seconds
+        }
+
+        function resetTestimonialInterval() {
+            clearInterval(testimonialInterval);
+            startTestimonialCarousel();
+        }
 
         // --- Flash Sale Countdown Timer ---
-        // Set the end date for the flash sale (e.g., 3 days from now)
-        const flashSaleEndDate = new Date();
-        flashSaleEndDate.setDate(flashSaleEndDate.getDate() + 3); // 3 days from now
-        flashSaleEndDate.setHours(23, 59, 59, 999); // End of the day
-
         function updateCountdown() {
             const now = new Date().getTime();
-            const distance = flashSaleEndDate.getTime() - now;
+            // Set your target end date/time for the flash sale (e.g., 2 days from now)
+            const endDate = new Date(now + (2 * 24 * 60 * 60 * 1000) + (10 * 60 * 1000)).getTime(); // 2 days and 10 mins from now
+            
+            const distance = endDate - now;
 
             if (distance < 0) {
                 flashSaleCountdownDiv.innerHTML = "SALE ENDED!";
-                clearInterval(countdownInterval);
                 return;
             }
 
@@ -4254,13 +3781,367 @@
             countdownSecondsSpan.textContent = String(seconds).padStart(2, '0');
         }
 
-        const countdownInterval = setInterval(updateCountdown, 1000);
+        // --- Recommended Products ---
+        function renderRecommendedProducts(currentProductId) {
+            recommendedProductsList.innerHTML = '';
+            
+            // Filter out the current product from the list of all products
+            const otherProducts = allProducts.filter(p => p.id !== currentProductId);
 
-        // Initial calls when script loads
-        loadProductsFromFirestore(); // This also calls renderProducts()
-        renderTestimonials();
-        updateCountdown(); // Call once immediately to avoid delay
+            // Shuffle the remaining products and pick a few (e.g., 3)
+            const shuffled = [...otherProducts].sort(() => 0.5 - Math.random());
+            const selectedRecommendations = shuffled.slice(0, 3);
+
+            if (selectedRecommendations.length === 0) {
+                recommendedProductsList.innerHTML = '<p style="text-align: center; width: 100%;">No recommendations available.</p>';
+                return;
+            }
+
+            selectedRecommendations.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                // Remove AOS animation from these small cards to avoid clutter
+                // productCard.setAttribute('data-aos', 'zoom-in');
+                // productCard.setAttribute('data-aos-delay', '50');
+
+                const isFavorite = getFavorites().includes(product.id);
+                const favoriteIconClass = isFavorite ? 'fas' : 'far';
+                const stockStatusClass = product.stock > 0 ? 'in-stock' : 'sold-out';
+                const stockText = product.stock > 0 ? `In Stock (${product.stock})` : 'Sold Out';
+                const addToCartDisabled = product.stock <= 0 ? 'disabled' : '';
+                const addToCartText = product.stock <= 0 ? 'Add to Cart' : 'Add to Cart';
+
+                let badgeHtml = '';
+                if (product.badge) {
+                    const badgeClass = product.badge.toLowerCase().replace(/\s/g, '');
+                    badgeHtml = `<span class="product-badge ${badgeClass}">${product.badge}</span>`;
+                }
+
+                let priceHtml = `<p class="price">KES ${product.price.toFixed(2)} ${product.unit}</p>`;
+                if (product.originalPrice && product.originalPrice > product.price) {
+                    priceHtml = `<p class="price"><del>KES ${product.originalPrice.toFixed(2)}</del> KES ${product.price.toFixed(2)} ${product.unit}</p>`;
+                }
+
+                productCard.innerHTML = `
+                    ${badgeHtml}
+                    <div class="hover-icons">
+                        <i class="${favoriteIconClass} fa-heart" onclick="toggleFavorite('${product.id}', this)"></i>
+                        <i class="fas fa-eye" onclick="openQuickViewModal('${product.id}')"></i>
+                        <i class="fas fa-cart-plus" onclick="addToCart('${product.id}')"></i>
+                    </div>
+                    <img src="${product.image || `https://placehold.co/300x180/cccccc/333333?text=${product.name.replace(/\s/g, '+')}`}" alt="${product.name}" onerror="this.onerror=null;this.src='https://placehold.co/300x180/cccccc/333333?text=No+Image';">
+                    <h3>${product.name}</h3>
+                    <div class="product-rating">${generateStarRating(product.rating)}</div>
+                    ${priceHtml}
+                    <p class="stock-indicator ${stockStatusClass}">${stockText}</p>
+                    <button class="add-to-cart-btn" onclick="addToCart('${product.id}')" ${addToCartDisabled}>${addToCartText}</button>
+                `;
+                recommendedProductsList.appendChild(productCard);
+            });
+            AOS.refresh();
+        }
+
+        // --- Google Maps Autocomplete Initialization ---
+        // This function will be called by the Google Maps API script once it's loaded
+        function initAutocomplete() {
+            const deliveryLocationInput = document.getElementById('customer-delivery-location');
+            if (deliveryLocationInput) {
+                // Bias the search results towards Kenya (Nairobi coordinates for a general Kenya bias)
+                const defaultBounds = new google.maps.LatLngBounds(
+                    new google.maps.LatLng(-4.8, 33.9), // Southwest corner of Kenya
+                    new google.maps.LatLng(4.6, 41.9)  // Northeast corner of Kenya
+                );
+
+                const autocomplete = new google.maps.places.Autocomplete(deliveryLocationInput, {
+                    bounds: defaultBounds,
+                    componentRestrictions: { country: 'ke' }, // Restrict to Kenya
+                    types: ['geocode', 'establishment'] // Suggest addresses and businesses
+                });
+
+                autocomplete.addListener('place_changed', () => {
+                    const place = autocomplete.getPlace();
+                    if (!place.geometry) {
+                        // User entered the name of a Place that was not suggested and pressed the Enter key.
+                        console.log("No details available for input: '" + place.name + "'");
+                        return;
+                    }
+                    // Set the input field's value to the selected place's formatted address
+                    deliveryLocationInput.value = place.formatted_address;
+                });
+            }
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            applyDarkModePreference();
+            
+            // Check if there's a last order to display on confirmation page on load
+            if (getFromLocalStorage('lastOrder', null)) {
+                displayLastOrderConfirmation();
+            }
+
+            // Start hero image carousel
+            changeHeroImage(); // Show first image immediately
+            setInterval(changeHeroImage, 5000); // Change image every 5 seconds
+
+            // Render and start testimonial carousel
+            renderTestimonials();
+            startTestimonialCarousel();
+
+            // Start flash sale countdown
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+
+            // Attach form submission listeners for modals
+            document.getElementById('login-form-modal').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email-modal').value;
+                const password = document.getElementById('login-password-modal').value;
+
+                // Basic validation
+                if (!email || !password) {
+                    showModal('Error', 'Please enter both email and password.');
+                    return;
+                }
+
+                await window.loginUser(email, password); // Call global Firebase login
+            });
+
+            document.getElementById('signup-form-modal').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fullname = document.getElementById('signup-fullname-modal').value;
+                const email = document.getElementById('signup-email-modal').value;
+                const phoneNumber = document.getElementById('signup-phone-modal').value;
+                const password = document.getElementById('signup-password-modal').value;
+
+                // Basic validation
+                if (!fullname || !email || !phoneNumber || !password) {
+                    showModal('Error', 'Please fill in all required fields.');
+                    return;
+                }
+
+                await window.registerUser(email, password, fullname, phoneNumber); // Call global Firebase register
+            });
+            
+            document.getElementById('forgot-password-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('reset-email').value;
+                // Basic validation
+                if (!email) {
+                    showModal('Error', 'Please enter your email address.');
+                    return;
+                }
+                await window.resetPassword(email);
+            });
+
+            document.getElementById('edit-profile-form').addEventListener('submit', saveProfileDetails);
+            document.getElementById('checkout-form').addEventListener('submit', collectCustomerDetails);
+
+            // Show newsletter popup after 5 seconds if not already shown/subscribed
+            const hasSubscribedToNewsletter = getFromLocalStorage('newsletterSubscribed', false);
+            if (!hasSubscribedToNewsletter) {
+                setTimeout(() => {
+                    openNewsletterPopup();
+                }, 5000); // Show after 5 seconds
+            }
+
+            // Set a flag to remember if the newsletter popup has been shown
+            newsletterPopup.addEventListener('click', (event) => {
+                if (event.target === newsletterPopup || event.target.classList.contains('close-button')) {
+                    saveToLocalStorage('newsletterSubscribed', true); // Treat closing as opting out for this session
+                }
+            });
+
+        });
     </script>
+    <!-- Google Maps API Script -->
+    <!-- IMPORTANT: Replace 'YOUR_GOOGLE_MAPS_API_KEY' with your actual Google Maps API Key -->
+    <!-- You can get one from the Google Cloud Console: https://console.cloud.google.com/apis/credentials -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&callback=initAutocomplete"></script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+  import { getFirestore, collection, getDocs, query, orderBy, doc, setDoc, addDoc, updateDoc, deleteDoc, where, getDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, updateProfile, updatePassword, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+  // Import getStorage and ref for storage functionality (though not directly used for upload in this code)
+  // import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js";
+
+  // Global variables provided by Canvas environment
+  const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+  const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+      // Default config for local testing if __firebase_config is not available
+            apiKey: "AIzaSyBYfTWtl-N21DxVATxVnhCofgQsVu3xK4M",
+            authDomain: "store-e88d9.firebaseapp.com",
+            projectId: "store-e88d9",
+            storageBucket: "store-e88d9.appspot.com", // Fixed storage bucket as requested
+            messagingSenderId: "30797525855",
+            appId: "1:30797525855:web:335287605ec648f747fcea"
+  };
+  const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  // const storage = getStorage(app); // Initialize storage if image uploads were implemented
+
+  // Expose Firebase functions globally for use in inline scripts and event listeners
+  window.auth = auth; // Make auth object accessible
+  window.db = db;     // Make db object accessible
+  window.doc = doc;
+  window.setDoc = setDoc;
+  window.addDoc = addDoc;
+  window.updateDoc = updateDoc;
+  window.deleteDoc = deleteDoc;
+  window.collection = collection;
+  window.getDocs = getDocs;
+  window.query = query;
+  window.orderBy = orderBy;
+  window.where = where;
+  window.getDoc = getDoc;
+  window.updateProfile = updateProfile; // Expose updateProfile
+  window.updatePassword = updatePassword; // Expose updatePassword
+
+
+  // Firebase Authentication Functions exposed globally
+  window.registerUser = async function (email, password, fullname, phoneNumber) {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      // Update Firebase Auth profile
+      await updateProfile(userCredential.user, {
+        displayName: fullname
+      });
+
+      // Save additional user details to Firestore 'users' collection
+      await setDoc(doc(db, "users", userCredential.user.uid), {
+        email: email,
+        fullname: fullname,
+        phoneNumber: phoneNumber,
+        createdAt: new Date().toISOString(),
+        loyaltyPoints: 0, // Initialize loyalty points
+        favorites: [] // Initialize favorites
+      });
+
+      showModal('Registration Successful!', `Welcome, ${fullname || email}! You are now logged in.`);
+      closeSignupModal();
+      // Check if there's a pending checkout
+      if (getFromLocalStorage('pendingCheckout', false)) {
+          localStorage.removeItem('pendingCheckout');
+          openCustomerDetailsModal(); // Resume checkout
+      } else {
+          showPage('home-page'); // Or redirect to a dashboard
+      }
+    } catch (error) {
+      let errorMessage = 'Registration failed. Please try again.';
+      if (error.code === 'auth/email-already-in-use') {
+          errorMessage = 'The email address is already in use by another account.';
+      } else if (error.code === 'auth/invalid-email') {
+          errorMessage = 'The email address is not valid.';
+      } else if (error.code === 'auth/weak-password') {
+          errorMessage = 'The password is too weak. Please choose a stronger password.';
+      }
+      showModal('Registration Failed', 'Error: ' + errorMessage);
+      console.error("Registration error:", error);
+    }
+  };
+
+  window.loginUser = async function (email, password) {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      showModal('Login Successful!', `Welcome back, ${auth.currentUser.displayName || auth.currentUser.email}!`);
+      closeLoginModal();
+      // Check if there's a pending checkout
+      if (getFromLocalStorage('pendingCheckout', false)) {
+          localStorage.removeItem('pendingCheckout');
+          openCustomerDetailsModal(); // Resume checkout
+      } else {
+          showPage('home-page'); // Or redirect to a dashboard
+      }
+    } catch (error) {
+      let errorMessage = 'Login failed. Please try again.';
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+          errorMessage = 'Invalid email or password. Please check your credentials.';
+      } else if (error.code === 'auth/invalid-email') {
+          errorMessage = 'Invalid email format.';
+      } else if (error.code === 'auth/too-many-requests') {
+          errorMessage = 'Too many login attempts. Please try again later.';
+      }
+      showModal('Login Failed', 'Error: ' + errorMessage);
+      console.error("Login error:", error);
+    }
+  };
+
+  window.logoutUser = async function () {
+    try {
+      await signOut(auth);
+      showModal('Logged Out', 'You have been successfully logged out.');
+      showPage('home-page'); // Redirect to home after logout
+    } catch (error) {
+      showModal('Logout Failed', 'Error logging out: ' + error.message);
+      console.error("Logout error:", error);
+    }
+  };
+
+  window.resetPassword = async function(email) {
+    try {
+        await sendPasswordResetEmail(auth, email);
+        showModal('Password Reset', `A password reset link has been sent to ${email}. Please check your inbox.`);
+        closeForgotPasswordModal();
+        openLoginModal();
+    } catch (error) {
+        showModal('Password Reset Failed', 'Error sending reset email: ' + error.message);
+        console.error("Password reset error:", error);
+    }
+  };
+
+  // Firebase Auth State Listener
+  onAuthStateChanged(auth, async (user) => {
+    firebaseUser = user; // Update the global firebaseUser variable
+    await updateAuthUI(); // Update UI based on auth state
+
+    // Authenticate with custom token if available, otherwise sign in anonymously
+    if (initialAuthToken) {
+        try {
+            await signInWithCustomToken(auth, initialAuthToken);
+        } catch (error) {
+            console.error("Error signing in with custom token:", error);
+            // Fallback to anonymous if custom token fails (e.g., expired)
+            await signInAnonymously(auth);
+        }
+    } else {
+        await signInAnonymously(auth);
+    }
+
+    // Load products and update cart count after Firebase is ready
+    await loadProductsFromFirestore();
+    await updateCartCount();
+
+    // Handle pending checkout after Firebase login
+    if (user && getFromLocalStorage('pendingCheckout', false)) {
+        localStorage.removeItem('pendingCheckout');
+        openCustomerDetailsModal(); // Resume checkout
+    }
+    // If a guest logs in, merge their local cart with their Firestore cart
+    if (user) {
+        const guestCart = getFromLocalStorage('guestCart', []);
+        if (guestCart.length > 0) {
+            let userCart = await getCart();
+            // Merge logic: add guest items to user cart, handling duplicates
+            guestCart.forEach(guestItem => {
+                const existingUserItem = userCart.find(item => item.id === guestItem.id);
+                if (existingUserItem) {
+                    existingUserItem.quantity += guestItem.quantity;
+                } else {
+                    userCart.push(guestItem);
+                }
+            });
+            await saveCart(userCart);
+            localStorage.removeItem('guestCart'); // Clear guest cart after merge
+            await updateCartCount();
+        }
+    }
+  });
+
+</script>
 
 </body>
 </html>
