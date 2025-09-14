@@ -799,6 +799,15 @@
 
         .simple-voucher-form .form-group {
             margin-bottom: 20px;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 1 !important;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
 
         .simple-voucher-form label {
@@ -817,6 +826,11 @@
             font-size: 14px;
             background: var(--white);
             transition: var(--transition);
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            z-index: 1 !important;
         }
 
         .simple-voucher-form input:focus,
@@ -6840,6 +6854,14 @@
             document.body.style.overflow = 'hidden';
             console.log('Modal display set to:', modal.style.display);
             console.log('Modal should now be visible');
+            
+            // Debug: Check if form fields are visible
+            setTimeout(() => {
+                const voucherCodeField = document.getElementById('voucher-code');
+                console.log('Voucher code field after modal open:', voucherCodeField);
+                console.log('Field visible:', voucherCodeField ? voucherCodeField.offsetHeight > 0 : false);
+                console.log('Field display:', voucherCodeField ? window.getComputedStyle(voucherCodeField).display : 'N/A');
+            }, 100);
         }
 
         // Close create voucher modal
@@ -6885,20 +6907,37 @@
             console.log('=== SIMPLE VOUCHER CREATION STARTED ===');
             
             try {
+                // Get form elements first
+                const voucherCodeEl = document.getElementById('voucher-code');
+                const descriptionEl = document.getElementById('voucher-description');
+                const discountTypeEl = document.getElementById('voucher-discount-type');
+                const discountAmountEl = document.getElementById('voucher-discount-amount');
+                const minOrderEl = document.getElementById('voucher-min-order');
+                const usageLimitEl = document.getElementById('voucher-usage-limit');
+                const expiryDateEl = document.getElementById('voucher-expiry-date');
+                const isActiveEl = document.getElementById('voucher-is-active');
+                
+                console.log('Form elements found:', {
+                    voucherCodeEl, descriptionEl, discountTypeEl, discountAmountEl,
+                    minOrderEl, usageLimitEl, expiryDateEl, isActiveEl
+                });
+                
                 // Get form values
-                const voucherCode = document.getElementById('voucher-code').value.trim().toUpperCase();
-                const description = document.getElementById('voucher-description').value.trim();
-                const discountType = document.getElementById('voucher-discount-type').value;
-                const discountAmount = parseFloat(document.getElementById('voucher-discount-amount').value);
-                const minOrderAmount = document.getElementById('voucher-min-order').value ? parseFloat(document.getElementById('voucher-min-order').value) : null;
-                const usageLimit = document.getElementById('voucher-usage-limit').value ? parseInt(document.getElementById('voucher-usage-limit').value) : null;
-                const expiryDate = document.getElementById('voucher-expiry-date').value;
-                const isActive = document.getElementById('voucher-is-active').checked;
+                const voucherCode = voucherCodeEl ? voucherCodeEl.value.trim().toUpperCase() : '';
+                const description = descriptionEl ? descriptionEl.value.trim() : '';
+                const discountType = discountTypeEl ? discountTypeEl.value : '';
+                const discountAmount = discountAmountEl ? parseFloat(discountAmountEl.value) : 0;
+                const minOrderAmount = minOrderEl && minOrderEl.value ? parseFloat(minOrderEl.value) : null;
+                const usageLimit = usageLimitEl && usageLimitEl.value ? parseInt(usageLimitEl.value) : null;
+                const expiryDate = expiryDateEl ? expiryDateEl.value : '';
+                const isActive = isActiveEl ? isActiveEl.checked : true;
                 
                 console.log('Form data collected:', {
                     voucherCode, description, discountType, discountAmount,
                     minOrderAmount, usageLimit, expiryDate, isActive
                 });
+                
+                console.log('Raw voucher code value:', voucherCodeEl ? voucherCodeEl.value : 'Element not found');
                 
                 // Basic validation
                 if (!voucherCode) {
@@ -7105,6 +7144,28 @@
             }
         };
 
+        // Test function to check form fields
+        window.testFormFields = function() {
+            console.log('=== TESTING FORM FIELDS ===');
+            const fields = [
+                'voucher-code', 'voucher-description', 'voucher-discount-type',
+                'voucher-discount-amount', 'voucher-min-order', 'voucher-usage-limit',
+                'voucher-expiry-date', 'voucher-is-active'
+            ];
+            
+            fields.forEach(fieldId => {
+                const element = document.getElementById(fieldId);
+                console.log(`${fieldId}:`, element ? element.value || element.checked : 'NOT FOUND');
+            });
+            
+            // Test setting a value
+            const codeField = document.getElementById('voucher-code');
+            if (codeField) {
+                codeField.value = 'TEST123';
+                console.log('Set voucher-code to TEST123, current value:', codeField.value);
+            }
+        };
+
         // Expose voucher functions to global scope for HTML onclick events
         window.openCreateVoucherModal = openCreateVoucherModal;
         window.closeCreateVoucherModal = closeCreateVoucherModal;
@@ -7118,6 +7179,7 @@
         window.deleteVoucher = deleteVoucher;
         window.debugVoucherCreation = debugVoucherCreation;
         window.testVoucherModal = testVoucherModal;
+        window.testFormFields = testFormFields;
 
         // Initial load of UI when the DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
