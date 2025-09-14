@@ -1588,6 +1588,260 @@
             font-weight: 600;
         }
 
+        /* Voucher Management Styles */
+        .voucher-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .voucher-stats {
+            margin-bottom: 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .stat-card {
+            background: var(--light-bg);
+            padding: 20px;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .stat-card h5 {
+            margin: 0 0 8px 0;
+            color: var(--text-color);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stat-card span {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .voucher-filters {
+            margin-bottom: 24px;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .filter-controls select,
+        .filter-controls input {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background: var(--white);
+            color: var(--text-color);
+        }
+
+        .filter-controls input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .voucher-card {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: var(--transition);
+        }
+
+        .voucher-card:hover {
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .voucher-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .voucher-info h4 {
+            margin: 0 0 4px 0;
+            color: var(--dark-text);
+            font-size: 18px;
+        }
+
+        .voucher-code {
+            font-family: 'Courier New', monospace;
+            background: var(--light-bg);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .voucher-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .voucher-status.active {
+            background: #e8f5e8;
+            color: #4CAF50;
+        }
+
+        .voucher-status.inactive {
+            background: #ffebee;
+            color: #f44336;
+        }
+
+        .voucher-status.expired {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+
+        .voucher-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .voucher-detail {
+            text-align: center;
+        }
+
+        .voucher-detail-label {
+            font-size: 12px;
+            color: var(--text-color);
+            margin-bottom: 4px;
+        }
+
+        .voucher-detail-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .voucher-actions-card {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .voucher-action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .voucher-action-btn.edit {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .voucher-action-btn.toggle {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .voucher-action-btn.delete {
+            background: #ffebee;
+            color: #d32f2f;
+        }
+
+        .voucher-action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background: var(--white);
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 4px;
+            color: var(--text-color);
+            font-size: 12px;
+        }
+
+        .form-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .form-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .cancel-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .create-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .form-actions button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .search-section {
@@ -1597,6 +1851,28 @@
             .filter-section {
                 flex-direction: column;
             }
+
+            .voucher-actions {
+                flex-direction: column;
+            }
+
+            .filter-controls {
+                flex-direction: column;
+            }
+
+            .voucher-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .voucher-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
 
             .order-summary {
                 grid-template-columns: 1fr;
@@ -2120,6 +2396,268 @@
             font-size: 14px;
         }
 
+        /* Order Editing Styles */
+        .order-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .edit-order-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .edit-order-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .order-edit-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .order-edit-content {
+            background-color: var(--white);
+            margin: 2% auto;
+            padding: 0;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .order-edit-body {
+            padding: 24px;
+        }
+
+        .edit-section {
+            margin-bottom: 24px;
+        }
+
+        .edit-section h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark-text);
+            margin: 0 0 16px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--light-bg);
+        }
+
+        .editable-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .editable-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--light-bg);
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .editable-item:hover {
+            background: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .item-image {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--border-radius-sm);
+            object-fit: cover;
+            border: 1px solid var(--border-color);
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: var(--dark-text);
+            margin-bottom: 4px;
+        }
+
+        .item-unit {
+            color: var(--text-color);
+            font-size: 14px;
+        }
+
+        .item-quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quantity-input {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .quantity-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .quantity-btn:disabled {
+            background: var(--border-color);
+            cursor: not-allowed;
+        }
+
+        .item-price {
+            font-weight: 600;
+            color: var(--primary-color);
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .remove-item-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            background: #dc3545;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .remove-item-btn:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+        .order-summary-edit {
+            background: var(--light-bg);
+            padding: 16px;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .total-row {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary-color);
+            border-top: 2px solid var(--primary-color);
+            margin-top: 8px;
+            padding-top: 12px;
+        }
+
+        #modification-notes {
+            width: 100%;
+            min-height: 80px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .cancel-btn {
+            padding: 12px 24px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .cancel-btn:hover {
+            background: #5a6268;
+        }
+
+        .save-btn {
+            padding: 12px 24px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .save-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .save-btn:disabled {
+            background: var(--border-color);
+            cursor: not-allowed;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 1024px) {
             .admin-sidebar {
@@ -2209,9 +2747,9 @@
     <div id="admin-login-section" class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <div class="logo">Prince Alex Store Admin</div>
+            <div class="logo">Prince Alex Store Admin</div>
                 <p class="login-subtitle">Admin Panel Access</p>
-            </div>
+        </div>
             <p class="login-description">Please log in with your account credentials to access the admin dashboard. Any registered user can access the admin panel.</p>
             <form id="admin-login-form" class="auth-form">
                 <input type="email" id="admin-email" placeholder="Your Email Address" required>
@@ -2219,7 +2757,7 @@
                 <button type="submit">Access Admin Panel</button>
             </form>
         </div>
-    </div>
+        </div>
 
     <!-- Admin Dashboard Layout -->
     <div id="admin-dashboard" style="display: none;">
@@ -2265,6 +2803,11 @@
                     <a href="#" class="nav-item" data-page="referrals">
                         <i class="fas fa-share-alt"></i>
                         <span>Referrals</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="vouchers">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span>Vouchers</span>
+                        <span class="nav-badge" id="active-vouchers-badge">0</span>
                     </a>
                     <a href="#" class="nav-item" data-page="contacts">
                         <i class="fas fa-envelope"></i>
@@ -2396,7 +2939,7 @@
                     </div>
                 </div>
 
-                <!-- Manage Products Section -->
+            <!-- Manage Products Section -->
                 <div id="admin-products-section" class="admin-section admin-page">
                     <div class="section-header">
                         <h2>Product Management</h2>
@@ -2405,34 +2948,34 @@
                     
                     <div class="products-container">
                         <div class="products-sidebar">
-                            <h3>Add New Product</h3>
-                            <form id="add-product-form" class="admin-form">
-                                <input type="text" id="product-name" placeholder="Product Name" required>
-                                <input type="url" id="product-image-url" placeholder="Image URL (e.g., https://.../image.jpg)" required>
-                                <div id="image-preview" style="display: none; margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
-                                    <!-- Image preview will be shown here -->
-                                </div>
-                                <textarea id="product-description" rows="3" placeholder="Product Description" required></textarea>
-                                <input type="number" id="product-price" placeholder="Price (KES)" step="0.01" required>
-                                <input type="text" id="product-unit" placeholder="Unit (e.g., per Kg)" required>
-                                <input type="number" id="product-stock" placeholder="Stock Quantity" min="0" required>
-                                <select id="product-category" required>
-                                    <option value="">Select Category</option>
-                                    <option value="vegetables">Vegetables</option>
-                                    <option value="leafy greens">Leafy Greens</option>
-                                    <option value="herbs">Herbs</option>
-                                    <option value="fruits">Fruits</option>
-                                    <option value="organic">Organic</option>
-                                </select>
-                                <input type="number" id="product-rating" placeholder="Rating (1-5)" min="1" max="5" step="0.1" value="4.5">
-                                <input type="text" id="product-tags" placeholder="Tags (comma-separated, e.g., fresh, organic, local)">
-                                <button type="submit">Add Product</button>
-                            </form>
+                <h3>Add New Product</h3>
+                <form id="add-product-form" class="admin-form">
+                    <input type="text" id="product-name" placeholder="Product Name" required>
+                    <input type="url" id="product-image-url" placeholder="Image URL (e.g., https://.../image.jpg)" required>
+                    <div id="image-preview" style="display: none; margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
+                        <!-- Image preview will be shown here -->
+                    </div>
+                    <textarea id="product-description" rows="3" placeholder="Product Description" required></textarea>
+                    <input type="number" id="product-price" placeholder="Price (KES)" step="0.01" required>
+                    <input type="text" id="product-unit" placeholder="Unit (e.g., per Kg)" required>
+                    <input type="number" id="product-stock" placeholder="Stock Quantity" min="0" required>
+                    <select id="product-category" required>
+                        <option value="">Select Category</option>
+                        <option value="vegetables">Vegetables</option>
+                        <option value="leafy greens">Leafy Greens</option>
+                        <option value="herbs">Herbs</option>
+                        <option value="fruits">Fruits</option>
+                        <option value="organic">Organic</option>
+                    </select>
+                    <input type="number" id="product-rating" placeholder="Rating (1-5)" min="1" max="5" step="0.1" value="4.5">
+                    <input type="text" id="product-tags" placeholder="Tags (comma-separated, e.g., fresh, organic, local)">
+                    <button type="submit">Add Product</button>
+                </form>
                         </div>
                         
                         <div class="products-main">
                             <div class="products-header">
-                                <h3>Existing Products</h3>
+                <h3>Existing Products</h3>
                                 <div class="products-actions">
                                     <button class="action-btn" onclick="loadProducts()">
                                         <i class="fas fa-sync-alt"></i> Refresh
@@ -2446,10 +2989,10 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
                 </div>
+            </div>
 
-                <!-- Manage Orders Section -->
+            <!-- Manage Orders Section -->
                 <div id="admin-orders-section" class="admin-section admin-page">
                     <div class="section-header">
                         <h2>Order Management</h2>
@@ -2516,7 +3059,7 @@
                 </div>
             </div>
 
-                <!-- Manage Customers Section -->
+            <!-- Manage Customers Section -->
                 <div id="admin-customers-section" class="admin-section admin-page">
                     <div class="section-header">
                         <h2>Customer Management</h2>
@@ -2578,7 +3121,7 @@
                 </div>
             </div>
 
-                <!-- Manage Referrals Section -->
+            <!-- Manage Referrals Section -->
                 <div id="admin-referrals-section" class="admin-section admin-page">
                     <div class="section-header">
                         <h2>Referral Management</h2>
@@ -2633,21 +3176,89 @@
                 </div>
             </div>
 
-                <!-- Manage Contact Submissions Section -->
+            <!-- Manage Contact Submissions Section -->
                 <div id="admin-contacts-section" class="admin-section admin-page">
                     <div class="section-header">
                         <h2>Contact Messages</h2>
                         <p>View and manage customer inquiries</p>
                     </div>
-                    <div id="contact-submissions-list">
+                <div id="contact-submissions-list">
                         <div class="loading-state">
                             <i class="fas fa-spinner fa-spin"></i>
                             <p>Loading messages...</p>
                         </div>
                     </div>
                 </div>
+
+                <!-- Voucher Management Section -->
+                <div id="admin-vouchers-section" class="admin-section admin-page">
+                    <div class="section-header">
+                        <h2>Voucher Management</h2>
+                        <p>Create, manage, and track voucher usage</p>
+                    </div>
+
+                    <!-- Voucher Actions -->
+                    <div class="voucher-actions">
+                        <button onclick="openCreateVoucherModal()" class="action-btn create-btn">
+                            <i class="fas fa-plus"></i> Create New Voucher
+                        </button>
+                        <button onclick="refreshVouchers()" class="action-btn refresh-btn">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+
+                    <!-- Voucher Statistics -->
+                    <div class="voucher-stats">
+                        <h4>📊 Voucher Statistics</h4>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h5>Active Vouchers</h5>
+                                <span id="active-vouchers-count">0</span>
+                            </div>
+                            <div class="stat-card">
+                                <h5>Total Usage</h5>
+                                <span id="total-voucher-usage">0</span>
+                            </div>
+                            <div class="stat-card">
+                                <h5>Total Discount Given</h5>
+                                <span id="total-discount-given">KES 0.00</span>
+                            </div>
+                            <div class="stat-card">
+                                <h5>Expired Vouchers</h5>
+                                <span id="expired-vouchers-count">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Voucher Filters -->
+                    <div class="voucher-filters">
+                        <h4>🔍 Filter Vouchers</h4>
+                        <div class="filter-controls">
+                            <select id="voucher-status-filter" onchange="filterVouchers()">
+                                <option value="all">All Vouchers</option>
+                                <option value="active">Active Only</option>
+                                <option value="inactive">Inactive Only</option>
+                                <option value="expired">Expired Only</option>
+                            </select>
+                            <input type="text" id="voucher-search" placeholder="Search by code or description..." onkeyup="filterVouchers()">
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Vouchers List -->
+                    <h4>🎫 All Vouchers</h4>
+                    <div id="vouchers-list">
+                        <div class="loading-state">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading vouchers...</p>
+                        </div>
+                </div>
             </div>
-        </main>
+        </div>
+    </main>
     </div>
 
     <!-- Custom Message Modal -->
@@ -2665,10 +3276,61 @@
         <div class="order-details-content">
             <div class="order-details-header">
                 <h3 class="order-details-title" id="order-details-title">Order Details</h3>
-                <span class="close-button" onclick="closeOrderDetailsModal()">&times;</span>
+                <div class="order-header-actions">
+                    <button id="edit-order-btn" class="edit-order-btn" onclick="toggleOrderEditMode()">
+                        <i class="fas fa-edit"></i> Edit Order
+                    </button>
+                    <span class="close-button" onclick="closeOrderDetailsModal()">&times;</span>
+                </div>
             </div>
             <div class="order-details-body" id="order-details-body">
                 <!-- Order details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Edit Modal -->
+    <div id="order-edit-modal" class="order-edit-modal">
+        <div class="order-edit-content">
+            <div class="order-details-header">
+                <h3 class="order-details-title">Edit Order</h3>
+                <span class="close-button" onclick="closeOrderEditModal()">&times;</span>
+            </div>
+            <div class="order-edit-body">
+                <div class="edit-section">
+                    <h4>Order Items</h4>
+                    <div id="editable-items-list" class="editable-items-list">
+                        <!-- Editable items will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="edit-section">
+                    <h4>Order Summary</h4>
+                    <div class="order-summary-edit">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span id="edit-subtotal">KES 0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Delivery Fee:</span>
+                            <span id="edit-delivery-fee">KES 0.00</span>
+                        </div>
+                        <div class="summary-row total-row">
+                            <span>Total:</span>
+                            <span id="edit-total">KES 0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="edit-section">
+                    <h4>Modification Notes</h4>
+                    <textarea id="modification-notes" placeholder="Add notes about the order modification (optional)"></textarea>
+                </div>
+
+                <div class="edit-actions">
+                    <button onclick="closeOrderEditModal()" class="cancel-btn">Cancel</button>
+                    <button onclick="saveOrderChanges()" class="save-btn">Save Changes</button>
+                </div>
             </div>
         </div>
     </div>
@@ -2706,6 +3368,70 @@
                 <button onclick="closeStatusUpdateModal()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer;">Cancel</button>
                 <button onclick="updateOrderStatus()" id="confirm-status-btn" style="padding: 10px 20px; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer;">Update Status</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Create Voucher Modal -->
+    <div id="create-voucher-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeCreateVoucherModal()">&times;</span>
+            <h3>Create New Voucher</h3>
+            <form id="create-voucher-form" onsubmit="createVoucher(event)">
+                <div class="form-group">
+                    <label for="voucher-code">Voucher Code *</label>
+                    <input type="text" id="voucher-code" placeholder="e.g., WELCOME10" maxlength="20" required>
+                    <small>Enter a unique code (uppercase letters and numbers only)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="voucher-description">Description *</label>
+                    <input type="text" id="voucher-description" placeholder="e.g., Welcome discount for new customers" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="voucher-discount-type">Discount Type *</label>
+                    <select id="voucher-discount-type" required onchange="updateDiscountInput()">
+                        <option value="fixed">Fixed Amount (KES)</option>
+                        <option value="percentage">Percentage (%)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="voucher-discount-amount">Discount Amount *</label>
+                    <input type="number" id="voucher-discount-amount" placeholder="e.g., 100 or 10" min="0" step="0.01" required>
+                    <small id="discount-help-text">Enter the discount amount in KES</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="voucher-min-order">Minimum Order Amount</label>
+                    <input type="number" id="voucher-min-order" placeholder="e.g., 500" min="0" step="0.01">
+                    <small>Minimum order amount required to use this voucher (optional)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="voucher-usage-limit">Usage Limit</label>
+                    <input type="number" id="voucher-usage-limit" placeholder="e.g., 100" min="1">
+                    <small>Maximum number of times this voucher can be used (optional)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="voucher-expiry-date">Expiry Date</label>
+                    <input type="datetime-local" id="voucher-expiry-date">
+                    <small>When this voucher expires (optional)</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="voucher-is-active" checked> Active Voucher
+                    </label>
+                    <small>Uncheck to create an inactive voucher</small>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" onclick="closeCreateVoucherModal()" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="create-btn">Create Voucher</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -2821,6 +3547,7 @@
                 'orders': 'Order Management',
                 'customers': 'Customer Management',
                 'referrals': 'Referral Management',
+                'vouchers': 'Voucher Management',
                 'contacts': 'Contact Messages'
             };
             if (pageTitle && pageTitles[pageName]) {
@@ -2844,6 +3571,8 @@
                 loadAllCustomers();
             } else if (pageName === 'referrals') {
                 loadReferralData();
+            } else if (pageName === 'vouchers') {
+                loadVouchers();
             } else if (pageName === 'contacts') {
                 loadContactSubmissions();
             }
@@ -3097,7 +3826,7 @@
 
             // Quick action buttons
             document.querySelectorAll('.quick-action-btn[data-page]').forEach(button => {
-                button.addEventListener('click', (e) => {
+            button.addEventListener('click', (e) => {
                     e.preventDefault();
                     const page = e.currentTarget.dataset.page;
                     switchAdminPage(page);
@@ -3528,10 +4257,10 @@
                 const orderCard = document.createElement('div');
                 orderCard.className = 'order-card';
                 
-                const customerName = order.customer ? order.customer.fullName : 'Unknown Customer';
-                const customerEmail = order.userEmail || 'No email';
-                const customerPhone = order.customer ? order.customer.phoneNumber : 'No phone';
-                const deliveryLocation = order.customer ? order.customer.deliveryLocation : 'No location';
+                    const customerName = order.customer ? order.customer.fullName : 'Unknown Customer';
+                    const customerEmail = order.userEmail || 'No email';
+                    const customerPhone = order.customer ? order.customer.phoneNumber : 'No phone';
+                    const deliveryLocation = order.customer ? order.customer.deliveryLocation : 'No location';
                 const itemsCount = order.items ? order.items.length : 0;
                 const itemsSummary = order.items ? order.items.slice(0, 2).map(item => `${item.name} (x${item.quantity})`).join(', ') : 'No items';
                 const moreItems = itemsCount > 2 ? ` +${itemsCount - 2} more` : '';
@@ -3576,7 +4305,7 @@
                         </div>
                     </div>
                     
-                    <div class="order-actions">
+                        <div class="order-actions">
                         <button class="action-btn btn-view" onclick="viewOrderDetails('${order.id}')">
                             <i class="fas fa-eye"></i> View Details
                         </button>
@@ -3776,8 +4505,8 @@
                                 <span class="detail-value" style="font-weight: 700; color: var(--primary-color);">KES ${order.total ? order.total.toFixed(2) : '0.00'}</span>
                             </div>
                         </div>
-                    </div>
-                `;
+                        </div>
+                    `;
 
                 document.getElementById('order-details-title').textContent = `Order Details - ${order.id}`;
                 document.getElementById('order-details-body').innerHTML = orderDetailsHtml;
@@ -3958,6 +4687,445 @@
         window.closeStatusUpdateModal = function() {
             document.getElementById('status-update-modal').style.display = 'none';
             currentOrderId = null;
+        }
+
+        // --- Order Editing Functions ---
+        let currentEditingOrder = null;
+        let originalOrderData = null;
+
+        window.toggleOrderEditMode = function() {
+            if (!currentOrderId) {
+                showModal('Error', 'No order selected for editing.', true);
+                return;
+            }
+
+            const order = allOrders.find(o => o.id === currentOrderId);
+            if (!order) {
+                showModal('Error', 'Order not found.', true);
+                return;
+            }
+
+            // Store original order data for comparison
+            originalOrderData = JSON.parse(JSON.stringify(order));
+            currentEditingOrder = { ...order };
+
+            // Populate the edit modal
+            populateOrderEditModal(order);
+            document.getElementById('order-edit-modal').style.display = 'flex';
+        }
+
+        function populateOrderEditModal(order) {
+            const itemsList = document.getElementById('editable-items-list');
+            
+            if (!order.items || order.items.length === 0) {
+                itemsList.innerHTML = '<p>No items in this order.</p>';
+                return;
+            }
+
+            itemsList.innerHTML = order.items.map((item, index) => `
+                <div class="editable-item" data-item-index="${index}">
+                    <img src="${item.image || '/images/placeholder.jpg'}" alt="${item.name}" class="item-image" onerror="this.src='/images/placeholder.jpg'">
+                    <div class="item-details">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-unit">${item.unit || 'per item'}</div>
+                    </div>
+                    <div class="item-quantity-controls">
+                        <button class="quantity-btn" onclick="decreaseItemQuantity(${index})" ${item.quantity <= 1 ? 'disabled' : ''}>
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" onchange="updateItemQuantity(${index}, this.value)">
+                        <button class="quantity-btn" onclick="increaseItemQuantity(${index})">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <div class="item-price">KES ${(item.price * item.quantity).toFixed(2)}</div>
+                    <button class="remove-item-btn" onclick="removeItemFromOrder(${index})" title="Remove item">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            // Update order summary
+            updateOrderSummary();
+        }
+
+        window.increaseItemQuantity = function(index) {
+            if (currentEditingOrder && currentEditingOrder.items[index]) {
+                currentEditingOrder.items[index].quantity += 1;
+                updateItemQuantityInput(index);
+                updateOrderSummary();
+            }
+        }
+
+        window.decreaseItemQuantity = function(index) {
+            if (currentEditingOrder && currentEditingOrder.items[index] && currentEditingOrder.items[index].quantity > 1) {
+                currentEditingOrder.items[index].quantity -= 1;
+                updateItemQuantityInput(index);
+                updateOrderSummary();
+            }
+        }
+
+        window.updateItemQuantity = function(index, newQuantity) {
+            const quantity = parseInt(newQuantity);
+            if (quantity >= 1 && currentEditingOrder && currentEditingOrder.items[index]) {
+                currentEditingOrder.items[index].quantity = quantity;
+                updateItemQuantityInput(index);
+                updateOrderSummary();
+            }
+        }
+
+        function updateItemQuantityInput(index) {
+            const input = document.querySelector(`[data-item-index="${index}"] .quantity-input`);
+            const item = currentEditingOrder.items[index];
+            if (input && item) {
+                input.value = item.quantity;
+                
+                // Update price display
+                const priceElement = document.querySelector(`[data-item-index="${index}"] .item-price`);
+                if (priceElement) {
+                    priceElement.textContent = `KES ${(item.price * item.quantity).toFixed(2)}`;
+                }
+
+                // Update button states
+                const decreaseBtn = document.querySelector(`[data-item-index="${index}"] .quantity-btn:first-child`);
+                if (decreaseBtn) {
+                    decreaseBtn.disabled = item.quantity <= 1;
+                }
+            }
+        }
+
+        window.removeItemFromOrder = function(index) {
+            if (currentEditingOrder && currentEditingOrder.items[index]) {
+                const item = currentEditingOrder.items[index];
+                const confirmRemove = confirm(`Are you sure you want to remove "${item.name}" from this order?`);
+                
+                if (confirmRemove) {
+                    currentEditingOrder.items.splice(index, 1);
+                    
+                    // Re-render the items list
+                    populateOrderEditModal(currentEditingOrder);
+                    
+                    // Check if no items left
+                    if (currentEditingOrder.items.length === 0) {
+                        showModal('Warning', 'All items have been removed from this order. The order will be cancelled if you save.', true);
+                    }
+                }
+            }
+        }
+
+        function updateOrderSummary() {
+            if (!currentEditingOrder) return;
+
+            let subtotal = 0;
+            currentEditingOrder.items.forEach(item => {
+                subtotal += item.price * item.quantity;
+            });
+
+            const deliveryFee = currentEditingOrder.transportationFee || 0;
+            const total = subtotal + deliveryFee;
+
+            document.getElementById('edit-subtotal').textContent = `KES ${subtotal.toFixed(2)}`;
+            document.getElementById('edit-delivery-fee').textContent = `KES ${deliveryFee.toFixed(2)}`;
+            document.getElementById('edit-total').textContent = `KES ${total.toFixed(2)}`;
+
+            // Update the current editing order totals
+            currentEditingOrder.subtotal = subtotal;
+            currentEditingOrder.total = total;
+        }
+
+        window.closeOrderEditModal = function() {
+            document.getElementById('order-edit-modal').style.display = 'none';
+            currentEditingOrder = null;
+            originalOrderData = null;
+            document.getElementById('modification-notes').value = '';
+        }
+
+        window.saveOrderChanges = async function() {
+            if (!currentEditingOrder || !currentOrderId) {
+                showModal('Error', 'No order changes to save.', true);
+                return;
+            }
+
+            // Check if order has items
+            if (!currentEditingOrder.items || currentEditingOrder.items.length === 0) {
+                const confirmCancel = confirm('This order has no items left. Do you want to cancel this order?');
+                if (confirmCancel) {
+                    await cancelOrder();
+                }
+                return;
+            }
+
+            try {
+                // Show loading state
+                const saveBtn = document.querySelector('.save-btn');
+                const originalText = saveBtn.textContent;
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'Saving...';
+
+                // Prepare order update data
+                const orderUpdateData = {
+                    items: currentEditingOrder.items,
+                    subtotal: currentEditingOrder.subtotal,
+                    total: currentEditingOrder.total,
+                    lastModified: new Date(),
+                    modificationNotes: document.getElementById('modification-notes').value.trim()
+                };
+
+                // Add modification history
+                if (!currentEditingOrder.modificationHistory) {
+                    currentEditingOrder.modificationHistory = [];
+                }
+                
+                currentEditingOrder.modificationHistory.push({
+                    timestamp: new Date(),
+                    adminUser: firebaseUser ? firebaseUser.email : 'Unknown Admin',
+                    changes: getOrderChanges(originalOrderData, currentEditingOrder),
+                    notes: orderUpdateData.modificationNotes
+                });
+
+                orderUpdateData.modificationHistory = currentEditingOrder.modificationHistory;
+
+                // Update order in Firestore
+                const orderRef = doc(db, 'orders', currentOrderId);
+                await updateDoc(orderRef, orderUpdateData);
+
+                // Send notification email to customer
+                await sendOrderModificationNotification(currentEditingOrder, originalOrderData);
+
+                // Update local data
+                const orderIndex = allOrders.findIndex(o => o.id === currentOrderId);
+                if (orderIndex !== -1) {
+                    allOrders[orderIndex] = { ...allOrders[orderIndex], ...orderUpdateData };
+                }
+
+                // Refresh orders list
+                await loadOrders();
+
+                // Close modal and show success message
+                closeOrderEditModal();
+                showModal('Success', 'Order has been successfully updated and the customer has been notified.');
+
+            } catch (error) {
+                console.error('Error saving order changes:', error);
+                showModal('Error', `Failed to save order changes: ${error.message}`, true);
+            } finally {
+                // Restore button state
+                const saveBtn = document.querySelector('.save-btn');
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Save Changes';
+                }
+            }
+        }
+
+        function getOrderChanges(original, modified) {
+            const changes = [];
+            
+            // Check for item changes
+            if (original.items.length !== modified.items.length) {
+                changes.push(`Items count changed from ${original.items.length} to ${modified.items.length}`);
+            }
+
+            // Check for quantity changes
+            original.items.forEach((originalItem, index) => {
+                const modifiedItem = modified.items[index];
+                if (modifiedItem && originalItem.quantity !== modifiedItem.quantity) {
+                    changes.push(`Quantity of "${originalItem.name}" changed from ${originalItem.quantity} to ${modifiedItem.quantity}`);
+                }
+            });
+
+            // Check for removed items
+            const removedItems = original.items.filter(originalItem => 
+                !modified.items.some(modifiedItem => modifiedItem.id === originalItem.id)
+            );
+            removedItems.forEach(item => {
+                changes.push(`"${item.name}" was removed from the order`);
+            });
+
+            // Check for total changes
+            if (original.total !== modified.total) {
+                changes.push(`Total amount changed from KES ${original.total.toFixed(2)} to KES ${modified.total.toFixed(2)}`);
+            }
+
+            return changes;
+        }
+
+        async function sendOrderModificationNotification(modifiedOrder, originalOrder) {
+            try {
+                const customerEmail = modifiedOrder.customer ? modifiedOrder.customer.email : null;
+                if (!customerEmail) {
+                    console.warn('No customer email found for order modification notification');
+                    return;
+                }
+
+                const changes = getOrderChanges(originalOrder, modifiedOrder);
+                const modificationNotes = document.getElementById('modification-notes').value.trim();
+
+                // Create email content
+                const emailContent = `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                        <div style="background: linear-gradient(135deg, #4CAF50, #45a049); color: white; padding: 20px; border-radius: 10px 10px 0 0; text-align: center;">
+                            <h2 style="margin: 0; font-size: 24px;">Order Update Notification</h2>
+                            <p style="margin: 10px 0 0 0; opacity: 0.9;">Prince Alex Store</p>
+                        </div>
+                        
+                        <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none;">
+                            <h3 style="color: #333; margin-top: 0;">Hello ${modifiedOrder.customer ? modifiedOrder.customer.fullName : 'Valued Customer'},</h3>
+                            
+                            <p style="color: #666; line-height: 1.6;">We wanted to inform you that your order <strong>#${modifiedOrder.id}</strong> has been updated by our team.</p>
+                            
+                            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                                <h4 style="color: #333; margin-top: 0;">Changes Made:</h4>
+                                <ul style="color: #666; padding-left: 20px;">
+                                    ${changes.map(change => `<li>${change}</li>`).join('')}
+                                </ul>
+                            </div>
+                            
+                            ${modificationNotes ? `
+                                <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                                    <h4 style="color: #1976d2; margin-top: 0;">Admin Notes:</h4>
+                                    <p style="color: #666; margin: 0;">${modificationNotes}</p>
+                                </div>
+                            ` : ''}
+                            
+                            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                                <h4 style="color: #333; margin-top: 0;">Updated Order Summary:</h4>
+                                <div style="display: flex; justify-content: space-between; margin: 10px 0;">
+                                    <span>Subtotal:</span>
+                                    <span>KES ${modifiedOrder.subtotal.toFixed(2)}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin: 10px 0;">
+                                    <span>Delivery Fee:</span>
+                                    <span>KES ${(modifiedOrder.transportationFee || 0).toFixed(2)}</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin: 10px 0; font-weight: bold; font-size: 18px; color: #4CAF50; border-top: 2px solid #4CAF50; padding-top: 10px;">
+                                    <span>Total:</span>
+                                    <span>KES ${modifiedOrder.total.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            
+                            <p style="color: #666; line-height: 1.6;">If you have any questions about these changes, please don't hesitate to contact us.</p>
+                            
+                            <div style="text-align: center; margin: 30px 0;">
+                                <a href="mailto:info@princealexstore.com" style="background: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Contact Support</a>
+                            </div>
+                        </div>
+                        
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 0 0 10px 10px; text-align: center; color: #666; font-size: 14px;">
+                            <p style="margin: 0;">Thank you for choosing Prince Alex Store!</p>
+                            <p style="margin: 5px 0 0 0;">Fresh vegetables delivered to your doorstep</p>
+                        </div>
+                    </div>
+                `;
+
+                // Save email to mail collection
+                await addDoc(collection(db, 'mail'), {
+                    to: customerEmail,
+                    message: {
+                        subject: `Order Update - Order #${modifiedOrder.id}`,
+                        html: emailContent
+                    },
+                    createdAt: new Date(),
+                    type: 'order_modification',
+                    orderId: modifiedOrder.id
+                });
+
+                console.log('Order modification notification email saved to mail collection');
+
+            } catch (error) {
+                console.error('Error sending order modification notification:', error);
+                // Don't throw error as this shouldn't prevent order update
+            }
+        }
+
+        async function cancelOrder() {
+            try {
+                const orderRef = doc(db, 'orders', currentOrderId);
+                await updateDoc(orderRef, {
+                    status: 'Cancelled',
+                    cancelledAt: new Date(),
+                    cancellationReason: 'All items removed by admin',
+                    lastModified: new Date()
+                });
+
+                // Send cancellation notification
+                await sendOrderCancellationNotification(currentEditingOrder);
+
+                // Update local data
+                const orderIndex = allOrders.findIndex(o => o.id === currentOrderId);
+                if (orderIndex !== -1) {
+                    allOrders[orderIndex].status = 'Cancelled';
+                }
+
+                // Refresh orders list
+                await loadOrders();
+
+                // Close modal and show success message
+                closeOrderEditModal();
+                showModal('Success', 'Order has been cancelled and the customer has been notified.');
+
+            } catch (error) {
+                console.error('Error cancelling order:', error);
+                showModal('Error', `Failed to cancel order: ${error.message}`, true);
+            }
+        }
+
+        async function sendOrderCancellationNotification(order) {
+            try {
+                const customerEmail = order.customer ? order.customer.email : null;
+                if (!customerEmail) {
+                    console.warn('No customer email found for order cancellation notification');
+                    return;
+                }
+
+                const emailContent = `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+                        <div style="background: linear-gradient(135deg, #dc3545, #c82333); color: white; padding: 20px; border-radius: 10px 10px 0 0; text-align: center;">
+                            <h2 style="margin: 0; font-size: 24px;">Order Cancellation Notice</h2>
+                            <p style="margin: 10px 0 0 0; opacity: 0.9;">Prince Alex Store</p>
+                        </div>
+                        
+                        <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none;">
+                            <h3 style="color: #333; margin-top: 0;">Hello ${order.customer ? order.customer.fullName : 'Valued Customer'},</h3>
+                            
+                            <p style="color: #666; line-height: 1.6;">We regret to inform you that your order <strong>#${order.id}</strong> has been cancelled.</p>
+                            
+                            <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">
+                                <h4 style="color: #856404; margin-top: 0;">Reason for Cancellation:</h4>
+                                <p style="color: #856404; margin: 0;">All items were removed from your order by our admin team.</p>
+                            </div>
+                            
+                            <p style="color: #666; line-height: 1.6;">If you have any questions about this cancellation or would like to place a new order, please don't hesitate to contact us.</p>
+                            
+                            <div style="text-align: center; margin: 30px 0;">
+                                <a href="mailto:info@princealexstore.com" style="background: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Contact Support</a>
+                            </div>
+                        </div>
+                        
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 0 0 10px 10px; text-align: center; color: #666; font-size: 14px;">
+                            <p style="margin: 0;">Thank you for choosing Prince Alex Store!</p>
+                            <p style="margin: 5px 0 0 0;">Fresh vegetables delivered to your doorstep</p>
+                        </div>
+                    </div>
+                `;
+
+                // Save email to mail collection
+                await addDoc(collection(db, 'mail'), {
+                    to: customerEmail,
+                    message: {
+                        subject: `Order Cancelled - Order #${order.id}`,
+                        html: emailContent
+                    },
+                    createdAt: new Date(),
+                    type: 'order_cancellation',
+                    orderId: order.id
+                });
+
+                console.log('Order cancellation notification email saved to mail collection');
+
+            } catch (error) {
+                console.error('Error sending order cancellation notification:', error);
+            }
         }
 
         // Expose markOrderAsDelivered to the global scope for onclick events
@@ -5066,6 +6234,321 @@
             
             console.log('==============================');
         };
+
+        // --- Voucher Management Functions ---
+        let allVouchers = [];
+        let filteredVouchers = [];
+
+        // Load vouchers from Firestore
+        async function loadVouchers() {
+            try {
+                console.log('Loading vouchers...');
+                const vouchersRef = collection(db, 'vouchers');
+                const querySnapshot = await getDocs(vouchersRef);
+                
+                allVouchers = [];
+                querySnapshot.forEach((doc) => {
+                    const voucher = { id: doc.id, ...doc.data() };
+                    allVouchers.push(voucher);
+                });
+                
+                // Sort by creation date (newest first)
+                allVouchers.sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date));
+                
+                console.log(`Loaded ${allVouchers.length} vouchers`);
+                updateVoucherStats();
+                filterVouchers();
+                
+            } catch (error) {
+                console.error('Error loading vouchers:', error);
+                showModal('Error', `Failed to load vouchers: ${error.message}`, true);
+            }
+        }
+
+        // Update voucher statistics
+        function updateVoucherStats() {
+            const activeCount = allVouchers.filter(v => v.isActive && (!v.expiryDate || new Date(v.expiryDate) > new Date())).length;
+            const expiredCount = allVouchers.filter(v => v.expiryDate && new Date(v.expiryDate) <= new Date()).length;
+            const totalUsage = allVouchers.reduce((sum, v) => sum + (v.usageCount || 0), 0);
+            const totalDiscount = allVouchers.reduce((sum, v) => {
+                const usageCount = v.usageCount || 0;
+                const discountPerUse = v.discountType === 'percentage' ? 0 : v.discountAmount;
+                return sum + (usageCount * discountPerUse);
+            }, 0);
+
+            document.getElementById('active-vouchers-count').textContent = activeCount;
+            document.getElementById('expired-vouchers-count').textContent = expiredCount;
+            document.getElementById('total-voucher-usage').textContent = totalUsage;
+            document.getElementById('total-discount-given').textContent = `KES ${totalDiscount.toFixed(2)}`;
+            document.getElementById('active-vouchers-badge').textContent = activeCount;
+        }
+
+        // Filter vouchers based on search and status
+        function filterVouchers() {
+            const statusFilter = document.getElementById('voucher-status-filter').value;
+            const searchTerm = document.getElementById('voucher-search').value.toLowerCase();
+            
+            filteredVouchers = allVouchers.filter(voucher => {
+                // Status filter
+                let statusMatch = true;
+                if (statusFilter === 'active') {
+                    statusMatch = voucher.isActive && (!voucher.expiryDate || new Date(voucher.expiryDate) > new Date());
+                } else if (statusFilter === 'inactive') {
+                    statusMatch = !voucher.isActive;
+                } else if (statusFilter === 'expired') {
+                    statusMatch = voucher.expiryDate && new Date(voucher.expiryDate) <= new Date();
+                }
+                
+                // Search filter
+                const searchMatch = !searchTerm || 
+                    voucher.id.toLowerCase().includes(searchTerm) ||
+                    voucher.description.toLowerCase().includes(searchTerm);
+                
+                return statusMatch && searchMatch;
+            });
+            
+            displayVouchers();
+        }
+
+        // Display vouchers in the UI
+        function displayVouchers() {
+            const vouchersList = document.getElementById('vouchers-list');
+            
+            if (filteredVouchers.length === 0) {
+                vouchersList.innerHTML = `
+                    <div class="loading-state">
+                        <i class="fas fa-ticket-alt" style="font-size: 48px; color: #ccc; margin-bottom: 16px;"></i>
+                        <p>No vouchers found</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            vouchersList.innerHTML = filteredVouchers.map(voucher => {
+                const isExpired = voucher.expiryDate && new Date(voucher.expiryDate) <= new Date();
+                const statusClass = isExpired ? 'expired' : (voucher.isActive ? 'active' : 'inactive');
+                const statusText = isExpired ? 'Expired' : (voucher.isActive ? 'Active' : 'Inactive');
+                
+                const discountText = voucher.discountType === 'percentage' 
+                    ? `${voucher.discountAmount}%` 
+                    : `KES ${voucher.discountAmount}`;
+                
+                const usageText = voucher.usageLimit 
+                    ? `${voucher.usageCount || 0}/${voucher.usageLimit}` 
+                    : (voucher.usageCount || 0);
+                
+                return `
+                    <div class="voucher-card">
+                        <div class="voucher-header">
+                            <div class="voucher-info">
+                                <h4>${voucher.description}</h4>
+                                <div class="voucher-code">${voucher.id}</div>
+                            </div>
+                            <div class="voucher-status ${statusClass}">${statusText}</div>
+                        </div>
+                        
+                        <div class="voucher-details">
+                            <div class="voucher-detail">
+                                <div class="voucher-detail-label">Discount</div>
+                                <div class="voucher-detail-value">${discountText}</div>
+                            </div>
+                            <div class="voucher-detail">
+                                <div class="voucher-detail-label">Usage</div>
+                                <div class="voucher-detail-value">${usageText}</div>
+                            </div>
+                            <div class="voucher-detail">
+                                <div class="voucher-detail-label">Min Order</div>
+                                <div class="voucher-detail-value">${voucher.minOrderAmount ? `KES ${voucher.minOrderAmount}` : 'None'}</div>
+                            </div>
+                            <div class="voucher-detail">
+                                <div class="voucher-detail-label">Expires</div>
+                                <div class="voucher-detail-value">${voucher.expiryDate ? new Date(voucher.expiryDate).toLocaleDateString() : 'Never'}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="voucher-actions-card">
+                            <button class="voucher-action-btn edit" onclick="editVoucher('${voucher.id}')">
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            <button class="voucher-action-btn toggle" onclick="toggleVoucherStatus('${voucher.id}', ${!voucher.isActive})">
+                                <i class="fas fa-power-off"></i> ${voucher.isActive ? 'Deactivate' : 'Activate'}
+                            </button>
+                            <button class="voucher-action-btn delete" onclick="deleteVoucher('${voucher.id}')">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Open create voucher modal
+        function openCreateVoucherModal() {
+            document.getElementById('create-voucher-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close create voucher modal
+        function closeCreateVoucherModal() {
+            document.getElementById('create-voucher-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+            document.getElementById('create-voucher-form').reset();
+        }
+
+        // Update discount input help text
+        function updateDiscountInput() {
+            const discountType = document.getElementById('voucher-discount-type').value;
+            const helpText = document.getElementById('discount-help-text');
+            const amountInput = document.getElementById('voucher-discount-amount');
+            
+            if (discountType === 'percentage') {
+                helpText.textContent = 'Enter the percentage discount (e.g., 10 for 10%)';
+                amountInput.max = 100;
+            } else {
+                helpText.textContent = 'Enter the discount amount in KES';
+                amountInput.removeAttribute('max');
+            }
+        }
+
+        // Create new voucher
+        async function createVoucher(event) {
+            event.preventDefault();
+            
+            try {
+                const formData = new FormData(event.target);
+                const voucherCode = document.getElementById('voucher-code').value.trim().toUpperCase();
+                const description = document.getElementById('voucher-description').value.trim();
+                const discountType = document.getElementById('voucher-discount-type').value;
+                const discountAmount = parseFloat(document.getElementById('voucher-discount-amount').value);
+                const minOrderAmount = document.getElementById('voucher-min-order').value ? parseFloat(document.getElementById('voucher-min-order').value) : null;
+                const usageLimit = document.getElementById('voucher-usage-limit').value ? parseInt(document.getElementById('voucher-usage-limit').value) : null;
+                const expiryDate = document.getElementById('voucher-expiry-date').value;
+                const isActive = document.getElementById('voucher-is-active').checked;
+                
+                // Validate voucher code format
+                if (!/^[A-Z0-9]+$/.test(voucherCode)) {
+                    showModal('Invalid Voucher Code', 'Voucher code must contain only uppercase letters and numbers.', true);
+                    return;
+                }
+                
+                // Check if voucher code already exists
+                const existingVoucher = allVouchers.find(v => v.id === voucherCode);
+                if (existingVoucher) {
+                    showModal('Voucher Code Exists', 'A voucher with this code already exists. Please choose a different code.', true);
+                    return;
+                }
+                
+                // Create voucher data
+                const voucherData = {
+                    id: voucherCode,
+                    description: description,
+                    discountType: discountType,
+                    discountAmount: discountAmount,
+                    minOrderAmount: minOrderAmount,
+                    usageLimit: usageLimit,
+                    usageCount: 0,
+                    expiryDate: expiryDate || null,
+                    isActive: isActive,
+                    createdAt: new Date().toISOString(),
+                    createdBy: firebaseUser ? firebaseUser.uid : 'admin'
+                };
+                
+                // Save to Firestore
+                const voucherRef = doc(db, 'vouchers', voucherCode);
+                await setDoc(voucherRef, voucherData);
+                
+                console.log('Voucher created successfully:', voucherData);
+                
+                // Refresh vouchers list
+                await loadVouchers();
+                
+                // Close modal and show success message
+                closeCreateVoucherModal();
+                showModal('Success', `Voucher "${voucherCode}" created successfully!`);
+                
+            } catch (error) {
+                console.error('Error creating voucher:', error);
+                showModal('Error', `Failed to create voucher: ${error.message}`, true);
+            }
+        }
+
+        // Toggle voucher status
+        async function toggleVoucherStatus(voucherId, newStatus) {
+            try {
+                const voucherRef = doc(db, 'vouchers', voucherId);
+                await updateDoc(voucherRef, {
+                    isActive: newStatus,
+                    lastModified: new Date().toISOString()
+                });
+                
+                // Update local data
+                const voucherIndex = allVouchers.findIndex(v => v.id === voucherId);
+                if (voucherIndex !== -1) {
+                    allVouchers[voucherIndex].isActive = newStatus;
+                }
+                
+                // Refresh display
+                updateVoucherStats();
+                filterVouchers();
+                
+                showModal('Success', `Voucher ${newStatus ? 'activated' : 'deactivated'} successfully!`);
+                
+            } catch (error) {
+                console.error('Error toggling voucher status:', error);
+                showModal('Error', `Failed to update voucher status: ${error.message}`, true);
+            }
+        }
+
+        // Delete voucher
+        async function deleteVoucher(voucherId) {
+            const confirmHtml = `
+                <div style="text-align: center;">
+                    <p>Are you sure you want to <strong>delete</strong> this voucher?</p>
+                    <p><strong>${voucherId}</strong></p>
+                    <p style="color: #dc3545; font-size: 14px; margin-top: 16px;">
+                        This action cannot be undone. All usage history will be lost.
+                    </p>
+                    <div style="display: flex; gap: 12px; margin-top: 20px;">
+                        <button onclick="confirmDeleteVoucher('${voucherId}')" class="cta-button" style="flex: 1; background: #dc3545;">Delete Voucher</button>
+                        <button onclick="closeModal()" style="flex: 1; background: #6c757d;">Cancel</button>
+                    </div>
+                </div>
+            `;
+            
+            showModal('Delete Voucher', confirmHtml);
+        }
+
+        // Confirm delete voucher
+        window.confirmDeleteVoucher = async function(voucherId) {
+            try {
+                const voucherRef = doc(db, 'vouchers', voucherId);
+                await deleteDoc(voucherRef);
+                
+                // Update local data
+                allVouchers = allVouchers.filter(v => v.id !== voucherId);
+                
+                // Refresh display
+                updateVoucherStats();
+                filterVouchers();
+                
+                closeModal();
+                showModal('Success', 'Voucher deleted successfully!');
+                
+            } catch (error) {
+                console.error('Error deleting voucher:', error);
+                showModal('Error', `Failed to delete voucher: ${error.message}`, true);
+            }
+        };
+
+        // Refresh vouchers
+        function refreshVouchers() {
+            loadVouchers();
+        }
+
+        // Edit voucher (placeholder for future implementation)
+        function editVoucher(voucherId) {
+            showModal('Edit Voucher', 'Voucher editing functionality will be implemented in a future update.', true);
+        }
 
         // Initial load of UI when the DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
