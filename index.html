@@ -1446,6 +1446,181 @@
             }
         }
 
+        /* Universal Scrollable Modal System */
+        .modal-content {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Keep all modal headers visible */
+        .modal-content h3 {
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            z-index: 10;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Custom scrollbar styling for all modals */
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: #45a049;
+        }
+
+        /* Payment Method Modal Scrollable */
+        #payment-method-modal .modal-content {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        #payment-method-modal .payment-form {
+            max-height: calc(90vh - 200px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 10px;
+            scroll-behavior: smooth;
+        }
+
+        /* Auth Modals Scrollable */
+        .auth-modal-content {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .auth-form {
+            max-height: calc(90vh - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 10px;
+            scroll-behavior: smooth;
+        }
+
+        /* Quick View Modal Scrollable */
+        #quick-view-modal .modal-content {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        #quick-view-modal .reviews-section {
+            max-height: calc(90vh - 300px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 10px;
+            scroll-behavior: smooth;
+        }
+
+        /* Cart Preview Sidebar Scrollable */
+        .cart-preview-sidebar {
+            max-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .cart-preview-items {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 5px;
+            scroll-behavior: smooth;
+        }
+
+        /* Responsive scrollable design for all modals */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                max-width: none;
+                padding: 20px;
+                margin: 10px;
+                max-height: 95vh;
+                overflow-y: auto;
+            }
+
+            .auth-modal-content {
+                width: 95%;
+                max-width: none;
+                padding: 20px;
+                margin: 10px;
+                max-height: 95vh;
+                overflow-y: auto;
+            }
+
+            #payment-method-modal .payment-form {
+                max-height: calc(95vh - 150px);
+                padding-right: 5px;
+            }
+
+            .auth-form {
+                max-height: calc(95vh - 100px);
+                padding-right: 5px;
+            }
+
+            #quick-view-modal .reviews-section {
+                max-height: calc(95vh - 250px);
+                padding-right: 5px;
+            }
+
+            .cart-preview-items {
+                max-height: calc(100vh - 180px);
+                padding-right: 3px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-content {
+                width: 98%;
+                padding: 15px;
+                margin: 5px;
+                max-height: 98vh;
+            }
+
+            .auth-modal-content {
+                width: 98%;
+                padding: 15px;
+                margin: 5px;
+                max-height: 98vh;
+            }
+
+            #payment-method-modal .payment-form {
+                max-height: calc(98vh - 120px);
+                padding-right: 3px;
+            }
+
+            .auth-form {
+                max-height: calc(98vh - 80px);
+                padding-right: 3px;
+            }
+
+            #quick-view-modal .reviews-section {
+                max-height: calc(98vh - 200px);
+                padding-right: 3px;
+            }
+
+            .cart-preview-items {
+                max-height: calc(100vh - 160px);
+                padding-right: 2px;
+            }
+        }
+
         /* Mobile-Optimized Cart Table Styles */
         .cart-table {
             width: 100%;
@@ -8464,34 +8639,67 @@
                 // Generate unique referral link
                 const referralLink = `https://store.princealex.pro?ref=${referralId}`;
 
+                // Create/ensure FRIEND15 voucher exists and is active
+                const referralVoucherCode = await createReferralVoucher(refereeEmail);
+                
                 // ✅ Send email to friend with invite
                 await addDoc(collection(db, "mail"), {
                     to: refereeEmail,
                     message: {
                         subject: "You've Been Invited to Prince Alex Store! 🎉",
                         html: `
-                            <h2>You've Been Invited! 🎉</h2>
-                            <p>Hello!</p>
-                            <p><strong>${referrerName}</strong> has invited you to try Prince Alex Store - your one-stop shop for the freshest vegetables delivered right to your doorstep!</p>
-                            ${referralMessage ? `<p><em>"${referralMessage}"</em></p>` : ''}
-                            <div style="background: #FF6B35; color: white; padding: 20px; text-align: center; margin: 20px 0;">
-                                <h3>🎁 Special Friend Discount!</h3>
-                                <p>Use this exclusive discount code:</p>
-                                <div style="font-size: 24px; font-weight: 700;">FRIEND15</div>
-                                <p>Get 15% off your first order!</p>
+                            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                                <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); color: white; padding: 30px; text-align: center;">
+                                    <h1 style="margin: 0; font-size: 28px;">🎉 You've Been Invited!</h1>
+                                    <p style="margin: 10px 0 0 0; font-size: 16px;">Join Prince Alex Store and get fresh vegetables delivered</p>
+                                </div>
+                                
+                                <div style="padding: 30px; background: #f9f9f9;">
+                                    <h2 style="color: #333; margin-top: 0;">Hello!</h2>
+                                    <p style="color: #666; line-height: 1.6;"><strong>${referrerName}</strong> has invited you to try Prince Alex Store - your one-stop shop for the freshest vegetables delivered right to your doorstep!</p>
+                                    ${referralMessage ? `<div style="background: #e8f5e8; padding: 15px; border-left: 4px solid #4CAF50; margin: 20px 0; font-style: italic; color: #2e7d32;">"${referralMessage}"</div>` : ''}
+                                    
+                                    <div style="background: #FF6B35; color: white; padding: 25px; text-align: center; margin: 25px 0; border-radius: 8px;">
+                                        <h3 style="margin: 0 0 15px 0; font-size: 24px;">🎁 Special Friend Discount!</h3>
+                                        <p style="margin: 0 0 15px 0; font-size: 16px;">Use this exclusive discount code:</p>
+                                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 5px; margin: 15px 0;">
+                                            <div style="font-size: 32px; font-weight: bold; letter-spacing: 2px;">${referralVoucherCode || 'FRIEND15'}</div>
+                                        </div>
+                                        <p style="margin: 0; font-size: 18px; font-weight: 600;">Get 15% OFF your first order!</p>
+                                        <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Minimum order: KES 100 • Valid for 1 year</p>
+                                    </div>
+                                    
+                                    <div style="text-align: center; margin: 30px 0;">
+                                        <a href="${referralLink}" style="display: inline-block; background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">🛒 Join with Referral Link</a>
+                                    </div>
+                                    
+                                    <div style="background: white; padding: 20px; border-radius: 8px; margin: 25px 0;">
+                                        <h3 style="color: #4CAF50; margin-top: 0;">🥬 Why Choose Prince Alex Store?</h3>
+                                        <ul style="color: #666; line-height: 1.8;">
+                                            <li><strong>Fresh vegetables</strong> delivered within 30 minutes</li>
+                                            <li><strong>Farm-to-table quality</strong> guaranteed</li>
+                                            <li><strong>Competitive prices</strong> and great value</li>
+                                            <li><strong>Easy online ordering</strong> and secure payment</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <p style="color: #666; margin-top: 30px;">Ready to experience the freshest vegetables in Kenya? Click the link above and use code <strong>${referralVoucherCode || 'FRIEND15'}</strong> at checkout!</p>
+                                    
+                                    <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+                                        <p style="color: #999; font-size: 14px; margin: 0;">Follow us on social media for daily fresh updates!</p>
+                                        <div style="margin-top: 15px;">
+                                            <a href="https://facebook.com" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Facebook</a>
+                                            <a href="https://instagram.com" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Instagram</a>
+                                            <a href="https://tiktok.com" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">TikTok</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="background: #333; color: white; padding: 20px; text-align: center;">
+                                    <p style="margin: 0; font-size: 14px;">Welcome to the Prince Alex Store family!</p>
+                                    <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">Fresh vegetables, delivered fast. Quality guaranteed.</p>
+                                </div>
                             </div>
-                            <div style="text-align: center; margin: 30px 0;">
-                                <a href="${referralLink}" style="display: inline-block; background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">🛒 Join with Referral Link</a>
-                            </div>
-                            <p>Why Choose Prince Alex Store?</p>
-                            <ul>
-                                <li>Fresh vegetables delivered within 30 minutes</li>
-                                <li>Farm-to-table quality guaranteed</li>
-                                <li>Competitive prices and great value</li>
-                                <li>Easy online ordering</li>
-                            </ul>
-                            <p>Welcome to the Prince Alex Store family!</p>
-                            <p><strong>The Prince Alex Store Team</strong></p>
                         `
                     }
                 });
@@ -8917,6 +9125,242 @@
                 } catch (error) {
                     console.error("Error applying referral code:", error);
                 }
+            }
+        }
+
+        // Create and activate referral voucher
+        async function createReferralVoucher(refereeEmail) {
+            try {
+                const voucherCode = 'FRIEND15';
+                
+                // Check if FRIEND15 voucher already exists
+                const existingVoucherRef = window.doc(window.db, "vouchers", voucherCode);
+                const existingVoucherSnap = await window.getDoc(existingVoucherRef);
+                
+                if (!existingVoucherSnap.exists()) {
+                    // Create the FRIEND15 voucher
+                    const voucherData = {
+                        code: voucherCode,
+                        description: "15% off for new customers referred by friends",
+                        discountType: "percentage",
+                        discountAmount: 15,
+                        minimumOrder: 100,
+                        maxUsage: 1000, // Allow multiple uses
+                        usageCount: 0,
+                        status: "active",
+                        validFrom: new Date().toISOString(),
+                        validUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // Valid for 1 year
+                        applicableProducts: "all",
+                        createdBy: "system",
+                        createdAt: new Date().toISOString(),
+                        lastUpdated: new Date().toISOString(),
+                        voucherType: "referral",
+                        isActive: true,
+                        emailRestrictions: null // No email restrictions for referral voucher
+                    };
+                    
+                    await window.setDoc(existingVoucherRef, voucherData);
+                    console.log("✅ FRIEND15 referral voucher created and activated");
+                }
+                
+                return voucherCode;
+            } catch (error) {
+                console.error("❌ Error creating referral voucher:", error);
+                return null;
+            }
+        }
+
+        // Create and activate newsletter voucher
+        async function createNewsletterVoucher(email) {
+            try {
+                const voucherCode = `NEWS10_${Date.now()}_${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+                
+                const voucherData = {
+                    code: voucherCode,
+                    description: "10% off for newsletter subscribers",
+                    discountType: "percentage",
+                    discountAmount: 10,
+                    minimumOrder: 50,
+                    maxUsage: 1,
+                    usageCount: 0,
+                    status: "active",
+                    validFrom: new Date().toISOString(),
+                    validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // Valid for 30 days
+                    applicableProducts: "all",
+                    createdBy: "system",
+                    createdAt: new Date().toISOString(),
+                    lastUpdated: new Date().toISOString(),
+                    voucherType: "newsletter",
+                    isActive: true,
+                    emailRestrictions: [email], // Only for this specific email
+                    recipientEmail: email
+                };
+                
+                const voucherRef = window.doc(window.db, "vouchers", voucherCode);
+                await window.setDoc(voucherRef, voucherData);
+                console.log(`✅ Newsletter voucher ${voucherCode} created and activated for ${email}`);
+                
+                return voucherCode;
+            } catch (error) {
+                console.error("❌ Error creating newsletter voucher:", error);
+                return null;
+            }
+        }
+
+        // Newsletter subscription function
+        async function subscribeToNewsletter(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('newsletter-email').value;
+            
+            if (!email) {
+                showModal('Error', 'Please enter your email address.');
+                return;
+            }
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showModal('Error', 'Please enter a valid email address.');
+                return;
+            }
+            
+            try {
+                // Check if email is already subscribed
+                const existingQuery = window.query(
+                    window.collection(window.db, "newsletterSubscriptions"),
+                    window.where("email", "==", email)
+                );
+                const existingSnapshot = await window.getDocs(existingQuery);
+                
+                if (!existingSnapshot.empty) {
+                    showModal('Already Subscribed', 'This email is already subscribed to our newsletter. Check your inbox for previous vouchers!');
+                    return;
+                }
+                
+                // Create newsletter voucher
+                const voucherCode = await createNewsletterVoucher(email);
+                
+                if (!voucherCode) {
+                    showModal('Error', 'Failed to create your discount voucher. Please try again.');
+                    return;
+                }
+                
+                // Save newsletter subscription
+                await window.addDoc(window.collection(window.db, "newsletterSubscriptions"), {
+                    email: email,
+                    subscribedAt: new Date().toISOString(),
+                    status: 'active',
+                    source: 'newsletter_popup',
+                    voucherCode: voucherCode,
+                    voucherSent: true
+                });
+                
+                // Send newsletter welcome email with voucher
+                await window.addDoc(window.collection(window.db, "mail"), {
+                    to: email,
+                    message: {
+                        subject: "Welcome to Prince Alex Store Newsletter! 🎉 Your 10% Discount Inside",
+                        html: `
+                            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                                <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); color: white; padding: 30px; text-align: center;">
+                                    <h1 style="margin: 0; font-size: 28px;">🎉 Welcome to Our Fresh Family!</h1>
+                                    <p style="margin: 10px 0 0 0; font-size: 16px;">Thank you for subscribing to Prince Alex Store Newsletter</p>
+                                </div>
+                                
+                                <div style="padding: 30px; background: #f9f9f9;">
+                                    <h2 style="color: #333; margin-top: 0;">Hello Fresh Food Lover!</h2>
+                                    <p style="color: #666; line-height: 1.6;">Welcome to the Prince Alex Store family! We're thrilled to have you join our community of fresh food enthusiasts.</p>
+                                    
+                                    <div style="background: #FF6B35; color: white; padding: 25px; text-align: center; margin: 25px 0; border-radius: 8px;">
+                                        <h3 style="margin: 0 0 15px 0; font-size: 24px;">🎁 Your Welcome Gift!</h3>
+                                        <p style="margin: 0 0 15px 0; font-size: 16px;">Use this exclusive discount code:</p>
+                                        <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 5px; margin: 15px 0;">
+                                            <div style="font-size: 32px; font-weight: bold; letter-spacing: 2px;">${voucherCode}</div>
+                                        </div>
+                                        <p style="margin: 0; font-size: 18px; font-weight: 600;">Get 10% OFF your first order!</p>
+                                        <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Valid for 30 days • Minimum order: KES 50</p>
+                                    </div>
+                                    
+                                    <div style="text-align: center; margin: 30px 0;">
+                                        <a href="https://store.princealex.pro" style="display: inline-block; background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">🛒 Start Shopping Now</a>
+                                    </div>
+                                    
+                                    <div style="background: white; padding: 20px; border-radius: 8px; margin: 25px 0;">
+                                        <h3 style="color: #4CAF50; margin-top: 0;">🥬 What to expect from our newsletter:</h3>
+                                        <ul style="color: #666; line-height: 1.8;">
+                                            <li><strong>Fresh Deals:</strong> Exclusive discounts on seasonal vegetables</li>
+                                            <li><strong>New Arrivals:</strong> Be the first to know about new products</li>
+                                            <li><strong>Healthy Tips:</strong> Nutrition advice and cooking tips</li>
+                                            <li><strong>Special Offers:</strong> Member-only promotions and vouchers</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; border-left: 4px solid #4CAF50;">
+                                        <h4 style="color: #2e7d32; margin-top: 0;">🚚 Why Choose Prince Alex Store?</h4>
+                                        <ul style="color: #2e7d32; margin: 0;">
+                                            <li>Farm-fresh vegetables delivered within 30 minutes</li>
+                                            <li>100% organic and locally sourced produce</li>
+                                            <li>Competitive prices with quality guarantee</li>
+                                            <li>Easy online ordering and secure payment</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <p style="color: #666; margin-top: 30px;">Ready to experience the freshest vegetables in Kenya? Use your voucher code <strong>${voucherCode}</strong> at checkout!</p>
+                                    
+                                    <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+                                        <p style="color: #999; font-size: 14px; margin: 0;">Follow us on social media for daily fresh updates!</p>
+                                        <div style="margin-top: 15px;">
+                                            <a href="https://facebook.com" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Facebook</a>
+                                            <a href="https://instagram.com" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">Instagram</a>
+                                            <a href="https://tiktok.com" style="color: #4CAF50; text-decoration: none; margin: 0 10px;">TikTok</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="background: #333; color: white; padding: 20px; text-align: center;">
+                                    <p style="margin: 0; font-size: 14px;">Thank you for choosing Prince Alex Store</p>
+                                    <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">Fresh vegetables, delivered fast. Quality guaranteed.</p>
+                                </div>
+                            </div>
+                        `
+                    }
+                });
+                
+                // Close newsletter popup and show success
+                closeNewsletterPopup();
+                showModal('Welcome to Our Newsletter! 🎉', `Thank you for subscribing! We've sent a welcome email to ${email} with your exclusive 10% discount code: <strong>${voucherCode}</strong><br><br>Check your inbox and start shopping with your discount!`);
+                
+                // Clear the form
+                document.getElementById('newsletter-email').value = '';
+                
+                console.log(`✅ Newsletter subscription successful for ${email} with voucher ${voucherCode}`);
+                
+            } catch (error) {
+                console.error("❌ Error subscribing to newsletter:", error);
+                showModal('Subscription Failed', 'There was an error subscribing to our newsletter. Please try again later.');
+            }
+        }
+
+        // Close newsletter popup
+        function closeNewsletterPopup() {
+            const newsletterPopup = document.getElementById('newsletter-popup');
+            if (newsletterPopup) {
+                newsletterPopup.style.display = 'none';
+            }
+        }
+
+        // Show newsletter popup after some time (optional)
+        function showNewsletterPopup() {
+            // Only show if user hasn't already subscribed (check localStorage)
+            if (!localStorage.getItem('newsletterShown')) {
+                setTimeout(() => {
+                    const newsletterPopup = document.getElementById('newsletter-popup');
+                    if (newsletterPopup) {
+                        newsletterPopup.style.display = 'flex';
+                        localStorage.setItem('newsletterShown', 'true');
+                    }
+                }, 30000); // Show after 30 seconds
             }
         }
 
