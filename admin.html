@@ -893,6 +893,51 @@
             box-shadow: none;
         }
 
+        /* Make voucher form scrollable */
+        .modal-content {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .simple-voucher-form {
+            max-height: calc(90vh - 120px); /* Account for header and padding */
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 10px; /* Space for scrollbar */
+            scroll-behavior: smooth;
+        }
+
+        /* Keep form header visible */
+        .modal-content h3 {
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            z-index: 10;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Custom scrollbar styling */
+        .simple-voucher-form::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .simple-voucher-form::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .simple-voucher-form::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        .simple-voucher-form::-webkit-scrollbar-thumb:hover {
+            background: #45a049;
+        }
+
         /* Responsive Design for Voucher Form */
         @media (max-width: 768px) {
             .modal-content {
@@ -900,8 +945,13 @@
                 max-width: none;
                 padding: 20px;
                 margin: 10px;
-                max-height: 90vh;
+                max-height: 95vh;
                 overflow-y: auto;
+            }
+
+            .simple-voucher-form {
+                max-height: calc(95vh - 100px);
+                padding-right: 5px;
             }
 
             .simple-voucher-form {
@@ -963,6 +1013,12 @@
                 width: 98%;
                 padding: 15px;
                 margin: 5px;
+                max-height: 98vh;
+            }
+
+            .simple-voucher-form {
+                max-height: calc(98vh - 80px);
+                padding-right: 3px;
             }
 
             .simple-voucher-form .form-group {
@@ -7352,5 +7408,4 @@
     </script>
 </body>
 </html>
-
 
