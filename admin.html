@@ -713,6 +713,84 @@
             box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
         }
 
+        .create-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .create-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #FF6B35 0%, #e55a00 100%);
+            color: white;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        /* Ensure voucher action buttons are clickable */
+        .voucher-actions .action-btn {
+            position: relative;
+            z-index: 10;
+            pointer-events: auto;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .voucher-actions .action-btn:active {
+            transform: translateY(1px);
+        }
+
+        .voucher-actions .action-btn:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        /* New Voucher Button */
+        .new-voucher-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .new-voucher-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+            background: linear-gradient(135deg, #45a049 0%, #4CAF50 100%);
+        }
+
+        .new-voucher-button:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .new-voucher-button:focus {
+            outline: 3px solid rgba(76, 175, 80, 0.5);
+            outline-offset: 2px;
+        }
+
+        .new-voucher-button i {
+            font-size: 18px;
+        }
+
         .customer-list-item {
             display: flex;
             justify-content: space-between;
@@ -1210,6 +1288,280 @@
         }
 
         .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Voucher Management Styles */
+        .voucher-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .voucher-stats {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .voucher-stats h4 {
+            margin-bottom: 16px;
+            color: var(--dark-text);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .voucher-filters {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .voucher-filters h4 {
+            margin-bottom: 16px;
+            color: var(--dark-text);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-controls select,
+        .filter-controls input {
+            padding: 10px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background: var(--white);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .filter-controls select:focus,
+        .filter-controls input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .voucher-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .voucher-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .voucher-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: var(--light-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .voucher-info h4 {
+            margin: 0 0 8px 0;
+            color: var(--dark-text);
+            font-size: 18px;
+        }
+
+        .voucher-code {
+            font-family: 'Courier New', monospace;
+            background: var(--primary-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .voucher-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .voucher-status.active {
+            background: #e8f5e8;
+            color: #4CAF50;
+        }
+
+        .voucher-status.inactive {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .voucher-status.expired {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .voucher-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            padding: 20px;
+        }
+
+        .voucher-detail {
+            text-align: center;
+        }
+
+        .voucher-detail-label {
+            font-size: 12px;
+            color: var(--text-color);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .voucher-detail-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .voucher-actions-card {
+            display: flex;
+            gap: 8px;
+            padding: 16px 20px;
+            background: var(--light-bg);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .voucher-action-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .voucher-action-btn.edit {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .voucher-action-btn.toggle {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .voucher-action-btn.delete {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .voucher-action-btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.8;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 16px;
+            transition: var(--transition);
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 4px;
+            font-size: 12px;
+            color: var(--text-color);
+        }
+
+        .form-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .cancel-btn {
+            padding: 12px 24px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .cancel-btn:hover {
+            background: #5a6268;
+        }
+
+        .create-btn {
+            padding: 12px 24px;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .create-btn:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-hover);
         }
@@ -3199,7 +3551,7 @@
 
                     <!-- Voucher Actions -->
                     <div class="voucher-actions">
-                        <button onclick="openCreateVoucherModal()" class="action-btn create-btn">
+                        <button id="new-voucher-btn" class="new-voucher-button">
                             <i class="fas fa-plus"></i> Create New Voucher
                         </button>
                         <button onclick="refreshVouchers()" class="action-btn refresh-btn">
@@ -6384,8 +6736,21 @@
 
         // Open create voucher modal
         function openCreateVoucherModal() {
-            document.getElementById('create-voucher-modal').style.display = 'flex';
+            console.log('Opening voucher modal...');
+            const modal = document.getElementById('create-voucher-modal');
+            console.log('Modal element:', modal);
+            
+            if (!modal) {
+                console.error('Modal element not found!');
+                showModal('Error', 'Voucher modal not found. Please refresh the page.', true);
+                return;
+            }
+            
+            console.log('Modal current display:', modal.style.display);
+            modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
+            console.log('Modal display set to:', modal.style.display);
+            console.log('Modal should now be visible');
         }
 
         // Close create voucher modal
@@ -6414,8 +6779,10 @@
         async function createVoucher(event) {
             event.preventDefault();
             
+            console.log('Creating voucher...', event);
+            
             try {
-                const formData = new FormData(event.target);
+                // Get form values
                 const voucherCode = document.getElementById('voucher-code').value.trim().toUpperCase();
                 const description = document.getElementById('voucher-description').value.trim();
                 const discountType = document.getElementById('voucher-discount-type').value;
@@ -6424,6 +6791,32 @@
                 const usageLimit = document.getElementById('voucher-usage-limit').value ? parseInt(document.getElementById('voucher-usage-limit').value) : null;
                 const expiryDate = document.getElementById('voucher-expiry-date').value;
                 const isActive = document.getElementById('voucher-is-active').checked;
+                
+                console.log('Voucher data:', {
+                    voucherCode, description, discountType, discountAmount,
+                    minOrderAmount, usageLimit, expiryDate, isActive
+                });
+                
+                // Basic validation
+                if (!voucherCode) {
+                    showModal('Validation Error', 'Voucher code is required.', true);
+                    return;
+                }
+                
+                if (!description) {
+                    showModal('Validation Error', 'Voucher description is required.', true);
+                    return;
+                }
+                
+                if (!discountAmount || discountAmount <= 0) {
+                    showModal('Validation Error', 'Discount amount must be greater than 0.', true);
+                    return;
+                }
+                
+                if (discountType === 'percentage' && discountAmount > 100) {
+                    showModal('Validation Error', 'Percentage discount cannot exceed 100%.', true);
+                    return;
+                }
                 
                 // Validate voucher code format
                 if (!/^[A-Z0-9]+$/.test(voucherCode)) {
@@ -6452,6 +6845,8 @@
                     createdAt: new Date().toISOString(),
                     createdBy: firebaseUser ? firebaseUser.uid : 'admin'
                 };
+                
+                console.log('Saving voucher to Firestore:', voucherData);
                 
                 // Save to Firestore
                 const voucherRef = doc(db, 'vouchers', voucherCode);
@@ -6550,10 +6945,75 @@
             showModal('Edit Voucher', 'Voucher editing functionality will be implemented in a future update.', true);
         }
 
+        // Debug function for voucher creation
+        window.debugVoucherCreation = function() {
+            console.log('=== Voucher Creation Debug Info ===');
+            console.log('Firebase User:', firebaseUser);
+            console.log('Firebase DB:', db);
+            console.log('All Vouchers:', allVouchers);
+            console.log('Voucher Functions Available:');
+            console.log('- openCreateVoucherModal:', typeof openCreateVoucherModal);
+            console.log('- createVoucher:', typeof createVoucher);
+            console.log('- loadVouchers:', typeof loadVouchers);
+            console.log('- showModal:', typeof showModal);
+            console.log('Voucher Form Elements:');
+            console.log('- voucher-code:', document.getElementById('voucher-code'));
+            console.log('- voucher-description:', document.getElementById('voucher-description'));
+            console.log('- voucher-discount-type:', document.getElementById('voucher-discount-type'));
+            console.log('- voucher-discount-amount:', document.getElementById('voucher-discount-amount'));
+            console.log('- create-voucher-form:', document.getElementById('create-voucher-form'));
+            console.log('Voucher Button Elements:');
+            const createBtn = document.querySelector('.voucher-actions .create-btn');
+            console.log('- Create Voucher Button:', createBtn);
+            console.log('- Button onclick:', createBtn ? createBtn.onclick : 'No onclick');
+            console.log('- Button style:', createBtn ? createBtn.style.cssText : 'No style');
+            console.log('- Button computed style:', createBtn ? window.getComputedStyle(createBtn) : 'No computed style');
+            console.log('=====================================');
+        };
+
+        // Test function to manually trigger voucher modal
+        window.testVoucherModal = function() {
+            console.log('Testing voucher modal...');
+            alert('Testing voucher modal - check console for details');
+            try {
+                openCreateVoucherModal();
+                console.log('Modal opened successfully');
+            } catch (error) {
+                console.error('Error opening modal:', error);
+                alert('Error opening modal: ' + error.message);
+            }
+        };
+
+        // Expose voucher functions to global scope for HTML onclick events
+        window.openCreateVoucherModal = openCreateVoucherModal;
+        window.closeCreateVoucherModal = closeCreateVoucherModal;
+        window.createVoucher = createVoucher;
+        window.updateDiscountInput = updateDiscountInput;
+        window.refreshVouchers = refreshVouchers;
+        window.filterVouchers = filterVouchers;
+        window.editVoucher = editVoucher;
+        window.toggleVoucherStatus = toggleVoucherStatus;
+        window.deleteVoucher = deleteVoucher;
+        window.debugVoucherCreation = debugVoucherCreation;
+        window.testVoucherModal = testVoucherModal;
+
         // Initial load of UI when the DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM Content Loaded - Admin page initialized');
             updateAdminUI(); // Set initial visibility based on auth state
+            
+            // Add click event listener to new voucher button
+            const newVoucherBtn = document.getElementById('new-voucher-btn');
+            if (newVoucherBtn) {
+                console.log('New voucher button found, adding click listener');
+                newVoucherBtn.addEventListener('click', function(e) {
+                    console.log('New voucher button clicked!', e);
+                    e.preventDefault();
+                    openCreateVoucherModal();
+                });
+            } else {
+                console.log('New voucher button not found');
+            }
             
             // Run debug info
             setTimeout(() => {
