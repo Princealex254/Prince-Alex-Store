@@ -3728,7 +3728,7 @@
         <div class="modal-content">
             <span class="close-button" onclick="closeCreateVoucherModal()">&times;</span>
             <h3>Create New Voucher</h3>
-            <form id="create-voucher-form" onsubmit="createVoucher(event)">
+            <form id="create-voucher-form">
                 <div class="form-group">
                     <label for="voucher-code">Voucher Code *</label>
                     <input type="text" id="voucher-code" placeholder="e.g., WELCOME10" maxlength="20" required>
@@ -6777,7 +6777,13 @@
 
         // Create new voucher
         async function createVoucher(event) {
-            event.preventDefault();
+            console.log('=== CREATE VOUCHER FUNCTION CALLED ===');
+            console.log('Event:', event);
+            console.log('Event type:', event ? event.type : 'No event');
+            
+            if (event) {
+                event.preventDefault();
+            }
             
             console.log('Creating voucher...', event);
             
@@ -7013,6 +7019,37 @@
                 });
             } else {
                 console.log('New voucher button not found');
+            }
+
+            // Add click event listener to voucher form submit button
+            const voucherForm = document.getElementById('create-voucher-form');
+            const submitBtn = voucherForm ? voucherForm.querySelector('button[type="submit"]') : null;
+            
+            if (submitBtn) {
+                console.log('Submit button found, adding click listener');
+                submitBtn.addEventListener('click', function(e) {
+                    console.log('Submit button clicked!', e);
+                    console.log('Form data:', {
+                        code: document.getElementById('voucher-code')?.value,
+                        description: document.getElementById('voucher-description')?.value,
+                        discountType: document.getElementById('voucher-discount-type')?.value,
+                        discountAmount: document.getElementById('voucher-discount-amount')?.value
+                    });
+                });
+            } else {
+                console.log('Submit button not found');
+            }
+
+            // Add form submit event listener
+            if (voucherForm) {
+                console.log('Voucher form found, adding submit listener');
+                voucherForm.addEventListener('submit', function(e) {
+                    console.log('Form submit event triggered!', e);
+                    e.preventDefault();
+                    createVoucher(e);
+                });
+            } else {
+                console.log('Voucher form not found');
             }
             
             // Run debug info
