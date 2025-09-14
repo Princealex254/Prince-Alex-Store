@@ -1080,6 +1080,198 @@
             }
         }
 
+        /* Universal Scrollable Modal System for Admin */
+        .modal {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .modal-content {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Keep all modal headers visible */
+        .modal-content h3 {
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            z-index: 10;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Custom scrollbar styling for all admin modals */
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: #45a049;
+        }
+
+        /* Order Details Modal Scrollable */
+        .order-details-modal {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .order-details-content {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .order-details-body {
+            max-height: calc(90vh - 150px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 10px;
+            scroll-behavior: smooth;
+        }
+
+        /* Order Edit Modal Scrollable */
+        .order-edit-modal {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .order-edit-content {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .order-edit-body {
+            max-height: calc(90vh - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 10px;
+            scroll-behavior: smooth;
+        }
+
+        /* Status Update Modal Scrollable */
+        .status-update-modal {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .status-update-content {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Responsive scrollable design for all admin modals */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                max-width: none;
+                padding: 20px;
+                margin: 10px;
+                max-height: 95vh;
+                overflow-y: auto;
+            }
+
+            .order-details-content {
+                width: 95%;
+                max-width: none;
+                padding: 20px;
+                margin: 10px;
+                max-height: 95vh;
+                overflow-y: auto;
+            }
+
+            .order-edit-content {
+                width: 95%;
+                max-width: none;
+                padding: 20px;
+                margin: 10px;
+                max-height: 95vh;
+                overflow-y: auto;
+            }
+
+            .status-update-content {
+                width: 95%;
+                max-width: none;
+                padding: 20px;
+                margin: 10px;
+                max-height: 95vh;
+                overflow-y: auto;
+            }
+
+            .order-details-body {
+                max-height: calc(95vh - 120px);
+                padding-right: 5px;
+            }
+
+            .order-edit-body {
+                max-height: calc(95vh - 100px);
+                padding-right: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-content {
+                width: 98%;
+                padding: 15px;
+                margin: 5px;
+                max-height: 98vh;
+            }
+
+            .order-details-content {
+                width: 98%;
+                padding: 15px;
+                margin: 5px;
+                max-height: 98vh;
+            }
+
+            .order-edit-content {
+                width: 98%;
+                padding: 15px;
+                margin: 5px;
+                max-height: 98vh;
+            }
+
+            .status-update-content {
+                width: 98%;
+                padding: 15px;
+                margin: 5px;
+                max-height: 98vh;
+            }
+
+            .order-details-body {
+                max-height: calc(98vh - 100px);
+                padding-right: 3px;
+            }
+
+            .order-edit-body {
+                max-height: calc(98vh - 80px);
+                padding-right: 3px;
+            }
+        }
+
         .customer-list-item {
             display: flex;
             justify-content: space-between;
