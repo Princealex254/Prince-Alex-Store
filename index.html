@@ -1370,6 +1370,82 @@
             margin-bottom: 20px;
         }
 
+        /* Make Customer Details Modal scrollable */
+        #customer-details-modal .modal-content {
+            max-height: 90vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        #customer-details-modal .checkout-form {
+            max-height: calc(90vh - 120px); /* Account for header and padding */
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 10px; /* Space for scrollbar */
+            scroll-behavior: smooth;
+        }
+
+        /* Keep modal header visible */
+        #customer-details-modal .modal-content h3 {
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            z-index: 10;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        /* Custom scrollbar styling for customer details */
+        #customer-details-modal .checkout-form::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #customer-details-modal .checkout-form::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        #customer-details-modal .checkout-form::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        #customer-details-modal .checkout-form::-webkit-scrollbar-thumb:hover {
+            background: #45a049;
+        }
+
+        /* Responsive scrollable design for customer details */
+        @media (max-width: 768px) {
+            #customer-details-modal .modal-content {
+                width: 95%;
+                max-width: none;
+                padding: 20px;
+                margin: 10px;
+                max-height: 95vh;
+                overflow-y: auto;
+            }
+
+            #customer-details-modal .checkout-form {
+                max-height: calc(95vh - 100px);
+                padding-right: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #customer-details-modal .modal-content {
+                width: 98%;
+                padding: 15px;
+                margin: 5px;
+                max-height: 98vh;
+            }
+
+            #customer-details-modal .checkout-form {
+                max-height: calc(98vh - 80px);
+                padding-right: 3px;
+            }
+        }
+
         /* Mobile-Optimized Cart Table Styles */
         .cart-table {
             width: 100%;
