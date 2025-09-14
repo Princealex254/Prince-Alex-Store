@@ -791,6 +791,94 @@
             font-size: 18px;
         }
 
+        /* Simple Voucher Form */
+        .simple-voucher-form {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .simple-voucher-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .simple-voucher-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .simple-voucher-form input,
+        .simple-voucher-form select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--white);
+            transition: var(--transition);
+        }
+
+        .simple-voucher-form input:focus,
+        .simple-voucher-form select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .simple-voucher-form small {
+            display: block;
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--text-color);
+        }
+
+        .simple-voucher-form .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        .simple-voucher-form .cancel-btn {
+            padding: 12px 24px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .simple-voucher-form .cancel-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .simple-voucher-form .create-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .simple-voucher-form .create-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .simple-voucher-form .create-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         .customer-list-item {
             display: flex;
             justify-content: space-between;
@@ -3728,7 +3816,8 @@
         <div class="modal-content">
             <span class="close-button" onclick="closeCreateVoucherModal()">&times;</span>
             <h3>Create New Voucher</h3>
-            <form id="create-voucher-form">
+            
+            <div class="simple-voucher-form">
                 <div class="form-group">
                     <label for="voucher-code">Voucher Code *</label>
                     <input type="text" id="voucher-code" placeholder="e.g., WELCOME10" maxlength="20" required>
@@ -3742,7 +3831,7 @@
                 
                 <div class="form-group">
                     <label for="voucher-discount-type">Discount Type *</label>
-                    <select id="voucher-discount-type" required onchange="updateDiscountInput()">
+                    <select id="voucher-discount-type" required>
                         <option value="fixed">Fixed Amount (KES)</option>
                         <option value="percentage">Percentage (%)</option>
                     </select>
@@ -3781,9 +3870,9 @@
                 
                 <div class="form-actions">
                     <button type="button" onclick="closeCreateVoucherModal()" class="cancel-btn">Cancel</button>
-                    <button type="submit" class="create-btn">Create Voucher</button>
+                    <button type="button" id="create-voucher-btn" class="create-btn">Create Voucher</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -6757,7 +6846,23 @@
         function closeCreateVoucherModal() {
             document.getElementById('create-voucher-modal').style.display = 'none';
             document.body.style.overflow = 'auto';
-            document.getElementById('create-voucher-form').reset();
+            
+            // Reset form fields
+            document.getElementById('voucher-code').value = '';
+            document.getElementById('voucher-description').value = '';
+            document.getElementById('voucher-discount-type').value = 'fixed';
+            document.getElementById('voucher-discount-amount').value = '';
+            document.getElementById('voucher-min-order').value = '';
+            document.getElementById('voucher-usage-limit').value = '';
+            document.getElementById('voucher-expiry-date').value = '';
+            document.getElementById('voucher-is-active').checked = true;
+            
+            // Reset button
+            const createBtn = document.getElementById('create-voucher-btn');
+            if (createBtn) {
+                createBtn.disabled = false;
+                createBtn.textContent = 'Create Voucher';
+            }
         }
 
         // Update discount input help text
@@ -6775,17 +6880,9 @@
             }
         }
 
-        // Create new voucher
-        async function createVoucher(event) {
-            console.log('=== CREATE VOUCHER FUNCTION CALLED ===');
-            console.log('Event:', event);
-            console.log('Event type:', event ? event.type : 'No event');
-            
-            if (event) {
-                event.preventDefault();
-            }
-            
-            console.log('Creating voucher...', event);
+        // Simple voucher creation function
+        async function createVoucherSimple() {
+            console.log('=== SIMPLE VOUCHER CREATION STARTED ===');
             
             try {
                 // Get form values
@@ -6798,42 +6895,42 @@
                 const expiryDate = document.getElementById('voucher-expiry-date').value;
                 const isActive = document.getElementById('voucher-is-active').checked;
                 
-                console.log('Voucher data:', {
+                console.log('Form data collected:', {
                     voucherCode, description, discountType, discountAmount,
                     minOrderAmount, usageLimit, expiryDate, isActive
                 });
                 
                 // Basic validation
                 if (!voucherCode) {
-                    showModal('Validation Error', 'Voucher code is required.', true);
+                    alert('Voucher code is required!');
                     return;
                 }
                 
                 if (!description) {
-                    showModal('Validation Error', 'Voucher description is required.', true);
+                    alert('Voucher description is required!');
                     return;
                 }
                 
                 if (!discountAmount || discountAmount <= 0) {
-                    showModal('Validation Error', 'Discount amount must be greater than 0.', true);
+                    alert('Discount amount must be greater than 0!');
                     return;
                 }
                 
                 if (discountType === 'percentage' && discountAmount > 100) {
-                    showModal('Validation Error', 'Percentage discount cannot exceed 100%.', true);
+                    alert('Percentage discount cannot exceed 100%!');
                     return;
                 }
                 
                 // Validate voucher code format
                 if (!/^[A-Z0-9]+$/.test(voucherCode)) {
-                    showModal('Invalid Voucher Code', 'Voucher code must contain only uppercase letters and numbers.', true);
+                    alert('Voucher code must contain only uppercase letters and numbers!');
                     return;
                 }
                 
                 // Check if voucher code already exists
                 const existingVoucher = allVouchers.find(v => v.id === voucherCode);
                 if (existingVoucher) {
-                    showModal('Voucher Code Exists', 'A voucher with this code already exists. Please choose a different code.', true);
+                    alert('A voucher with this code already exists. Please choose a different code.');
                     return;
                 }
                 
@@ -6854,6 +6951,11 @@
                 
                 console.log('Saving voucher to Firestore:', voucherData);
                 
+                // Disable button to prevent double submission
+                const createBtn = document.getElementById('create-voucher-btn');
+                createBtn.disabled = true;
+                createBtn.textContent = 'Creating...';
+                
                 // Save to Firestore
                 const voucherRef = doc(db, 'vouchers', voucherCode);
                 await setDoc(voucherRef, voucherData);
@@ -6865,12 +6967,25 @@
                 
                 // Close modal and show success message
                 closeCreateVoucherModal();
-                showModal('Success', `Voucher "${voucherCode}" created successfully!`);
+                alert(`Voucher "${voucherCode}" created successfully!`);
                 
             } catch (error) {
                 console.error('Error creating voucher:', error);
-                showModal('Error', `Failed to create voucher: ${error.message}`, true);
+                alert(`Failed to create voucher: ${error.message}`);
+                
+                // Re-enable button
+                const createBtn = document.getElementById('create-voucher-btn');
+                createBtn.disabled = false;
+                createBtn.textContent = 'Create Voucher';
             }
+        }
+
+        // Legacy function for compatibility
+        async function createVoucher(event) {
+            if (event) {
+                event.preventDefault();
+            }
+            return createVoucherSimple();
         }
 
         // Toggle voucher status
@@ -6994,6 +7109,7 @@
         window.openCreateVoucherModal = openCreateVoucherModal;
         window.closeCreateVoucherModal = closeCreateVoucherModal;
         window.createVoucher = createVoucher;
+        window.createVoucherSimple = createVoucherSimple;
         window.updateDiscountInput = updateDiscountInput;
         window.refreshVouchers = refreshVouchers;
         window.filterVouchers = filterVouchers;
@@ -7021,35 +7137,17 @@
                 console.log('New voucher button not found');
             }
 
-            // Add click event listener to voucher form submit button
-            const voucherForm = document.getElementById('create-voucher-form');
-            const submitBtn = voucherForm ? voucherForm.querySelector('button[type="submit"]') : null;
-            
-            if (submitBtn) {
-                console.log('Submit button found, adding click listener');
-                submitBtn.addEventListener('click', function(e) {
-                    console.log('Submit button clicked!', e);
-                    console.log('Form data:', {
-                        code: document.getElementById('voucher-code')?.value,
-                        description: document.getElementById('voucher-description')?.value,
-                        discountType: document.getElementById('voucher-discount-type')?.value,
-                        discountAmount: document.getElementById('voucher-discount-amount')?.value
-                    });
-                });
-            } else {
-                console.log('Submit button not found');
-            }
-
-            // Add form submit event listener
-            if (voucherForm) {
-                console.log('Voucher form found, adding submit listener');
-                voucherForm.addEventListener('submit', function(e) {
-                    console.log('Form submit event triggered!', e);
+            // Add click event listener to new create voucher button
+            const createVoucherBtn = document.getElementById('create-voucher-btn');
+            if (createVoucherBtn) {
+                console.log('Create voucher button found, adding click listener');
+                createVoucherBtn.addEventListener('click', function(e) {
+                    console.log('Create voucher button clicked!', e);
                     e.preventDefault();
-                    createVoucher(e);
+                    createVoucherSimple();
                 });
             } else {
-                console.log('Voucher form not found');
+                console.log('Create voucher button not found');
             }
             
             // Run debug info
