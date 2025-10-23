@@ -3251,7 +3251,22 @@
             transition: var(--transition);
         }
 
-        .edit-order-btn:hover {
+        .add-item-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .add-item-btn:hover {
             background: var(--secondary-color);
             transform: translateY(-2px);
         }
@@ -3413,6 +3428,67 @@
             padding: 16px;
             border-radius: var(--border-radius-sm);
             border: 1px solid var(--border-color);
+        }
+
+        .products-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 16px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            margin-bottom: 8px;
+            background: white;
+            transition: var(--transition);
+        }
+
+        .product-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .product-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: var(--border-radius-sm);
+            margin-right: 12px;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 4px;
+        }
+
+        .product-price {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .add-to-order-btn {
+            padding: 8px 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .add-to-order-btn:hover {
+            background: var(--secondary-color);
         }
 
         .summary-row {
@@ -4132,6 +4208,12 @@
             <div class="order-edit-body">
                 <div class="edit-section">
                     <h4>Order Items</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <span>Manage order items</span>
+                        <button onclick="openAddItemModal()" class="add-item-btn">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                    </div>
                     <div id="editable-items-list" class="editable-items-list">
                         <!-- Editable items will be populated here -->
                     </div>
@@ -4163,6 +4245,24 @@
                 <div class="edit-actions">
                     <button onclick="closeOrderEditModal()" class="cancel-btn">Cancel</button>
                     <button onclick="saveOrderChanges()" class="save-btn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Item to Order Modal -->
+    <div id="add-item-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Item to Order</h3>
+                <span class="close-button" onclick="closeAddItemModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="search-section">
+                    <input type="text" id="product-search" placeholder="Search products..." class="search-input" onkeyup="searchProducts()">
+                </div>
+                <div id="products-list" class="products-list">
+                    <!-- Products will be populated here -->
                 </div>
             </div>
         </div>
@@ -5463,9 +5563,14 @@
                                     <p style="font-size: 16px; color: #333;">Great news! Your order <strong>${order.id}</strong> is now on transit and will be delivered to:</p>
                                     
                                     <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                                        <h3 style="color: #4CAF50; margin: 0 0 15px 0;">📍 Delivery Address</h3>
-                                        <p style="margin: 5px 0; color: #333;"><strong>${deliveryLocation}</strong></p>
-                                        <p style="margin: 5px 0; color: #666;">Please ensure someone is available to receive the order.</p>
+                                        <h3 style="color: #4CAF50; margin: 0 0 15px 0;">📋 Order Information</h3>
+                                        <p style="margin: 5px 0; color: #333;"><strong>Order ID:</strong> ${order.id}</p>
+                                        <p style="margin: 5px 0; color: #333;"><strong>Customer:</strong> ${customerName}</p>
+                                        <p style="margin: 5px 0; color: #333;"><strong>Order Date:</strong> ${new Date(order.date).toLocaleString()}</p>
+                                        <p style="margin: 5px 0; color: #333;"><strong>Total Amount:</strong> KES ${order.total ? order.total.toFixed(2) : '0.00'}</p>
+                                        <p style="margin: 5px 0; color: #333;"><strong>Status Update:</strong> <span style="color: #4CAF50; font-weight: bold;">${newStatus}</span></p>
+                                        <p style="margin: 5px 0; color: #333;"><strong>Updated By:</strong> Prince Alex Store Admin</p>
+                                        <p style="margin: 5px 0; color: #333;"><strong>Update Time:</strong> ${new Date().toLocaleString()}</p>
                                     </div>
 
                                     <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
@@ -5478,11 +5583,21 @@
                                         <p style="margin: 5px 0; color: #856404; font-size: 14px;">Use this code at checkout for your next order!</p>
                                     </div>
                                     
+                                    <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                                        <h3 style="color: #4CAF50; margin: 0 0 15px 0;">📍 Delivery Details</h3>
+                                        <p style="margin: 5px 0; color: #333;"><strong>Delivery Address:</strong> ${deliveryLocation}</p>
+                                        <p style="margin: 5px 0; color: #333;"><strong>Estimated Arrival:</strong> Within 30 minutes</p>
+                                        <p style="margin: 5px 0; color: #666;">Please ensure someone is available to receive the order.</p>
+                                        <p style="margin: 5px 0; color: #666;">Our delivery team will contact you when they're nearby.</p>
+                                    </div>
+                                    
                                     <div style="background: #d1ecf1; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                                        <h3 style="color: #0c5460; margin: 0 0 15px 0;">📦 Order Summary</h3>
-                                        <p style="margin: 5px 0; color: #0c5460;"><strong>Order ID:</strong> ${order.id}</p>
-                                        <p style="margin: 5px 0; color: #0c5460;"><strong>Total Amount:</strong> KES ${order.total ? order.total.toFixed(2) : '0.00'}</p>
-                                        <p style="margin: 5px 0; color: #0c5460;"><strong>Estimated Delivery:</strong> Within 30 minutes</p>
+                                        <h3 style="color: #0c5460; margin: 0 0 15px 0;">📱 Track Your Order</h3>
+                                        <p style="margin: 5px 0; color: #0c5460;">Monitor your order progress:</p>
+                                        <div style="text-align: center; margin: 15px 0;">
+                                            <a href="https://store.princealex.pro/orders" style="display: inline-block; background: #0c5460; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: 600;">Track Order</a>
+                                        </div>
+                                        <p style="margin: 5px 0; color: #0c5460; font-size: 14px;">Order ID: <strong>${order.id}</strong></p>
                                     </div>
                                     
                                     <p style="font-size: 16px; color: #333;">Thank you for choosing Prince Alex Store!</p>
@@ -5495,11 +5610,12 @@
                     orderId: order.id,
                     customerEmail: customerEmail,
                     customerName: customerName,
+                    adminEmail: firebaseUser.email,
                     status: newStatus,
                     voucherCode: voucherCode,
                     voucherValue: voucherValue,
                     createdAt: new Date().toISOString(),
-                    status: 'pending',
+                    emailStatus: 'pending',
                     priority: 'high'
                 };
 
@@ -5674,6 +5790,101 @@
             document.getElementById('modification-notes').value = '';
         }
 
+        // --- Add Item to Order Functions ---
+        let availableProducts = [];
+
+        window.openAddItemModal = async function() {
+            try {
+                // Load products from Firestore
+                const productsCol = collection(db, 'products');
+                const querySnapshot = await getDocs(productsCol);
+                
+                availableProducts = [];
+                querySnapshot.forEach(doc => {
+                    const product = { id: doc.id, ...doc.data() };
+                    availableProducts.push(product);
+                });
+
+                // Populate products list
+                populateProductsList(availableProducts);
+                
+                // Show modal
+                document.getElementById('add-item-modal').style.display = 'flex';
+            } catch (error) {
+                console.error('Error loading products:', error);
+                showModal('Error', 'Failed to load products.', true);
+            }
+        }
+
+        function populateProductsList(products) {
+            const productsList = document.getElementById('products-list');
+            
+            if (products.length === 0) {
+                productsList.innerHTML = '<p style="text-align: center; color: #666;">No products available.</p>';
+                return;
+            }
+
+            productsList.innerHTML = products.map(product => `
+                <div class="product-item">
+                    <img src="${product.image || '/images/placeholder.jpg'}" alt="${product.name}" onerror="this.src='/images/placeholder.jpg'">
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">KES ${product.price ? product.price.toFixed(2) : '0.00'} ${product.unit || 'per item'}</div>
+                    </div>
+                    <button class="add-to-order-btn" onclick="addProductToOrder('${product.id}')">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        window.searchProducts = function() {
+            const searchTerm = document.getElementById('product-search').value.toLowerCase();
+            const filteredProducts = availableProducts.filter(product => 
+                product.name.toLowerCase().includes(searchTerm) ||
+                (product.category && product.category.toLowerCase().includes(searchTerm))
+            );
+            populateProductsList(filteredProducts);
+        }
+
+        window.addProductToOrder = function(productId) {
+            const product = availableProducts.find(p => p.id === productId);
+            if (!product) return;
+
+            // Check if product already exists in order
+            const existingItemIndex = currentEditingOrder.items.findIndex(item => item.id === productId);
+            
+            if (existingItemIndex !== -1) {
+                // Increase quantity if product already exists
+                currentEditingOrder.items[existingItemIndex].quantity += 1;
+            } else {
+                // Add new item to order
+                const newItem = {
+                    id: productId,
+                    name: product.name,
+                    price: product.price || 0,
+                    quantity: 1,
+                    unit: product.unit || 'per item',
+                    image: product.image || '/images/placeholder.jpg'
+                };
+                currentEditingOrder.items.push(newItem);
+            }
+
+            // Refresh the order edit modal
+            populateOrderEditModal(currentEditingOrder);
+            updateOrderSummary();
+
+            // Close add item modal
+            closeAddItemModal();
+
+            showModal('Success', `${product.name} has been added to the order.`);
+        }
+
+        window.closeAddItemModal = function() {
+            document.getElementById('add-item-modal').style.display = 'none';
+            document.getElementById('product-search').value = '';
+        }
+
         window.saveOrderChanges = async function() {
             if (!currentEditingOrder || !currentOrderId) {
                 showModal('Error', 'No order changes to save.', true);
@@ -5755,32 +5966,48 @@
         function getOrderChanges(original, modified) {
             const changes = [];
             
-            // Check for item changes
-            if (original.items.length !== modified.items.length) {
-                changes.push(`Items count changed from ${original.items.length} to ${modified.items.length}`);
-            }
-
-            // Check for quantity changes
-            original.items.forEach((originalItem, index) => {
-                const modifiedItem = modified.items[index];
-                if (modifiedItem && originalItem.quantity !== modifiedItem.quantity) {
-                    changes.push(`Quantity of "${originalItem.name}" changed from ${originalItem.quantity} to ${modifiedItem.quantity}`);
+            // Compare items
+            const originalItems = original.items || [];
+            const modifiedItems = modified.items || [];
+            
+            // Find added items
+            modifiedItems.forEach(modifiedItem => {
+                const originalItem = originalItems.find(item => item.id === modifiedItem.id);
+                if (!originalItem) {
+                    changes.push(`Added ${modifiedItem.quantity} x ${modifiedItem.name} (KES ${modifiedItem.price.toFixed(2)} each)`);
+                } else if (originalItem.quantity !== modifiedItem.quantity) {
+                    const quantityChange = modifiedItem.quantity - originalItem.quantity;
+                    if (quantityChange > 0) {
+                        changes.push(`Increased quantity of ${modifiedItem.name} by ${quantityChange} (now ${modifiedItem.quantity})`);
+                    } else {
+                        changes.push(`Decreased quantity of ${modifiedItem.name} by ${Math.abs(quantityChange)} (now ${modifiedItem.quantity})`);
+                    }
                 }
             });
-
-            // Check for removed items
-            const removedItems = original.items.filter(originalItem => 
-                !modified.items.some(modifiedItem => modifiedItem.id === originalItem.id)
-            );
-            removedItems.forEach(item => {
-                changes.push(`"${item.name}" was removed from the order`);
+            
+            // Find removed items
+            originalItems.forEach(originalItem => {
+                const modifiedItem = modifiedItems.find(item => item.id === originalItem.id);
+                if (!modifiedItem) {
+                    changes.push(`Removed ${originalItem.quantity} x ${originalItem.name}`);
+                }
             });
-
-            // Check for total changes
-            if (original.total !== modified.total) {
-                changes.push(`Total amount changed from KES ${original.total.toFixed(2)} to KES ${modified.total.toFixed(2)}`);
+            
+            // Compare totals
+            if (original.subtotal !== modified.subtotal) {
+                const subtotalChange = modified.subtotal - original.subtotal;
+                changes.push(`Subtotal changed from KES ${original.subtotal.toFixed(2)} to KES ${modified.subtotal.toFixed(2)} (${subtotalChange > 0 ? '+' : ''}KES ${subtotalChange.toFixed(2)})`);
             }
-
+            
+            if (original.total !== modified.total) {
+                const totalChange = modified.total - original.total;
+                changes.push(`Total amount changed from KES ${original.total.toFixed(2)} to KES ${modified.total.toFixed(2)} (${totalChange > 0 ? '+' : ''}KES ${totalChange.toFixed(2)})`);
+            }
+            
+            if (changes.length === 0) {
+                changes.push('Order details were updated');
+            }
+            
             return changes;
         }
 
@@ -5809,21 +6036,22 @@
                             <p style="color: #666; line-height: 1.6;">We wanted to inform you that your order <strong>#${modifiedOrder.id}</strong> has been updated by our team.</p>
                             
                             <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                                <h4 style="color: #333; margin-top: 0;">Changes Made:</h4>
-                                <ul style="color: #666; padding-left: 20px;">
-                                    ${changes.map(change => `<li>${change}</li>`).join('')}
+                                <h4 style="color: #333; margin-top: 0;">📋 Order Modification Details</h4>
+                                <p style="margin: 5px 0; color: #333;"><strong>Order ID:</strong> ${modifiedOrder.id}</p>
+                                <p style="margin: 5px 0; color: #333;"><strong>Customer:</strong> ${modifiedOrder.customer ? modifiedOrder.customer.fullName : 'Valued Customer'}</p>
+                                <p style="margin: 5px 0; color: #333;"><strong>Modification Date:</strong> ${new Date().toLocaleString()}</p>
+                                <p style="margin: 5px 0; color: #333;"><strong>Modified By:</strong> Prince Alex Store Admin</p>
+                            </div>
+                            
+                            <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                                <h4 style="color: #4CAF50; margin-top: 0;">📝 Changes Made:</h4>
+                                <ul style="color: #333; padding-left: 20px; line-height: 1.6;">
+                                    ${changes.map(change => `<li style="margin-bottom: 8px;">${change}</li>`).join('')}
                                 </ul>
                             </div>
                             
-                            ${modificationNotes ? `
-                                <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                                    <h4 style="color: #1976d2; margin-top: 0;">Admin Notes:</h4>
-                                    <p style="color: #666; margin: 0;">${modificationNotes}</p>
-                                </div>
-                            ` : ''}
-                            
                             <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                                <h4 style="color: #333; margin-top: 0;">Updated Order Summary:</h4>
+                                <h4 style="color: #333; margin-top: 0;">💰 Updated Order Summary:</h4>
                                 <div style="display: flex; justify-content: space-between; margin: 10px 0;">
                                     <span>Subtotal:</span>
                                     <span>KES ${modifiedOrder.subtotal.toFixed(2)}</span>
@@ -5837,6 +6065,13 @@
                                     <span>KES ${modifiedOrder.total.toFixed(2)}</span>
                                 </div>
                             </div>
+                            
+                            ${modificationNotes ? `
+                                <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                                    <h4 style="color: #1976d2; margin-top: 0;">📝 Admin Notes:</h4>
+                                    <p style="color: #666; margin: 0; line-height: 1.6;">${modificationNotes}</p>
+                                </div>
+                            ` : ''}
                             
                             <p style="color: #666; line-height: 1.6;">If you have any questions about these changes, please don't hesitate to contact us.</p>
                             
@@ -5859,9 +6094,14 @@
                         subject: `Order Update - Order #${modifiedOrder.id}`,
                         html: emailContent
                     },
-                    createdAt: new Date(),
-                    type: 'order_modification',
-                    orderId: modifiedOrder.id
+                    emailType: 'order_modification',
+                    orderId: modifiedOrder.id,
+                    customerEmail: customerEmail,
+                    customerName: modifiedOrder.customer ? modifiedOrder.customer.fullName : 'Valued Customer',
+                    adminEmail: firebaseUser.email,
+                    createdAt: new Date().toISOString(),
+                    status: 'pending',
+                    priority: 'high'
                 });
 
                 console.log('Order modification notification email saved to mail collection');
@@ -5924,12 +6164,28 @@
                             
                             <p style="color: #666; line-height: 1.6;">We regret to inform you that your order <strong>#${order.id}</strong> has been cancelled.</p>
                             
+                            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                                <h4 style="color: #333; margin-top: 0;">📋 Cancellation Details</h4>
+                                <p style="margin: 5px 0; color: #333;"><strong>Order ID:</strong> ${order.id}</p>
+                                <p style="margin: 5px 0; color: #333;"><strong>Customer:</strong> ${order.customer ? order.customer.fullName : 'Valued Customer'}</p>
+                                <p style="margin: 5px 0; color: #333;"><strong>Order Date:</strong> ${new Date(order.date).toLocaleString()}</p>
+                                <p style="margin: 5px 0; color: #333;"><strong>Cancellation Date:</strong> ${new Date().toLocaleString()}</p>
+                                <p style="margin: 5px 0; color: #333;"><strong>Cancelled By:</strong> Prince Alex Store Admin</p>
+                                <p style="margin: 5px 0; color: #333;"><strong>Original Total:</strong> KES ${order.total ? order.total.toFixed(2) : '0.00'}</p>
+                            </div>
+                            
+                            <div style="background: #d1ecf1; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                                <h4 style="color: #0c5460; margin-top: 0;">💰 Refund Information</h4>
+                                <p style="margin: 5px 0; color: #0c5460;">Your payment will be refunded within 3-5 business days.</p>
+                                <p style="margin: 5px 0; color: #0c5460;"><strong>Refund Amount:</strong> KES ${order.total ? order.total.toFixed(2) : '0.00'}</p>
+                                <p style="margin: 5px 0; color: #0c5460;"><strong>Refund Method:</strong> Original payment method</p>
+                                <p style="margin: 5px 0; color: #0c5460; font-size: 14px;">You will receive a confirmation email once the refund is processed.</p>
+                            </div>
+                            
                             <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">
                                 <h4 style="color: #856404; margin-top: 0;">Reason for Cancellation:</h4>
                                 <p style="color: #856404; margin: 0;">All items were removed from your order by our admin team.</p>
                             </div>
-                            
-                            <p style="color: #666; line-height: 1.6;">If you have any questions about this cancellation or would like to place a new order, please don't hesitate to contact us.</p>
                             
                             <div style="text-align: center; margin: 30px 0;">
                                 <a href="mailto:info@princealexstore.com" style="background: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Contact Support</a>
@@ -5950,9 +6206,14 @@
                         subject: `Order Cancelled - Order #${order.id}`,
                         html: emailContent
                     },
-                    createdAt: new Date(),
-                    type: 'order_cancellation',
-                    orderId: order.id
+                    emailType: 'order_cancellation',
+                    orderId: order.id,
+                    customerEmail: customerEmail,
+                    customerName: order.customer ? order.customer.fullName : 'Valued Customer',
+                    adminEmail: firebaseUser.email,
+                    createdAt: new Date().toISOString(),
+                    status: 'pending',
+                    priority: 'high'
                 });
 
                 console.log('Order cancellation notification email saved to mail collection');
@@ -6610,7 +6871,8 @@
                     customerEmail: currentCustomer.email,
                     adminEmail: firebaseUser.email,
                     createdAt: new Date().toISOString(),
-                    status: 'pending'
+                    status: 'pending',
+                    priority: 'medium'
                 });
 
                 showModal('Message Sent', `Message has been sent to ${currentCustomer.email}. The customer will receive your message via email.`);
@@ -6758,7 +7020,8 @@
                     adminEmail: firebaseUser.email,
                     newStatus: newStatus,
                     createdAt: new Date().toISOString(),
-                    status: 'pending'
+                    status: 'pending',
+                    priority: 'medium'
                 });
 
                 showModal('Status Updated', `Customer status has been updated to ${newStatus}. An email notification has been sent to ${currentCustomer.email}.`);
