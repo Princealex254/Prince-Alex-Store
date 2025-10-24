@@ -1694,6 +1694,393 @@
             margin-bottom: 24px;
         }
 
+        .quick-order-search-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .quick-order-search-section h3 {
+            margin: 0 0 16px 0;
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-search-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .quick-search-input-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .quick-search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--border-radius-sm);
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--text-color);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .quick-search-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.8);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+        }
+
+        .quick-search-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-search-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .quick-search-results {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: var(--border-radius-sm);
+            padding: 16px;
+            margin-top: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .order-action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .order-action-btn.edit {
+            background: var(--accent-color-blue);
+            color: white;
+        }
+
+        .order-action-btn.add {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .order-action-btn.remove {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .order-action-btn.cancel {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .order-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .order-search-result {
+            background: white;
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+        }
+
+        .order-header {
+            background: var(--light-bg);
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .order-header h4 {
+            margin: 0;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .order-id-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .order-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-item label {
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-item span {
+            color: var(--dark-text);
+            font-size: 14px;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background: #FFF3CD;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background: #D1ECF1;
+            color: #0C5460;
+        }
+
+        .status-processing {
+            background: #D4EDDA;
+            color: #155724;
+        }
+
+        .status-on-transit {
+            background: #E2E3E5;
+            color: #383D41;
+        }
+
+        .status-delivered {
+            background: #D1ECF1;
+            color: #0C5460;
+        }
+
+        .total-amount {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+
+        .order-summary-breakdown {
+            background: var(--light-bg);
+            padding: 16px;
+            border-radius: var(--border-radius-sm);
+            margin: 16px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .order-summary-breakdown h5 {
+            margin: 0 0 12px 0;
+            color: var(--primary-color);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            font-size: 14px;
+        }
+
+        .summary-row.total-row {
+            border-top: 2px solid var(--primary-color);
+            margin-top: 8px;
+            padding-top: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--primary-color);
+        }
+
+        .summary-row.total-row .total-amount {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        /* Pending Emails Styles */
+        .email-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .send-all-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .send-all-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .pending-emails-container {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .email-item {
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .email-item:hover {
+            background: var(--light-bg);
+        }
+
+        .email-item:last-child {
+            border-bottom: none;
+        }
+
+        .email-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .email-meta {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .email-priority {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-high {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .priority-medium {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .priority-low {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .email-actions-item {
+            display: flex;
+            gap: 8px;
+        }
+
+        .email-action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .email-action-btn.send {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .email-action-btn.delete {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .email-action-btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.9;
+        }
+
+        .email-content {
+            margin-top: 12px;
+        }
+
+        .email-subject {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+
+        .email-details {
+            font-size: 14px;
+            color: var(--dark-text);
+            line-height: 1.5;
+        }
+
         .search-section {
             display: flex;
             flex-direction: column;
@@ -2707,6 +3094,8 @@
             }
         }
 
+        /* Additional responsive styles for order management */
+        @media (max-width: 768px) {
             .order-summary {
                 grid-template-columns: 1fr;
             }
@@ -3698,12 +4087,16 @@
                     </a>
                     <a href="#" class="nav-item" data-page="orders">
                         <i class="fas fa-shopping-cart"></i>
-                        <span>Orders</span>
+                        <span>Manage Orders</span>
                         <span class="nav-badge" id="pending-orders-badge">0</span>
                     </a>
                     <a href="#" class="nav-item" data-page="customers">
                         <i class="fas fa-users"></i>
                         <span>Customers</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="add-order">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Add Order</span>
                     </a>
                 </div>
                 
@@ -3722,6 +4115,11 @@
                         <i class="fas fa-envelope"></i>
                         <span>Messages</span>
                         <span class="nav-badge" id="unread-messages-badge">0</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="pending-emails">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Pending Emails</span>
+                        <span class="nav-badge" id="pending-emails-badge">0</span>
                     </a>
                 </div>
                 
@@ -3901,6 +4299,42 @@
                 </div>
             </div>
 
+            <!-- Add Order Section -->
+            <div id="admin-add-order-section" class="admin-section admin-page">
+                <div class="section-header">
+                    <h2>Add New Order</h2>
+                    <p>Manually create a new order for a customer.</p>
+                </div>
+                <div class="forms-container" style="max-width:900px; margin: 0 auto 30px;">
+                    <form id="admin-create-order-form" class="admin-form">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom: 20px;">
+                            <input type="text" id="create-order-customerName" placeholder="Customer Fullname" required />
+                            <input type="email" id="create-order-customerEmail" placeholder="Customer Email" required />
+                            <input type="text" id="create-order-customerPhone" placeholder="Customer Phone" />
+                            <input type="text" id="create-order-deliveryAddress" placeholder="Delivery Address" required />
+                        </div>
+                        <div style="margin-bottom:20px;">
+                            <label for="create-order-items" style="display: block; margin-bottom: 8px; font-weight: 600;">Items (JSON Array)</label>
+                            <textarea id="create-order-items" rows="6" placeholder='[{"id": "prod1", "name": "Product 1", "price": 10.00, "quantity": 1}]' style="width:100%; padding:12px; border-radius:8px; border:2px solid var(--border-color);"></textarea>
+                            <small>Enter items as a JSON array. Example: [{"id": "prod1", "name": "Product 1", "price": 10.00, "quantity": 1}]</small>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom: 20px;">
+                            <input type="number" id="create-order-total" placeholder="Total Amount (KES)" step="0.01" required />
+                            <select id="create-order-status" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;" required>
+                                <option value="Pending">Pending</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Processing">Processing</option>
+                                <option value="On Transit">On Transit</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="create-btn">Create New Order</button>
+                        <div id="create-order-message" style="margin-top:12px; color:var(--text-color);"></div>
+                    </form>
+                </div>
+            </div>
+
             <!-- Manage Orders Section -->
                 <div id="admin-orders-section" class="admin-section admin-page">
                     <div class="section-header">
@@ -3910,6 +4344,22 @@
                 
                 <!-- Order Search and Filters -->
                 <div class="order-controls">
+                    <!-- Quick Order ID Search Section -->
+                    <div class="quick-order-search-section">
+                        <h3><i class="fas fa-search"></i> Quick Order Search by ID</h3>
+                        <div class="quick-search-container">
+                            <div class="quick-search-input-group">
+                                <input type="text" id="quick-order-id-search" placeholder="Enter Order ID (e.g., ORD-001)" class="quick-search-input">
+                                <button type="button" id="quick-search-btn" class="quick-search-btn">
+                                    <i class="fas fa-search"></i> Search Order
+                                </button>
+                            </div>
+                            <div id="quick-search-results" class="quick-search-results" style="display: none;">
+                                <!-- Quick search results will appear here -->
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="search-section">
                         <div class="search-input-group">
                             <input type="text" id="order-search" placeholder="Search by email, phone, or order ID..." class="search-input">
@@ -4095,6 +4545,30 @@
                         <div class="loading-state">
                             <i class="fas fa-spinner fa-spin"></i>
                             <p>Loading messages...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Emails Section -->
+                <div id="admin-pending-emails-section" class="admin-section admin-page">
+                    <div class="section-header">
+                        <h2>Pending Email Notifications</h2>
+                        <p>Manage email notifications that need to be sent manually</p>
+                    </div>
+                    
+                    <div class="email-actions">
+                        <button id="refresh-emails-btn" class="refresh-btn">
+                            <i class="fas fa-sync-alt"></i> Refresh Emails
+                        </button>
+                        <button id="send-all-emails-btn" class="send-all-btn">
+                            <i class="fas fa-paper-plane"></i> Send All Pending
+                        </button>
+                    </div>
+                    
+                    <div id="pending-emails-list" class="pending-emails-container">
+                        <div class="loading-state">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Loading pending emails...</p>
                         </div>
                     </div>
                 </div>
@@ -4480,6 +4954,7 @@
                 'products': 'Product Management',
                 'orders': 'Order Management',
                 'customers': 'Customer Management',
+                'add-order': 'Add New Order',
                 'referrals': 'Referral Management',
                 'vouchers': 'Voucher Management',
                 'contacts': 'Contact Messages'
@@ -5316,6 +5791,536 @@
             statusFilter.addEventListener('change', performSearch);
             dateFilter.addEventListener('change', performSearch);
             refreshBtn.addEventListener('click', loadOrders);
+            
+            // Quick Order ID Search functionality
+            const quickSearchBtn = document.getElementById('quick-search-btn');
+            const quickSearchInput = document.getElementById('quick-order-id-search');
+            const quickSearchResults = document.getElementById('quick-search-results');
+            
+            if (quickSearchBtn && quickSearchInput && quickSearchResults) {
+                quickSearchBtn.addEventListener('click', performQuickOrderSearch);
+                quickSearchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        performQuickOrderSearch();
+                    }
+                });
+            }
+        }
+
+        // Quick Order Search Function
+        async function performQuickOrderSearch() {
+            const orderId = document.getElementById('quick-order-id-search').value.trim();
+            const resultsDiv = document.getElementById('quick-search-results');
+            
+            if (!orderId) {
+                showModal('Error', 'Please enter an Order ID to search.', true);
+                return;
+            }
+            
+            try {
+                // Show loading state
+                resultsDiv.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: var(--primary-color);"></i>
+                        <p style="margin-top: 10px; color: var(--text-color);">Searching for order...</p>
+                    </div>
+                `;
+                resultsDiv.style.display = 'block';
+                
+                // Search for the order
+                const order = allOrders.find(o => o.id.toLowerCase() === orderId.toLowerCase());
+                
+                if (!order) {
+                    resultsDiv.innerHTML = `
+                        <div style="text-align: center; padding: 20px; color: var(--error-color);">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 10px;"></i>
+                            <p><strong>Order Not Found</strong></p>
+                            <p>No order found with ID: ${orderId}</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Display order details with action buttons
+                const customerName = order.customer ? order.customer.fullName : 'Unknown Customer';
+                const customerEmail = order.userEmail || 'No email';
+                const customerPhone = order.customer ? order.customer.phoneNumber : 'No phone';
+                const orderDate = new Date(order.date).toLocaleDateString();
+                const orderStatus = order.status || 'Unknown';
+                
+                // Calculate totals properly
+                const subtotal = order.items ? order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) : 0;
+                const deliveryFee = order.transportationFee || order.deliveryFee || 0;
+                const totalAmount = subtotal + deliveryFee;
+                
+                resultsDiv.innerHTML = `
+                    <div class="order-search-result">
+                        <div class="order-header">
+                            <h4><i class="fas fa-receipt"></i> Order Details</h4>
+                            <span class="order-id-badge">${order.id}</span>
+                        </div>
+                        
+                        <div class="order-info-grid">
+                            <div class="info-item">
+                                <label>Customer:</label>
+                                <span>${customerName}</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Email:</label>
+                                <span>${customerEmail}</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Phone:</label>
+                                <span>${customerPhone}</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Date:</label>
+                                <span>${orderDate}</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Status:</label>
+                                <span class="status-badge status-${orderStatus.toLowerCase().replace(' ', '-')}">${orderStatus}</span>
+                            </div>
+                            <div class="info-item">
+                                <label>Items:</label>
+                                <span>${order.items ? order.items.length : 0} item(s)</span>
+                            </div>
+                        </div>
+                        
+                        <div class="order-summary-breakdown">
+                            <h5><i class="fas fa-calculator"></i> Order Summary</h5>
+                            <div class="summary-row">
+                                <span>Subtotal:</span>
+                                <span>KES ${subtotal.toFixed(2)}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Delivery Fee:</span>
+                                <span>KES ${deliveryFee.toFixed(2)}</span>
+                            </div>
+                            <div class="summary-row total-row">
+                                <span><strong>Total Amount:</strong></span>
+                                <span class="total-amount">KES ${totalAmount.toFixed(2)}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="order-action-buttons">
+                            <button class="order-action-btn edit" onclick="editOrderById('${order.id}')">
+                                <i class="fas fa-edit"></i> Edit Order
+                            </button>
+                            <button class="order-action-btn add" onclick="addItemToOrder('${order.id}')">
+                                <i class="fas fa-plus"></i> Add Item
+                            </button>
+                            <button class="order-action-btn remove" onclick="removeItemFromOrder('${order.id}')">
+                                <i class="fas fa-minus"></i> Remove Item
+                            </button>
+                            <button class="order-action-btn cancel" onclick="cancelOrderById('${order.id}')">
+                                <i class="fas fa-times"></i> Cancel Order
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Error searching for order:', error);
+                resultsDiv.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: var(--error-color);">
+                        <i class="fas fa-exclamation-circle" style="font-size: 24px; margin-bottom: 10px;"></i>
+                        <p><strong>Search Error</strong></p>
+                        <p>Failed to search for order: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Enhanced Order Action Functions with Professional Email Integration
+        window.editOrderById = async function(orderId) {
+            try {
+                const order = allOrders.find(o => o.id === orderId);
+                if (!order) {
+                    showModal('Error', 'Order not found.', true);
+                    return;
+                }
+                
+                // Open the existing order edit modal
+                currentOrderId = orderId;
+                toggleOrderEditMode();
+                
+                // Send email notification
+                await emailService.sendOrderActionEmail(order, 'edit', 'Your order has been edited by our admin team. Please review the changes below.');
+                
+            } catch (error) {
+                console.error('Error editing order:', error);
+                showModal('Error', `Failed to edit order: ${error.message}`, true);
+            }
+        };
+
+        window.addItemToOrder = async function(orderId) {
+            try {
+                const order = allOrders.find(o => o.id === orderId);
+                if (!order) {
+                    showModal('Error', 'Order not found.', true);
+                    return;
+                }
+                
+                // Open the add item modal
+                currentOrderId = orderId;
+                openAddItemModal();
+                
+            } catch (error) {
+                console.error('Error adding item to order:', error);
+                showModal('Error', `Failed to add item: ${error.message}`, true);
+            }
+        };
+
+        window.removeItemFromOrder = async function(orderId) {
+            try {
+                const order = allOrders.find(o => o.id === orderId);
+                if (!order) {
+                    showModal('Error', 'Order not found.', true);
+                    return;
+                }
+                
+                // Open the existing order edit modal to remove items
+                currentOrderId = orderId;
+                toggleOrderEditMode();
+                
+                // Send email notification
+                await emailService.sendOrderActionEmail(order, 'item_removed', 'An item has been removed from your order. Please review the updated order details.');
+                
+            } catch (error) {
+                console.error('Error removing item from order:', error);
+                showModal('Error', `Failed to remove item: ${error.message}`, true);
+            }
+        };
+
+        window.cancelOrderById = async function(orderId) {
+            try {
+                const order = allOrders.find(o => o.id === orderId);
+                if (!order) {
+                    showModal('Error', 'Order not found.', true);
+                    return;
+                }
+                
+                // Confirm cancellation
+                const confirmed = confirm(`Are you sure you want to cancel order ${orderId}? This action cannot be undone.`);
+                if (!confirmed) return;
+                
+                // Update order status to cancelled
+                const orderRef = doc(db, "orders", orderId);
+                await updateDoc(orderRef, {
+                    status: 'Cancelled',
+                    cancelledAt: new Date().toISOString(),
+                    cancelledBy: 'admin'
+                });
+                
+                // Update the local order object with the new status
+                order.status = 'Cancelled';
+                order.cancelledAt = new Date().toISOString();
+                order.cancelledBy = 'admin';
+                
+                // Refresh orders list
+                await loadOrders();
+                
+                // Send email notification with updated order data
+                await emailService.sendOrderActionEmail(order, 'cancelled', 'Your order has been cancelled. If you have any questions, please contact our support team.');
+                
+                showModal('Success', `Order ${orderId} has been cancelled successfully and customer has been notified.`);
+                
+                // Clear search results
+                document.getElementById('quick-search-results').style.display = 'none';
+                document.getElementById('quick-order-id-search').value = '';
+                
+            } catch (error) {
+                console.error('Error cancelling order:', error);
+                showModal('Error', `Failed to cancel order: ${error.message}`, true);
+            }
+        };
+
+        // Professional Email System - Matching Index.html Format
+        class EmailService {
+            constructor() {
+                // EMAIL SYSTEM SETUP INSTRUCTIONS:
+                // This system uses the same email format and infrastructure as index.html
+                // 
+                // 1. BREVO API SETUP (Same as index.html):
+                //    - Go to https://www.brevo.com/ and create an account
+                //    - Get your API key from the SMTP & API section
+                //    - Replace the empty brevoApiKey below with your actual API key
+                //    - The system will automatically use Brevo API for sending emails
+                //
+                // 2. FIRESTORE MAIL COLLECTION (Same as index.html):
+                //    - If Brevo API fails or is not configured, emails are queued in Firestore "mail" collection
+                //    - This uses the same format as index.html: welcome emails, contact forms, etc.
+                //    - The mail collection is processed by your existing email processing system
+                //
+                // 3. EMAIL TEMPLATES:
+                //    - Professional HTML templates matching Prince Alex Store branding
+                //    - Same styling and format as index.html email templates
+                //    - Includes order details, items list, and admin notes
+                
+                // Using same Brevo API configuration as index.html
+                this.brevoApiKey = ""; // API key removed for security - configure on server side
+                this.senderInfo = { name: "Prince Alex Store - Fresh Vegetables", email: "noreply@princealex.pro" };
+                this.isInitialized = false;
+                this.init();
+            }
+
+            async init() {
+                try {
+                    if (this.brevoApiKey && this.brevoApiKey.trim() !== "") {
+                        this.isInitialized = true;
+                        console.log('Brevo API initialized successfully');
+                    } else {
+                        console.warn('Brevo API key not configured, using Firestore mail collection fallback');
+                    }
+                } catch (error) {
+                    console.error('Failed to initialize Brevo API:', error);
+                }
+            }
+
+            async sendOrderActionEmail(order, action, message, additionalData = {}) {
+                try {
+                    const customerEmail = order.userEmail;
+                    if (!customerEmail) {
+                        console.log('No email address found for order, collecting email for manual sending');
+                        await this.collectEmailForManualSending(order, action, message, additionalData);
+                        return;
+                    }
+
+                    // Create professional HTML email template matching index.html style
+                    const emailHtml = this.createOrderActionEmailTemplate(order, action, message, additionalData);
+                    
+                    const emailData = {
+                        to: [{ email: customerEmail, name: order.customer ? order.customer.fullName : 'Valued Customer' }],
+                        sender: this.senderInfo,
+                        subject: `Order ${order.id} Update - ${action.charAt(0).toUpperCase() + action.slice(1)} | Prince Alex Store`,
+                        htmlContent: emailHtml
+                    };
+
+                    if (this.isInitialized) {
+                        // Send via Brevo API (same as index.html)
+                        const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+                            method: "POST",
+                            headers: {
+                                "accept": "application/json",
+                                "api-key": this.brevoApiKey,
+                                "content-type": "application/json"
+                            },
+                            body: JSON.stringify(emailData)
+                        });
+
+                        if (response.ok) {
+                            console.log("✅ Order action email sent successfully to " + customerEmail);
+                            showModal('Success', `Email notification sent to ${customerEmail}`);
+                        } else {
+                            console.error("❌ Failed to send email via Brevo API", await response.text());
+                            // Fallback to Firestore mail collection
+                            await this.sendViaFirestoreMailCollection(order, action, message, additionalData, emailHtml);
+                        }
+                    } else {
+                        // Fallback to Firestore mail collection
+                        await this.sendViaFirestoreMailCollection(order, action, message, additionalData, emailHtml);
+                    }
+
+                } catch (error) {
+                    console.error('Error sending email:', error);
+                    // Fallback to Firestore mail collection
+                    await this.sendViaFirestoreMailCollection(order, action, message, additionalData);
+                }
+            }
+
+            createOrderActionEmailTemplate(order, action, message, additionalData = {}) {
+                const actionEmojis = {
+                    'edit': '✏️',
+                    'item_added': '➕',
+                    'item_removed': '➖',
+                    'cancelled': '❌',
+                    'order_modified': '📝'
+                };
+
+                const actionTitles = {
+                    'edit': 'Order Modified',
+                    'item_added': 'Item Added to Order',
+                    'item_removed': 'Item Removed from Order',
+                    'cancelled': 'Order Cancelled',
+                    'order_modified': 'Order Updated'
+                };
+
+                const emoji = actionEmojis[action] || '📧';
+                const title = actionTitles[action] || 'Order Update';
+
+                return `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                        <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); padding: 30px; text-align: center; color: white;">
+                            <h1 style="margin: 0; font-size: 28px;">${emoji} ${title}</h1>
+                            <p style="margin: 10px 0 0 0; font-size: 16px;">Prince Alex Store Order Update</p>
+                        </div>
+                        
+                        <div style="padding: 30px; background: white;">
+                            <p style="font-size: 16px; color: #333;">Hello ${order.customer ? order.customer.fullName : 'Valued Customer'},</p>
+                            <p style="font-size: 16px; color: #333;">${message}</p>
+                            
+                            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                                <h3 style="color: #4CAF50; margin: 0 0 15px 0;">📋 Order Details</h3>
+                                <p style="margin: 5px 0;"><strong>Order ID:</strong> ${order.id}</p>
+                                <p style="margin: 5px 0;"><strong>Order Date:</strong> ${new Date(order.date).toLocaleDateString()}</p>
+                                <p style="margin: 5px 0;"><strong>Status:</strong> ${order.status || 'Unknown'}</p>
+                                
+                                <div style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #4CAF50;">
+                                    <h4 style="color: #4CAF50; margin: 0 0 10px 0;">💰 Order Summary</h4>
+                                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                                        <span>Subtotal:</span>
+                                        <span>KES ${this.calculateSubtotal(order.items || []).toFixed(2)}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
+                                        <span>Delivery Fee:</span>
+                                        <span>KES ${(order.transportationFee || order.deliveryFee || 0).toFixed(2)}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin: 10px 0; padding-top: 10px; border-top: 2px solid #4CAF50; font-weight: bold; font-size: 16px; color: #4CAF50;">
+                                        <span>Total Amount:</span>
+                                        <span>KES ${this.calculateTotalAmount(order).toFixed(2)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            ${this.formatOrderItems(order.items || [])}
+                            
+                            ${additionalData.notes ? `
+                                <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                                    <h3 style="color: #4CAF50; margin: 0 0 15px 0;">📝 Admin Notes</h3>
+                                    <p style="color: #333; line-height: 1.6;">${additionalData.notes}</p>
+                                </div>
+                            ` : ''}
+                            
+                            <div style="text-align: center; margin: 30px 0;">
+                                <a href="https://store.princealex.pro" style="display: inline-block; background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">🛒 Visit Our Store</a>
+                            </div>
+                            
+                            <p style="color: #666; font-size: 14px; text-align: center; margin-top: 30px;">If you have any questions about this order, please contact our support team.</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            formatOrderItems(items) {
+                if (!items || items.length === 0) {
+                    return `
+                        <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                            <h3 style="color: #856404; margin: 0 0 15px 0;">📦 Order Items</h3>
+                            <p style="color: #856404;">No items in this order.</p>
+                        </div>
+                    `;
+                }
+
+                const itemsHtml = items.map(item => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <div>
+                            <strong style="color: #333;">${item.name}</strong>
+                            <br>
+                            <small style="color: #666;">${item.quantity} ${item.unit || 'item(s)'}</small>
+                        </div>
+                        <div style="color: #4CAF50; font-weight: 600;">
+                            KES ${(item.price * item.quantity).toFixed(2)}
+                        </div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                        <h3 style="color: #4CAF50; margin: 0 0 15px 0;">📦 Order Items</h3>
+                        ${itemsHtml}
+                    </div>
+                `;
+            }
+
+            calculateSubtotal(items) {
+                if (!items || items.length === 0) return 0;
+                return items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            }
+
+            calculateTotalAmount(order) {
+                const subtotal = this.calculateSubtotal(order.items || []);
+                const deliveryFee = order.transportationFee || order.deliveryFee || order.deliveryCost || 0;
+                return subtotal + deliveryFee;
+            }
+
+            async sendViaFirestoreMailCollection(order, action, message, additionalData = {}, emailHtml = null) {
+                try {
+                    // Use same Firestore mail collection format as index.html
+                    await addDoc(collection(db, "mail"), {
+                        to: order.userEmail,
+                        message: {
+                            subject: `Order ${order.id} Update - ${action.charAt(0).toUpperCase() + action.slice(1)} | Prince Alex Store`,
+                            html: emailHtml || this.createOrderActionEmailTemplate(order, action, message, additionalData)
+                        },
+                        emailType: 'order_action',
+                        customerEmail: order.userEmail,
+                        customerName: order.customer ? order.customer.fullName : 'Valued Customer',
+                        adminEmail: 'noreply@princealex.pro',
+                        createdAt: new Date().toISOString(),
+                        status: 'pending',
+                        priority: 'high',
+                        orderData: {
+                            orderId: order.id,
+                            action: action,
+                            message: message,
+                            additionalData: additionalData
+                        }
+                    });
+                    
+                    console.log('Email queued in Firestore mail collection');
+                    showModal('Email Queued', `Email notification has been queued for sending to ${order.userEmail}. Check the mail collection for processing.`);
+                    
+                } catch (error) {
+                    console.error('Error queuing email in Firestore:', error);
+                    showModal('Email Collection Failed', 'Failed to queue email notification. Please send manually.');
+                }
+            }
+
+            async collectEmailForManualSending(order, action, message, additionalData = {}) {
+                try {
+                    // Store email data in Firestore for manual processing (same format as index.html)
+                    const emailCollection = collection(db, 'mail');
+                    const emailData = {
+                        to: order.userEmail || 'No email provided',
+                        message: {
+                            subject: `Order ${order.id} Update - ${action.charAt(0).toUpperCase() + action.slice(1)} | Prince Alex Store`,
+                            html: this.createOrderActionEmailTemplate(order, action, message, additionalData)
+                        },
+                        emailType: 'order_action_manual',
+                        customerEmail: order.userEmail || 'No email provided',
+                        customerName: order.customer ? order.customer.fullName : 'Unknown Customer',
+                        adminEmail: 'noreply@princealex.pro',
+                        createdAt: new Date().toISOString(),
+                        status: 'pending',
+                        priority: 'high',
+                        orderData: {
+                            orderId: order.id,
+                            action: action,
+                            message: message,
+                            additionalData: additionalData
+                        }
+                    };
+
+                    await addDoc(emailCollection, emailData);
+                    console.log('Email data collected for manual sending:', emailData);
+                    
+                    // Show notification to admin
+                    showModal('Email Queued', `Email notification has been queued for manual sending to ${order.userEmail || 'customer'}. Check the mail collection.`);
+                    
+                } catch (error) {
+                    console.error('Error collecting email for manual sending:', error);
+                    showModal('Email Collection Failed', 'Failed to collect email data. Please send notification manually.');
+                }
+            }
+        }
+
+        // Initialize email service
+        const emailService = new EmailService();
+
+        // Enhanced email notification function
+        async function sendOrderActionEmail(order, action, message, additionalData = {}) {
+            await emailService.sendOrderActionEmail(order, action, message, additionalData);
         }
 
         // --- Order Details View Functions ---
@@ -5326,6 +6331,8 @@
                     showModal('Error', 'Order not found.', true);
                     return;
                 }
+
+                currentOrderId = orderId; // Set the current order ID for editing
 
                 const customerName = order.customer ? order.customer.fullName : 'Unknown Customer';
                 const customerEmail = order.userEmail || 'No email';
@@ -5439,6 +6446,15 @@
                                 <span class="detail-value" style="font-weight: 700; color: var(--primary-color);">KES ${order.total ? order.total.toFixed(2) : '0.00'}</span>
                             </div>
                         </div>
+                        </div>
+                        <div class="details-section">
+                            <h4>Actions</h4>
+                            <div class="order-actions">
+                                <button class="action-btn btn-view" onclick="toggleOrderEditMode()">
+                                    <i class="fas fa-edit"></i> Edit This Order
+                                </button>
+                                <!-- More actions can be added here -->
+                            </div>
                         </div>
                     `;
 
@@ -5656,8 +6672,8 @@
             }
 
             // Store original order data for comparison
-            originalOrderData = JSON.parse(JSON.stringify(order));
-            currentEditingOrder = { ...order };
+        originalOrderData = JSON.parse(JSON.stringify(order)); // Deep copy
+        currentEditingOrder = JSON.parse(JSON.stringify(order)); // Deep copy for current editing
 
             // Populate the edit modal
             populateOrderEditModal(order);
@@ -5744,7 +6760,7 @@
             }
         }
 
-        window.removeItemFromOrder = function(index) {
+        window.removeItemFromOrder = async function(index) {
             if (currentEditingOrder && currentEditingOrder.items[index]) {
                 const item = currentEditingOrder.items[index];
                 const confirmRemove = confirm(`Are you sure you want to remove "${item.name}" from this order?`);
@@ -5752,12 +6768,36 @@
                 if (confirmRemove) {
                     currentEditingOrder.items.splice(index, 1);
                     
+            // Recalculate totals
+            currentEditingOrder.subtotal = currentEditingOrder.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryFee = currentEditingOrder.transportationFee || currentEditingOrder.deliveryFee || 0;
+            currentEditingOrder.total = currentEditingOrder.subtotal + deliveryFee;
+            currentEditingOrder.totalAmount = currentEditingOrder.total; // Ensure email templates can access this
+                    
                     // Re-render the items list
                     populateOrderEditModal(currentEditingOrder);
+                    updateOrderSummary();
+                    
+                    // Send email notification about item removal
+                    try {
+                        await emailService.sendOrderActionEmail(
+                            currentEditingOrder, 
+                            'item_removed', 
+                            `"${item.name}" has been removed from your order. Please review the updated order details.`,
+                            {
+                                removedItem: item,
+                                notes: 'Item removed by admin'
+                            }
+                        );
+                    } catch (error) {
+                        console.error('Error sending email notification:', error);
+                    }
                     
                     // Check if no items left
                     if (currentEditingOrder.items.length === 0) {
                         showModal('Warning', 'All items have been removed from this order. The order will be cancelled if you save.', true);
+                    } else {
+                        showModal('Success', `${item.name} has been removed from the order and customer has been notified.`);
                     }
                 }
             }
@@ -5771,16 +6811,28 @@
                 subtotal += item.price * item.quantity;
             });
 
-            const deliveryFee = currentEditingOrder.transportationFee || 0;
+            // Handle different field names for delivery fee
+            const deliveryFee = currentEditingOrder.transportationFee || 
+                               currentEditingOrder.deliveryFee || 
+                               currentEditingOrder.deliveryCost || 0;
+            
             const total = subtotal + deliveryFee;
 
-            document.getElementById('edit-subtotal').textContent = `KES ${subtotal.toFixed(2)}`;
-            document.getElementById('edit-delivery-fee').textContent = `KES ${deliveryFee.toFixed(2)}`;
-            document.getElementById('edit-total').textContent = `KES ${total.toFixed(2)}`;
+            // Update UI elements
+            const subtotalElement = document.getElementById('edit-subtotal');
+            const deliveryFeeElement = document.getElementById('edit-delivery-fee');
+            const totalElement = document.getElementById('edit-total');
 
-            // Update the current editing order totals
+            if (subtotalElement) subtotalElement.textContent = `KES ${subtotal.toFixed(2)}`;
+            if (deliveryFeeElement) deliveryFeeElement.textContent = `KES ${deliveryFee.toFixed(2)}`;
+            if (totalElement) totalElement.textContent = `KES ${total.toFixed(2)}`;
+
+            // Update the current editing order totals with consistent field names
             currentEditingOrder.subtotal = subtotal;
+            currentEditingOrder.transportationFee = deliveryFee;
+            currentEditingOrder.deliveryFee = deliveryFee; // Keep both for compatibility
             currentEditingOrder.total = total;
+            currentEditingOrder.totalAmount = total; // Ensure email templates can access this
         }
 
         window.closeOrderEditModal = function() {
@@ -5809,7 +6861,8 @@
                 populateProductsList(availableProducts);
                 
                 // Show modal
-                document.getElementById('add-item-modal').style.display = 'flex';
+                document.getElementById('add-item-modal').style.display = 'flex'; // Show modal
+                document.getElementById('product-search').value = ''; // Clear search input
             } catch (error) {
                 console.error('Error loading products:', error);
                 showModal('Error', 'Failed to load products.', true);
@@ -5847,7 +6900,7 @@
             populateProductsList(filteredProducts);
         }
 
-        window.addProductToOrder = function(productId) {
+        window.addProductToOrder = async function(productId) {
             const product = availableProducts.find(p => p.id === productId);
             if (!product) return;
 
@@ -5877,7 +6930,22 @@
             // Close add item modal
             closeAddItemModal();
 
-            showModal('Success', `${product.name} has been added to the order.`);
+            // Send email notification about item addition
+            try {
+                await emailService.sendOrderActionEmail(
+                    currentEditingOrder, 
+                    'item_added', 
+                    'A new item has been added to your order. Please review the updated order details.',
+                    {
+                        addedItem: product,
+                        notes: 'Item added by admin'
+                    }
+                );
+            } catch (error) {
+                console.error('Error sending email notification:', error);
+            }
+
+            showModal('Success', `${product.name} has been added to the order and customer has been notified.`);
         }
 
         window.closeAddItemModal = function() {
@@ -5912,6 +6980,9 @@
                     items: currentEditingOrder.items,
                     subtotal: currentEditingOrder.subtotal,
                     total: currentEditingOrder.total,
+                    totalAmount: currentEditingOrder.totalAmount, // Ensure totalAmount is updated
+                    transportationFee: currentEditingOrder.transportationFee,
+                    deliveryFee: currentEditingOrder.deliveryFee, // Keep both for compatibility
                     lastModified: new Date(),
                     modificationNotes: document.getElementById('modification-notes').value.trim()
                 };
@@ -5935,7 +7006,16 @@
                 await updateDoc(orderRef, orderUpdateData);
 
                 // Send notification email to customer
-                await sendOrderModificationNotification(currentEditingOrder, originalOrderData);
+                await emailService.sendOrderActionEmail(
+                    currentEditingOrder, 
+                    'order_modified', 
+                    'Your order has been successfully updated. Please review the changes below.',
+                    {
+                        notes: orderUpdateData.modificationNotes,
+                        changes: getOrderChanges(originalOrderData, currentEditingOrder),
+                        modificationHistory: currentEditingOrder.modificationHistory
+                    }
+                );
 
                 // Update local data
                 const orderIndex = allOrders.findIndex(o => o.id === currentOrderId);
@@ -6122,8 +7202,8 @@
                     lastModified: new Date()
                 });
 
-                // Send cancellation notification
-                await sendOrderCancellationNotification(currentEditingOrder);
+                // Send cancellation notification using the new email service
+                await emailService.sendOrderActionEmail(currentEditingOrder, 'cancelled', 'Your order has been cancelled because all items were removed. If you have any questions, please contact our support team.');
 
                 // Update local data
                 const orderIndex = allOrders.findIndex(o => o.id === currentOrderId);
@@ -6141,85 +7221,6 @@
             } catch (error) {
                 console.error('Error cancelling order:', error);
                 showModal('Error', `Failed to cancel order: ${error.message}`, true);
-            }
-        }
-
-        async function sendOrderCancellationNotification(order) {
-            try {
-                const customerEmail = order.customer ? order.customer.email : null;
-                if (!customerEmail) {
-                    console.warn('No customer email found for order cancellation notification');
-                    return;
-                }
-
-                const emailContent = `
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                        <div style="background: linear-gradient(135deg, #dc3545, #c82333); color: white; padding: 20px; border-radius: 10px 10px 0 0; text-align: center;">
-                            <h2 style="margin: 0; font-size: 24px;">Order Cancellation Notice</h2>
-                            <p style="margin: 10px 0 0 0; opacity: 0.9;">Prince Alex Store</p>
-                        </div>
-                        
-                        <div style="background: white; padding: 30px; border: 1px solid #e0e0e0; border-top: none;">
-                            <h3 style="color: #333; margin-top: 0;">Hello ${order.customer ? order.customer.fullName : 'Valued Customer'},</h3>
-                            
-                            <p style="color: #666; line-height: 1.6;">We regret to inform you that your order <strong>#${order.id}</strong> has been cancelled.</p>
-                            
-                            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                                <h4 style="color: #333; margin-top: 0;">📋 Cancellation Details</h4>
-                                <p style="margin: 5px 0; color: #333;"><strong>Order ID:</strong> ${order.id}</p>
-                                <p style="margin: 5px 0; color: #333;"><strong>Customer:</strong> ${order.customer ? order.customer.fullName : 'Valued Customer'}</p>
-                                <p style="margin: 5px 0; color: #333;"><strong>Order Date:</strong> ${new Date(order.date).toLocaleString()}</p>
-                                <p style="margin: 5px 0; color: #333;"><strong>Cancellation Date:</strong> ${new Date().toLocaleString()}</p>
-                                <p style="margin: 5px 0; color: #333;"><strong>Cancelled By:</strong> Prince Alex Store Admin</p>
-                                <p style="margin: 5px 0; color: #333;"><strong>Original Total:</strong> KES ${order.total ? order.total.toFixed(2) : '0.00'}</p>
-                            </div>
-                            
-                            <div style="background: #d1ecf1; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                                <h4 style="color: #0c5460; margin-top: 0;">💰 Refund Information</h4>
-                                <p style="margin: 5px 0; color: #0c5460;">Your payment will be refunded within 3-5 business days.</p>
-                                <p style="margin: 5px 0; color: #0c5460;"><strong>Refund Amount:</strong> KES ${order.total ? order.total.toFixed(2) : '0.00'}</p>
-                                <p style="margin: 5px 0; color: #0c5460;"><strong>Refund Method:</strong> Original payment method</p>
-                                <p style="margin: 5px 0; color: #0c5460; font-size: 14px;">You will receive a confirmation email once the refund is processed.</p>
-                            </div>
-                            
-                            <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">
-                                <h4 style="color: #856404; margin-top: 0;">Reason for Cancellation:</h4>
-                                <p style="color: #856404; margin: 0;">All items were removed from your order by our admin team.</p>
-                            </div>
-                            
-                            <div style="text-align: center; margin: 30px 0;">
-                                <a href="mailto:info@princealexstore.com" style="background: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">Contact Support</a>
-                            </div>
-                        </div>
-                        
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 0 0 10px 10px; text-align: center; color: #666; font-size: 14px;">
-                            <p style="margin: 0;">Thank you for choosing Prince Alex Store!</p>
-                            <p style="margin: 5px 0 0 0;">Fresh vegetables delivered to your doorstep</p>
-                        </div>
-                    </div>
-                `;
-
-                // Save email to mail collection
-                await addDoc(collection(db, 'mail'), {
-                    to: customerEmail,
-                    message: {
-                        subject: `Order Cancelled - Order #${order.id}`,
-                        html: emailContent
-                    },
-                    emailType: 'order_cancellation',
-                    orderId: order.id,
-                    customerEmail: customerEmail,
-                    customerName: order.customer ? order.customer.fullName : 'Valued Customer',
-                    adminEmail: firebaseUser.email,
-                    createdAt: new Date().toISOString(),
-                    status: 'pending',
-                    priority: 'high'
-                });
-
-                console.log('Order cancellation notification email saved to mail collection');
-
-            } catch (error) {
-                console.error('Error sending order cancellation notification:', error);
             }
         }
 
@@ -7808,9 +8809,344 @@
             }
         };
 
-        // Expose voucher functions to global scope for HTML onclick events
-        window.openCreateVoucherModal = openCreateVoucherModal;
-        window.closeCreateVoucherModal = closeCreateVoucherModal;
+        /* ----------------- Order Management (Admin) ----------------- */
+        // Inject order management UI (search by Order ID, edit, create, cancel)
+        (function insertAdminOrderUI(){
+            try {
+                const container = document.querySelector('.container');
+                if (!container) return;
+
+                const html = `
+                <section class="admin-section" id="admin-order-management">
+                    <h3>Order Management</h3>
+                    <div class="forms-container" style="max-width:900px; margin: 0 auto 30px;">
+                        <div class="customer-search-section">
+                            <label for="admin-order-id"><strong>Search Order by ID</strong></label>
+                            <div class="search-form" style="margin-top:8px;">
+                                <input id="admin-order-id" placeholder="Enter Order ID (e.g. ORDER_123456)" />
+                                <button id="admin-search-order-btn" class="create-btn">Search</button>
+                                <button id="admin-clear-order-btn" class="refresh-btn">Clear</button>
+                            </div>
+                        </div>
+
+                        <div id="admin-order-result" style="display:none; margin-top:20px;">
+                            <h4 style="margin-bottom:12px;">Order Details</h4>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                                <input id="admin-order-customerName" placeholder="Customer Fullname" />
+                                <input id="admin-order-customerEmail" placeholder="Customer Email" />
+                                <input id="admin-order-customerPhone" placeholder="Customer Phone" />
+                                <input id="admin-order-total" placeholder="Total (KES)" />
+                                <input id="admin-order-status" placeholder="Status (pending/processing/delivered/cancelled)" />
+                                <input id="admin-order-deliveryAddress" placeholder="Delivery Address" />
+                            </div>
+                            <div style="margin-top:12px;">
+                                <label for="admin-order-items">Items (JSON Array)</label>
+                                <textarea id="admin-order-items" rows="6" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; margin-top:8px;"></textarea>
+                            </div>
+
+                            <div style="display:flex; gap:12px; margin-top:16px;">
+                                <button id="admin-save-order-btn" class="create-btn">Save Changes</button>
+                                <button id="admin-cancel-order-btn" class="status-btn">Cancel Order</button>
+                                <button id="admin-create-order-btn" class="create-btn">Create New Order</button>
+                            </div>
+                            <div id="admin-order-message" style="margin-top:12px; color:var(--text-color);"></div>
+                        </div>
+                    </div>
+                </section>
+                `;
+
+                // Append once (avoid duplicating)
+                if (!document.getElementById('admin-order-management')) {
+                    container.insertAdjacentHTML('afterbegin', html);
+                }
+
+                // Wire up buttons
+                setTimeout(() => {
+                    const searchBtn = document.getElementById('admin-search-order-btn');
+                    const clearBtn = document.getElementById('admin-clear-order-btn');
+                    const saveBtn = document.getElementById('admin-save-order-btn');
+                    const cancelBtn = document.getElementById('admin-cancel-order-btn');
+                    const createBtn = document.getElementById('admin-create-order-btn');
+
+                    if (searchBtn) searchBtn.addEventListener('click', (e) => { e.preventDefault(); adminSearchOrder(); });
+                    if (clearBtn) clearBtn.addEventListener('click', (e) => { e.preventDefault(); adminClearOrderForm(); });
+                    if (saveBtn) saveBtn.addEventListener('click', (e) => { e.preventDefault(); adminSaveOrder(); });
+                    if (cancelBtn) cancelBtn.addEventListener('click', (e) => { e.preventDefault(); adminCancelOrder(); });
+                    if (createBtn) createBtn.addEventListener('click', (e) => { e.preventDefault(); adminCreateOrder(); });
+                }, 300);
+
+            } catch (err) {
+                console.error('Failed to insert admin order UI:', err);
+            }
+        })();
+
+        // Helper: show/hide result panel
+        function showAdminOrderResult(show=true) {
+            const panel = document.getElementById('admin-order-result');
+            if (!panel) return;
+            panel.style.display = show ? 'block' : 'none';
+        }
+
+        function adminClearOrderForm() {
+            ['admin-order-id','admin-order-customerName','admin-order-customerEmail','admin-order-customerPhone','admin-order-total','admin-order-status','admin-order-deliveryAddress','admin-order-items'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+            const panel = document.getElementById('admin-order-result'); if (panel) panel.removeAttribute('data-docid');
+            showAdminOrderResult(false);
+            const msg = document.getElementById('admin-order-message'); if (msg) msg.textContent = '';
+        }
+
+        // The Firestore interaction and email enqueue functions are implemented in a module script below.
+
+        // Pending Emails Management
+        async function loadPendingEmails() {
+            try {
+                const emailsList = document.getElementById('pending-emails-list');
+                if (!emailsList) return;
+
+                emailsList.innerHTML = `
+                    <div class="loading-state">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading pending emails...</p>
+                    </div>
+                `;
+
+                const emailsCol = collection(db, 'mail');
+                const querySnapshot = await getDocs(query(emailsCol, where('emailType', 'in', ['order_action', 'order_action_manual']), orderBy('createdAt', 'desc')));
+
+                if (querySnapshot.empty) {
+                    emailsList.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--text-color);">
+                            <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                            <h3>No Pending Emails</h3>
+                            <p>All email notifications have been sent successfully.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                emailsList.innerHTML = '';
+                querySnapshot.forEach(doc => {
+                    const emailData = { id: doc.id, ...doc.data() };
+                    const emailItem = createEmailItem(emailData);
+                    emailsList.appendChild(emailItem);
+                });
+
+                // Update badge count
+                updatePendingEmailsBadge(querySnapshot.size);
+
+            } catch (error) {
+                console.error('Error loading pending emails:', error);
+                const emailsList = document.getElementById('pending-emails-list');
+                if (emailsList) {
+                    emailsList.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--error-color);">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 16px;"></i>
+                            <h3>Error Loading Emails</h3>
+                            <p>Failed to load pending emails: ${error.message}</p>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        function createEmailItem(emailData) {
+            const emailItem = document.createElement('div');
+            emailItem.className = 'email-item';
+            emailItem.innerHTML = `
+                <div class="email-header">
+                    <div class="email-meta">
+                        <span class="email-priority priority-${emailData.priority || 'medium'}">${emailData.priority || 'medium'}</span>
+                        <span style="font-weight: 600;">Order ${emailData.orderData?.orderId || 'N/A'}</span>
+                        <span style="color: var(--text-color);">${new Date(emailData.createdAt).toLocaleString()}</span>
+                    </div>
+                    <div class="email-actions-item">
+                        <button class="email-action-btn send" onclick="sendPendingEmail('${emailData.id}')">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                        <button class="email-action-btn delete" onclick="deletePendingEmail('${emailData.id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+                <div class="email-content">
+                    <div class="email-subject">${emailData.message?.subject || 'Order Action Notification'}</div>
+                    <div class="email-details">
+                        <p><strong>Customer:</strong> ${emailData.customerName}</p>
+                        <p><strong>Email:</strong> ${emailData.customerEmail}</p>
+                        <p><strong>Action:</strong> ${emailData.orderData?.action || 'N/A'}</p>
+                        <p><strong>Message:</strong> ${emailData.orderData?.message || 'N/A'}</p>
+                        ${emailData.orderData?.additionalData?.notes ? `<p><strong>Notes:</strong> ${emailData.orderData.additionalData.notes}</p>` : ''}
+                    </div>
+                </div>
+            `;
+            return emailItem;
+        }
+
+        async function sendPendingEmail(emailId) {
+            try {
+                const emailRef = doc(db, 'mail', emailId);
+                const emailSnap = await getDoc(emailRef);
+                
+                if (!emailSnap.exists()) {
+                    showModal('Error', 'Email not found.', true);
+                    return;
+                }
+
+                const emailData = emailSnap.data();
+                
+                // Try to send the email using the same format as index.html
+                if (emailData.message && emailData.message.html) {
+                    // Use Brevo API if available, otherwise queue in mail collection
+                    const emailService = new EmailService();
+                    await emailService.sendOrderActionEmail(
+                        emailData.orderData || {},
+                        emailData.orderData?.action || 'order_update',
+                        emailData.orderData?.message || 'Order update notification',
+                        emailData.orderData?.additionalData || {}
+                    );
+                } else {
+                    showModal('Error', 'Invalid email data format.', true);
+                    return;
+                }
+
+                // Delete from mail collection
+                await deleteDoc(emailRef);
+                
+                // Reload the list
+                await loadPendingEmails();
+                
+                showModal('Success', 'Email sent successfully and removed from pending list.');
+
+            } catch (error) {
+                console.error('Error sending pending email:', error);
+                showModal('Error', `Failed to send email: ${error.message}`, true);
+            }
+        }
+
+        async function deletePendingEmail(emailId) {
+            try {
+                const confirmed = confirm('Are you sure you want to delete this pending email? This action cannot be undone.');
+                if (!confirmed) return;
+
+                const emailRef = doc(db, 'mail', emailId);
+                await deleteDoc(emailRef);
+                
+                // Reload the list
+                await loadPendingEmails();
+                
+                showModal('Success', 'Pending email deleted successfully.');
+
+            } catch (error) {
+                console.error('Error deleting pending email:', error);
+                showModal('Error', `Failed to delete email: ${error.message}`, true);
+            }
+        }
+
+        async function sendAllPendingEmails() {
+            try {
+                const confirmed = confirm('Are you sure you want to send all pending emails? This may take a moment.');
+                if (!confirmed) return;
+
+                const emailsCol = collection(db, 'mail');
+                const querySnapshot = await getDocs(query(emailsCol, where('emailType', 'in', ['order_action', 'order_action_manual'])));
+
+                if (querySnapshot.empty) {
+                    showModal('Info', 'No pending emails to send.');
+                    return;
+                }
+
+                let successCount = 0;
+                let errorCount = 0;
+
+                for (const docSnap of querySnapshot.docs) {
+                    try {
+                        const emailData = docSnap.data();
+                        
+                        // Try to send the email using the same format as index.html
+                        if (emailData.message && emailData.message.html) {
+                            const emailService = new EmailService();
+                            await emailService.sendOrderActionEmail(
+                                emailData.orderData || {},
+                                emailData.orderData?.action || 'order_update',
+                                emailData.orderData?.message || 'Order update notification',
+                                emailData.orderData?.additionalData || {}
+                            );
+                        }
+                        
+                        // Delete from mail collection
+                        await deleteDoc(doc(db, 'mail', docSnap.id));
+                        successCount++;
+                    } catch (error) {
+                        console.error(`Error sending email ${docSnap.id}:`, error);
+                        errorCount++;
+                    }
+                }
+
+                // Reload the list
+                await loadPendingEmails();
+                
+                showModal('Batch Complete', `Sent ${successCount} emails successfully. ${errorCount} emails failed.`);
+
+            } catch (error) {
+                console.error('Error sending all pending emails:', error);
+                showModal('Error', `Failed to send emails: ${error.message}`, true);
+            }
+        }
+
+        function updatePendingEmailsBadge(count) {
+            const badge = document.getElementById('pending-emails-badge');
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'inline-block' : 'none';
+            }
+        }
+
+        // Initialize pending emails functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const refreshEmailsBtn = document.getElementById('refresh-emails-btn');
+            const sendAllEmailsBtn = document.getElementById('send-all-emails-btn');
+
+            if (refreshEmailsBtn) {
+                refreshEmailsBtn.addEventListener('click', loadPendingEmails);
+            }
+
+            if (sendAllEmailsBtn) {
+                sendAllEmailsBtn.addEventListener('click', sendAllPendingEmails);
+            }
+
+            // Handle navigation to pending emails page
+            const pendingEmailsNav = document.querySelector('[data-page="pending-emails"]');
+            if (pendingEmailsNav) {
+                pendingEmailsNav.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Hide all sections
+                    document.querySelectorAll('.admin-section').forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    
+                    // Show pending emails section
+                    const pendingEmailsSection = document.getElementById('admin-pending-emails-section');
+                    if (pendingEmailsSection) {
+                        pendingEmailsSection.classList.add('active');
+                        
+                        // Update page title
+                        const pageTitle = document.getElementById('page-title');
+                        if (pageTitle) {
+                            pageTitle.textContent = 'Pending Emails';
+                        }
+                        
+                        // Load pending emails
+                        loadPendingEmails();
+                    }
+                    
+                    // Update active nav item
+                    document.querySelectorAll('.nav-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            }
+        });
         window.createVoucher = createVoucher;
         window.createVoucherSimple = createVoucherSimple;
         window.updateDiscountInput = updateDiscountInput;
@@ -7860,7 +9196,217 @@
             }, 1000);
         });
 
-    </script>
+</script>
+
+<!-- Admin Firebase + Order management module -->
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
+    import { getFirestore, collection, query, where, getDocs, doc, getDoc, addDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
+
+    // Reuse existing Firestore instance if page already initialized it
+    let adminDb = window.__appDB || null;
+
+    if (!adminDb) {
+        // Only initialize if Firestore wasn't already initialized earlier in this page
+        const firebaseConfigLocal = {
+            apiKey: "AIzaSyDGErPBeQ1Fdx9EHPXOHepoEoOx7P2f57o",
+            authDomain: "princealextravel.firebaseapp.com",
+            projectId: "princealextravel",
+            storageBucket: "princealextravel.firebasestorage.app",
+            messagingSenderId: "947577729462",
+            appId: "1:947577729462:web:dd4b4c7cb4a984c5e3d117"
+        };
+        const appLocal = initializeApp(firebaseConfigLocal);
+        adminDb = getFirestore(appLocal);
+        window.__appDB = adminDb;
+    }
+
+    // Utility: show a short admin message
+    function adminMessage(text, isError=false) {
+        const el = document.getElementById('admin-order-message');
+        if (!el) return;
+        el.style.color = isError ? 'var(--error-color)' : 'var(--primary-color)';
+        el.textContent = text;
+        setTimeout(()=>{ if (el.textContent === text) el.textContent = ''; }, 6000);
+    }
+
+    // Find order by orderId
+    window.adminSearchOrder = async function adminSearchOrder() {
+        const orderId = (document.getElementById('admin-order-id') || {}).value || '';
+        if (!orderId) { adminMessage('Please enter an Order ID to search.', true); return; }
+        try {
+            const ordersCol = collection(adminDb, 'orders');
+            const q = query(ordersCol, where('orderId', '==', orderId));
+            const snap = await getDocs(q);
+            if (snap.empty) {
+                adminMessage('Order not found.', true);
+                showAdminOrderResult(false);
+                return;
+            }
+            const docSnap = snap.docs[0];
+            const data = docSnap.data();
+            // populate fields
+            document.getElementById('admin-order-customerName').value = data.customerName || '';
+            document.getElementById('admin-order-customerEmail').value = data.customerEmail || '';
+            document.getElementById('admin-order-customerPhone').value = data.customerPhone || '';
+            document.getElementById('admin-order-total').value = (data.total || data.amount || 0);
+            document.getElementById('admin-order-status').value = data.status || '';
+            document.getElementById('admin-order-deliveryAddress').value = data.deliveryAddress || '';
+            document.getElementById('admin-order-items').value = JSON.stringify(data.items || [], null, 2);
+            // store doc id
+            const panel = document.getElementById('admin-order-result');
+            if (panel) panel.setAttribute('data-docid', docSnap.id);
+            showAdminOrderResult(true);
+            adminMessage('Order loaded. You may edit and save changes.');
+        } catch (err) {
+            console.error('adminSearchOrder error', err);
+            adminMessage('Error searching order. See console.', true);
+        }
+    };
+
+    // Save changes to an existing order
+    window.adminSaveOrder = async function adminSaveOrder() {
+        try {
+            const panel = document.getElementById('admin-order-result');
+            const docId = panel && panel.getAttribute('data-docid');
+            if (!docId) { adminMessage('No loaded order to save. Please search for an order first.', true); return; }
+
+            const updated = {
+                customerName: document.getElementById('admin-order-customerName').value || '',
+                customerEmail: document.getElementById('admin-order-customerEmail').value || '',
+                customerPhone: document.getElementById('admin-order-customerPhone').value || '',
+                total: parseFloat(document.getElementById('admin-order-total').value) || 0,
+                status: document.getElementById('admin-order-status').value || '',
+                deliveryAddress: document.getElementById('admin-order-deliveryAddress').value || ''
+            };
+            const itemsText = document.getElementById('admin-order-items').value || '[]';
+            try { updated.items = JSON.parse(itemsText); } catch (e) { adminMessage('Items must be valid JSON array.', true); return; }
+
+            await updateDoc(doc(adminDb, 'orders', docId), updated);
+
+            // Enqueue an email notifying customer of update
+            try {
+                await addDoc(collection(adminDb, 'mail'), {
+                    to: updated.customerEmail,
+                    message: {
+                        subject: `Your Order ${updated.orderId || ''} Has Been Updated`,
+                        html: `<p>Hi ${updated.customerName || 'Customer'},</p><p>Your order has been updated by an administrator. Current status: <strong>${updated.status}</strong>.</p>`
+                    },
+                    emailType: 'order_update',
+                    orderId: updated.orderId || null,
+                    customerEmail: updated.customerEmail,
+                    customerName: updated.customerName,
+                    createdAt: new Date().toISOString(),
+                    status: 'pending',
+                    priority: 'medium'
+                });
+            } catch (mailErr) {
+                console.error('Failed to enqueue update email', mailErr);
+            }
+
+            adminMessage('Order updated successfully. Notification enqueued.');
+        } catch (err) {
+            console.error('adminSaveOrder error', err);
+            adminMessage('Failed to save order. See console.', true);
+        }
+    };
+
+    // Cancel order (set status to cancelled)
+    window.adminCancelOrder = async function adminCancelOrder() {
+        try {
+            const panel = document.getElementById('admin-order-result');
+            const docId = panel && panel.getAttribute('data-docid');
+            if (!docId) { adminMessage('No loaded order to cancel. Please search for an order first.', true); return; }
+
+            // Get the order data before updating
+            const orderSnap = await getDoc(doc(db, 'orders', docId));
+            if (!orderSnap.exists()) {
+                adminMessage('Order not found.', true);
+                return;
+            }
+            
+            const orderData = orderSnap.data();
+            
+            // Update order status
+            await updateDoc(doc(db, 'orders', docId), { 
+                status: 'Cancelled',
+                cancelledAt: new Date().toISOString(),
+                cancelledBy: 'admin'
+            });
+
+            // Update the order data with new status
+            orderData.status = 'Cancelled';
+            orderData.cancelledAt = new Date().toISOString();
+            orderData.cancelledBy = 'admin';
+
+            // Send email notification using the new email service
+            await emailService.sendOrderActionEmail(orderData, 'cancelled', 'Your order has been cancelled by our admin team. If you have any questions, please contact our support team.');
+
+            adminMessage('Order cancelled and cancellation email sent to customer.');
+            // refresh form status
+            document.getElementById('admin-order-status').value = 'cancelled';
+        } catch (err) {
+            console.error('adminCancelOrder error', err);
+            adminMessage('Failed to cancel order. See console.', true);
+        }
+    };
+
+    // Create a new order (admin-facing quick create)
+    window.adminCreateOrder = async function adminCreateOrder() {
+        try {
+            const customerName = document.getElementById('admin-order-customerName').value || 'Unknown';
+            const customerEmail = document.getElementById('admin-order-customerEmail').value || '';
+            const customerPhone = document.getElementById('admin-order-customerPhone').value || '';
+            const total = parseFloat(document.getElementById('admin-order-total').value) || 0;
+            const status = document.getElementById('admin-order-status').value || 'pending';
+            const deliveryAddress = document.getElementById('admin-order-deliveryAddress').value || '';
+            const itemsText = document.getElementById('admin-order-items').value || '[]';
+            let items = [];
+            try { items = JSON.parse(itemsText); } catch (e) { adminMessage('Items must be valid JSON array.', true); return; }
+
+            const newOrderId = `ORDER_${Date.now()}`;
+            const newOrder = {
+                orderId: newOrderId,
+                customerName,
+                customerEmail,
+                customerPhone,
+                total,
+                items,
+                status,
+                deliveryAddress,
+                createdAt: new Date().toISOString()
+            };
+
+            const addRes = await addDoc(collection(adminDb, 'orders'), newOrder);
+
+            // Enqueue created email
+            await addDoc(collection(adminDb, 'mail'), {
+                to: customerEmail || 'noreply@princealex.pro',
+                message: {
+                    subject: `Order Created - ${newOrderId}`,
+                    html: `<p>Hi ${customerName},</p><p>An order has been created on your behalf. Order ID: <strong>${newOrderId}</strong>.</p>`
+                },
+                emailType: 'order_created',
+                orderId: newOrderId,
+                customerEmail,
+                customerName,
+                createdAt: new Date().toISOString(),
+                status: 'pending',
+                priority: 'high'
+            });
+
+            // populate form with created order
+            document.getElementById('admin-order-id').value = newOrderId;
+            const panel = document.getElementById('admin-order-result');
+            if (panel) panel.setAttribute('data-docid', addRes.id);
+            showAdminOrderResult(true);
+            adminMessage('Order created and notification enqueued.');
+        } catch (err) {
+            console.error('adminCreateOrder error', err);
+            adminMessage('Failed to create order. See console.', true);
+        }
+    };
+
+</script>
 </body>
 </html>
-
