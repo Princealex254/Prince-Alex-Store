@@ -4306,20 +4306,29 @@
                     <p>Manually create a new order for a customer.</p>
                 </div>
                 <div class="forms-container" style="max-width:900px; margin: 0 auto 30px;">
-                    <form id="admin-create-order-form" class="admin-form">
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom: 20px;">
+                    <div id="order-customer-search-bar" style="position:relative; z-index:2; background:#fff; border-bottom:2px solid #1976d2; box-shadow:0 2px 12px rgba(25,118,210,0.08); border-radius:14px 14px 0 0; padding:24px 24px 18px 24px; margin-bottom:0;">
+                        <label for="simple-order-customer-search" style="font-weight:700; font-size:1.2em; color:#1976d2; margin-bottom:10px; display:block;">Enter Customer Email to Start Order</label>
+                        <div style="display:flex;gap:14px;align-items:center;">
+                            <input type="email" id="simple-order-customer-search" placeholder="Type customer email..." style="flex:1; padding:14px; border-radius:10px; border:2px solid #1976d2; font-size:1.1em; background:#f8fafc;">
+                            <button type="button" id="simple-order-find-customer" style="padding:14px 28px; background:#1976d2; color:#fff; border:none; border-radius:10px; font-weight:700; font-size:1.1em; cursor:pointer; box-shadow:0 2px 8px rgba(25,118,210,0.10);">Find Customer</button>
+                        </div>
+                        <div id="simple-order-customer-result" style="margin-top:12px; font-size:1.1em; min-height:24px;"></div>
+                    </div>
+                    <form id="admin-create-order-form" class="admin-form" style="margin-top:-2px; background:#f8fafc; border-radius:0 0 14px 14px; padding:32px 24px 24px 24px; box-shadow:0 2px 12px rgba(25,118,210,0.04);">
+                        <div id="simple-order-customer-fields" style="display:none; margin-bottom:18px;">
                             <input type="text" id="create-order-customerName" placeholder="Customer Fullname" required />
                             <input type="email" id="create-order-customerEmail" placeholder="Customer Email" required />
                             <input type="text" id="create-order-customerPhone" placeholder="Customer Phone" />
                             <input type="text" id="create-order-deliveryAddress" placeholder="Delivery Address" required />
                         </div>
                         <div style="margin-bottom:20px;">
-                            <label for="create-order-items" style="display: block; margin-bottom: 8px; font-weight: 600;">Items (JSON Array)</label>
-                            <textarea id="create-order-items" rows="6" placeholder='[{"id": "prod1", "name": "Product 1", "price": 10.00, "quantity": 1}]' style="width:100%; padding:12px; border-radius:8px; border:2px solid var(--border-color);"></textarea>
-                            <small>Enter items as a JSON array. Example: [{"id": "prod1", "name": "Product 1", "price": 10.00, "quantity": 1}]</small>
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Select Products</label>
+                            <div id="simple-order-products" style="border:1.5px solid var(--border-color); border-radius:8px; padding:12px; background:#f8fafc; max-height:260px; overflow:auto; margin-bottom:8px;">
+                                <p style="color:#888;">Loading products...</p>
+                            </div>
                         </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom: 20px;">
-                            <input type="number" id="create-order-total" placeholder="Total Amount (KES)" step="0.01" required />
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom: 20px; align-items:center;">
+                            <div><strong>Total:</strong> <span id="simple-order-total">KES 0.00</span></div>
                             <select id="create-order-status" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;" required>
                                 <option value="Pending">Pending</option>
                                 <option value="Confirmed">Confirmed</option>
@@ -4329,8 +4338,157 @@
                                 <option value="Cancelled">Cancelled</option>
                             </select>
                         </div>
-                        <button type="submit" class="create-btn">Create New Order</button>
+                        <button type="button" id="admin-create-order-form-btn" class="create-btn" onclick="window._adminCreateClickFallback && window._adminCreateClickFallback(event)" disabled>Create New Order</button>
                         <div id="create-order-message" style="margin-top:12px; color:var(--text-color);"></div>
+                    </form>
+                </div>
+                <script>
+                    // Queue shim: allow clicks to enqueue create requests if handler isn't ready yet.
+                    window.__adminCreateOrderQueue = window.__adminCreateOrderQueue || [];
+                    if (typeof window.adminCreateOrder !== 'function') {
+                        window.adminCreateOrder = function() {
+                            // push arguments for later processing
+                            try { window.__adminCreateOrderQueue.push(Array.from(arguments)); console.log('adminCreateOrder queued'); } catch(e){ console.error('queue push failed', e); }
+                        };
+                    }
+
+                    // Fallback click handler for Create buttons in case module wiring hasn't attached yet.
+                    window._adminCreateClickFallback = function(e) {
+                        try {
+                            if (e && e.preventDefault) e.preventDefault();
+                            console.log('Fallback create button clicked');
+                            const msgEl = document.getElementById('create-order-message') || document.getElementById('admin-order-message');
+                            if (typeof window.adminCreateOrder === 'function' && (!window.__adminCreateOrderQueue || window.__adminCreateOrderQueue.length===0)) {
+                                if (msgEl) msgEl.textContent = '';
+                                window.adminCreateOrder();
+                                return;
+                            }
+                            // If handler not ready, ensure a queued call exists and inform user
+                            try { window.__adminCreateOrderQueue.push([]); } catch(e){}
+                            if (msgEl) msgEl.textContent = 'Order handler not ready. Your request will be processed shortly.';
+                        } catch (err) {
+                            console.error('Fallback click handler error', err);
+                        }
+                    };
+                </script>
+
+                <script type="module">
+                // --- Simple Product Picker for Add Order ---
+                let simpleOrderProducts = [];
+                let simpleOrderItems = [];
+                let simpleOrderCustomer = null;
+                const DELIVERY_FEE = 100.00; // Define delivery fee constant
+                import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+                // Use existing db instance from main Firebase initialization
+                async function loadSimpleOrderProducts() {
+                    try {
+                        const productsSnap = await getDocs(collection(db, 'products'));
+                        simpleOrderProducts = [];
+                        productsSnap.forEach(doc => {
+                            const p = doc.data();
+                            simpleOrderProducts.push({ id: doc.id, name: p.name, price: p.price || 0, unit: p.unit || 'per item' });
+                        });
+                        renderSimpleOrderProducts();
+                    } catch (err) {
+                        document.getElementById('simple-order-products').innerHTML = '<p style="color:#c00">Failed to load products.</p>';
+                    }
+                }
+                function renderSimpleOrderProducts() {
+                    const el = document.getElementById('simple-order-products');
+                    if (!simpleOrderProducts.length) { el.innerHTML = '<p style="color:#888">No products available.</p>'; return; }
+                    el.innerHTML = simpleOrderProducts.map(prod => {
+                        const item = simpleOrderItems.find(i => i.id === prod.id) || { quantity: 0 };
+                        return `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                            <div><strong>${prod.name}</strong> <span style="color:#666;font-size:13px;">KES ${prod.price.toFixed(2)} ${prod.unit}</span></div>
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <button type="button" onclick="window.adminOrder.updateQty('${prod.id}',-1)" style="padding:2px 8px;">-</button>
+                                <input type="number" min="0" value="${item.quantity}" style="width:50px;text-align:center;" onchange="window.adminOrder.setQty('${prod.id}',this.value)">
+                                <button type="button" onclick="window.adminOrder.updateQty('${prod.id}',1)" style="padding:2px 8px;">+</button>
+                            </div>
+                        </div>`;
+                    }).join('');
+                }
+                window.updateSimpleOrderQty = function(id, delta) {
+                    let item = simpleOrderItems.find(i => i.id === id);
+                    if (!item) { item = { id, quantity: 0 }; simpleOrderItems.push(item); }
+                    item.quantity = Math.max(0, (item.quantity || 0) + delta);
+                    renderSimpleOrderProducts();
+                    checkOrderReadiness();
+                    updateSimpleOrderTotal();
+                }
+                function setSimpleOrderQty(id, qty) {
+                    qty = Math.max(0, Number(qty) || 0);
+                    let item = simpleOrderItems.find(i => i.id === id);
+                    if (!item) { item = { id, quantity: 0 }; simpleOrderItems.push(item); }
+                    item.quantity = qty;
+                    renderSimpleOrderProducts();
+                    checkOrderReadiness();
+                    updateSimpleOrderTotal();
+                }
+                // Expose functions to the global window object for onclick/onchange handlers
+                window.adminOrder = { updateQty: updateSimpleOrderQty, setQty: setSimpleOrderQty };
+
+                function updateSimpleOrderTotal() {
+                    let subtotal = 0;
+                    simpleOrderItems.forEach(item => {
+                        const prod = simpleOrderProducts.find(p => p.id === item.id);
+                        if (prod && item.quantity > 0) subtotal += prod.price * item.quantity;
+                    });
+                    // Add delivery fee to the total
+                    const total = subtotal > 0 ? subtotal + DELIVERY_FEE : 0;
+                    document.getElementById('simple-order-total').textContent = `KES ${total.toFixed(2)}`;
+                }
+                // --- Enable/Disable Create Order Button ---
+                function checkOrderReadiness() {
+                    const createBtn = document.getElementById('admin-create-order-form-btn');
+                    if (!createBtn) return;
+                    const isReady = simpleOrderCustomer && simpleOrderItems.some(item => item.quantity > 0);
+                    createBtn.disabled = !isReady;
+                }
+                // --- Customer Search ---
+                document.getElementById('simple-order-find-customer').onclick = async function() {
+                    const email = document.getElementById('simple-order-customer-search').value.trim();
+                    const resultEl = document.getElementById('simple-order-customer-result');
+                    if (!email) {
+                        resultEl.innerHTML = '<span style="color:#c00">Please enter a customer email address.</span>';
+                        document.getElementById('simple-order-customer-fields').style.display = 'none';
+                        checkOrderReadiness();
+                        return;
+                    }
+                    resultEl.innerHTML = 'Searching...';
+                    try {
+                        const customersCol = collection(db, "customers");
+                        const q = query(customersCol, where("email", "==", email));
+                        const querySnapshot = await getDocs(q);
+                        if (querySnapshot.empty) {
+                            resultEl.innerHTML = `<span style="color:#c00">No customer found with email: <strong>${email}</strong></span>`;
+                            document.getElementById('simple-order-customer-fields').style.display = 'none';
+                            checkOrderReadiness();
+                            return;
+                        }
+                        const customerDoc = querySnapshot.docs[0];
+                        simpleOrderCustomer = { id: customerDoc.id, ...customerDoc.data() };
+                        document.getElementById('create-order-customerName').value = simpleOrderCustomer.fullname || simpleOrderCustomer.name || '';
+                        document.getElementById('create-order-customerEmail').value = simpleOrderCustomer.email || '';
+                        document.getElementById('create-order-customerPhone').value = simpleOrderCustomer.phone || '';
+                        document.getElementById('create-order-deliveryAddress').value = simpleOrderCustomer.deliveryLocation || '';
+                        document.getElementById('simple-order-customer-fields').style.display = '';
+                        resultEl.innerHTML = `<span style="color:#1976d2">Customer found: <strong>${simpleOrderCustomer.fullname || simpleOrderCustomer.name || simpleOrderCustomer.email}</strong></span>`;
+                        checkOrderReadiness();
+                    } catch (error) {
+                        console.error("Error searching customer:", error);
+                        resultEl.innerHTML = `<span style="color:#c00">Search failed: ${error.message}</span>`;
+                        document.getElementById('simple-order-customer-fields').style.display = 'none';
+                        checkOrderReadiness();
+                    }
+                };
+                // Load products when Add Order section is shown
+                document.addEventListener('DOMContentLoaded', () => {
+                    if (document.getElementById('admin-add-order-section')) {
+                        loadSimpleOrderProducts();
+                    }
+                });
+                </script>
                     </form>
                 </div>
             </div>
@@ -4866,6 +5024,10 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+    // Expose db and auth to window so non-module scripts can access them
+    // (Some other <script> blocks in this file use Firestore without module scope.)
+    window.db = db;
+    window.firebaseApp = app;
         const auth = getAuth(app);
 
         // Global variable to store current Firebase user
@@ -4873,8 +5035,6 @@
 
         // --- Modal Alert Functions ---
         function showModal(title, message, isError = false) {
-            console.log('showModal called:', title, message, isError);
-            
             try {
                 const modal = document.getElementById('message-modal');
                 const modalTitle = document.getElementById('modal-title');
@@ -4886,7 +5046,7 @@
                     console.error('Modal elements not found:', { modal, modalTitle, modalMessage });
                     // Fallback to browser alert
                     alert(`${title}: ${message}`);
-                    return;
+                    return; // This return is now valid inside the function
                 }
                 
                 modalTitle.textContent = title;
@@ -4909,6 +5069,8 @@
                 alert(`${title}: ${message}`);
             }
         }
+        // Expose showModal to global scope for module scripts
+        window.showModal = showModal;
 
         function closeModal() {
             try {
@@ -6097,30 +6259,8 @@
                         htmlContent: emailHtml
                     };
 
-                    if (this.isInitialized) {
-                        // Send via Brevo API (same as index.html)
-                        const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-                            method: "POST",
-                            headers: {
-                                "accept": "application/json",
-                                "api-key": this.brevoApiKey,
-                                "content-type": "application/json"
-                            },
-                            body: JSON.stringify(emailData)
-                        });
-
-                        if (response.ok) {
-                            console.log("✅ Order action email sent successfully to " + customerEmail);
-                            showModal('Success', `Email notification sent to ${customerEmail}`);
-                        } else {
-                            console.error("❌ Failed to send email via Brevo API", await response.text());
-                            // Fallback to Firestore mail collection
-                            await this.sendViaFirestoreMailCollection(order, action, message, additionalData, emailHtml);
-                        }
-                    } else {
-                        // Fallback to Firestore mail collection
-                        await this.sendViaFirestoreMailCollection(order, action, message, additionalData, emailHtml);
-                    }
+                // Always use the reliable Firestore mail collection method
+                await this.sendViaFirestoreMailCollection(order, action, message, additionalData, emailHtml);
 
                 } catch (error) {
                     console.error('Error sending email:', error);
@@ -6149,6 +6289,11 @@
                 const emoji = actionEmojis[action] || '📧';
                 const title = actionTitles[action] || 'Order Update';
 
+                // Calculate totals safely
+                const subtotal = this.calculateSubtotal(order.items || []);
+                const deliveryFee = order.transportationFee || order.deliveryFee || 0;
+                const totalAmount = subtotal + deliveryFee;
+
                 return `
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                         <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); padding: 30px; text-align: center; color: white;">
@@ -6157,45 +6302,23 @@
                         </div>
                         
                         <div style="padding: 30px; background: white;">
-                            <p style="font-size: 16px; color: #333;">Hello ${order.customer ? order.customer.fullName : 'Valued Customer'},</p>
+                            <p style="font-size: 16px; color: #333;">Hello ${order.customer?.fullName || 'Valued Customer'},</p>
                             <p style="font-size: 16px; color: #333;">${message}</p>
-                            
                             <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
                                 <h3 style="color: #4CAF50; margin: 0 0 15px 0;">📋 Order Details</h3>
-                                <p style="margin: 5px 0;"><strong>Order ID:</strong> ${order.id}</p>
+                                <p style="margin: 5px 0;"><strong>Order ID:</strong> ${order.id || order.orderId}</p>
                                 <p style="margin: 5px 0;"><strong>Order Date:</strong> ${new Date(order.date).toLocaleDateString()}</p>
-                                <p style="margin: 5px 0;"><strong>Status:</strong> ${order.status || 'Unknown'}</p>
-                                
+                                <p style="margin: 5px 0;"><strong>Status:</strong> <span style="color: #dc3545; font-weight: bold;">${order.status || 'Unknown'}</span></p>
                                 <div style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #4CAF50;">
                                     <h4 style="color: #4CAF50; margin: 0 0 10px 0;">💰 Order Summary</h4>
-                                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
-                                        <span>Subtotal:</span>
-                                        <span>KES ${this.calculateSubtotal(order.items || []).toFixed(2)}</span>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; margin: 5px 0;">
-                                        <span>Delivery Fee:</span>
-                                        <span>KES ${(order.transportationFee || order.deliveryFee || 0).toFixed(2)}</span>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; margin: 10px 0; padding-top: 10px; border-top: 2px solid #4CAF50; font-weight: bold; font-size: 16px; color: #4CAF50;">
-                                        <span>Total Amount:</span>
-                                        <span>KES ${this.calculateTotalAmount(order).toFixed(2)}</span>
-                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin: 5px 0;"><span>Subtotal:</span><span>KES ${subtotal.toFixed(2)}</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin: 5px 0;"><span>Delivery Fee:</span><span>KES ${deliveryFee.toFixed(2)}</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin: 10px 0; padding-top: 10px; border-top: 2px solid #4CAF50; font-weight: bold; font-size: 16px; color: #4CAF50;"><span>Total Amount:</span><span>KES ${totalAmount.toFixed(2)}</span></div>
                                 </div>
                             </div>
-                            
                             ${this.formatOrderItems(order.items || [])}
-                            
-                            ${additionalData.notes ? `
-                                <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                                    <h3 style="color: #4CAF50; margin: 0 0 15px 0;">📝 Admin Notes</h3>
-                                    <p style="color: #333; line-height: 1.6;">${additionalData.notes}</p>
-                                </div>
-                            ` : ''}
-                            
-                            <div style="text-align: center; margin: 30px 0;">
-                                <a href="https://store.princealex.pro" style="display: inline-block; background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">🛒 Visit Our Store</a>
-                            </div>
-                            
+                            ${additionalData.notes ? `<div style="background: #e8f5e8; padding: 20px; border-radius: 10px; margin: 20px 0;"><h3 style="color: #4CAF50; margin: 0 0 15px 0;">📝 Admin Notes</h3><p style="color: #333; line-height: 1.6;">${additionalData.notes}</p></div>` : ''}
+                            <div style="text-align: center; margin: 30px 0;"><a href="https://store.princealex.pro" style="display: inline-block; background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">🛒 Visit Our Store</a></div>
                             <p style="color: #666; font-size: 14px; text-align: center; margin-top: 30px;">If you have any questions about this order, please contact our support team.</p>
                         </div>
                     </div>
@@ -6317,6 +6440,7 @@
 
         // Initialize email service
         const emailService = new EmailService();
+        window.emailService = emailService; // Expose to global scope
 
         // Enhanced email notification function
         async function sendOrderActionEmail(order, action, message, additionalData = {}) {
@@ -7260,14 +7384,18 @@
                 const deliveryLocation = order.customer ? order.customer.deliveryLocation : 'No location';
                 const houseName = order.customer ? order.customer.houseName : 'N/A';
                 
-                // Format items for display
+                // Format items for display (defensive: handle missing items or missing fields)
                 let itemsHtml = '';
-                order.items.forEach(item => {
-                    const itemTotal = item.price * item.quantity;
+                const itemsArr = Array.isArray(order.items) ? order.items : [];
+                itemsArr.forEach(item => {
+                    const qty = (item && (item.quantity || item.qty)) ? (item.quantity || item.qty) : 0;
+                    const price = (item && (item.price || item.totalPrice)) ? Number(item.price || item.totalPrice) : 0;
+                    const itemTotal = price * qty;
+                    const itemName = (item && (item.name || item.title)) ? (item.name || item.title) : 'Item';
                     itemsHtml += `
                         <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
-                            <span>${item.name} (x${item.quantity})</span>
-                            <span>KES ${itemTotal.toFixed(2)}</span>
+                            <span>${itemName} (x${qty})</span>
+                            <span>KES ${Number(itemTotal || 0).toFixed(2)}</span>
                         </div>
                     `;
                 });
@@ -7294,15 +7422,15 @@
                             <h5 style="margin-bottom: 10px;">Order Summary</h5>
                             <div style="display: flex; justify-content: space-between; padding: 5px 0;">
                                 <span>Subtotal:</span>
-                                <span>KES ${order.subtotal.toFixed(2)}</span>
+                                <span>KES ${Number(order.subtotal || calculateSubtotal(itemsArr) || 0).toFixed(2)}</span>
                             </div>
                             <div style="display: flex; justify-content: space-between; padding: 5px 0;">
                                 <span>Transport Fee:</span>
-                                <span>KES ${order.transportationFee.toFixed(2)}</span>
+                                <span>KES ${Number(order.transportationFee || order.transportFee || 0).toFixed(2)}</span>
                             </div>
                             <div style="display: flex; justify-content: space-between; padding: 5px 0; border-top: 2px solid var(--primary-color); margin-top: 10px; font-weight: bold;">
                                 <span>Total:</span>
-                                <span>KES ${order.total.toFixed(2)}</span>
+                                <span>KES ${Number(order.total || (order.subtotal ? order.subtotal + (order.transportationFee||0) : (calculateSubtotal(itemsArr) + (order.transportationFee||0))) ).toFixed(2)}</span>
                             </div>
                         </div>
                         
@@ -7320,6 +7448,18 @@
                 showModal('Error', `Failed to load order details: ${error.message}`, true);
                 console.error("Error loading order details:", error);
             }
+        }
+
+        // Helper to calculate subtotal from items array
+        function calculateSubtotal(itemsArr) {
+            try {
+                if (!Array.isArray(itemsArr)) return 0;
+                return itemsArr.reduce((sum, it) => {
+                    const qty = (it && (it.quantity || it.qty)) ? (it.quantity || it.qty) : 0;
+                    const price = (it && (it.price || it.totalPrice)) ? Number(it.price || it.totalPrice) : 0;
+                    return sum + (qty * price);
+                }, 0);
+            } catch (e) { return 0; }
         }
 
         // --- 📩 4. Manage Contact Submissions ---
@@ -8847,7 +8987,7 @@
                             <div style="display:flex; gap:12px; margin-top:16px;">
                                 <button id="admin-save-order-btn" class="create-btn">Save Changes</button>
                                 <button id="admin-cancel-order-btn" class="status-btn">Cancel Order</button>
-                                <button id="admin-create-order-btn" class="create-btn">Create New Order</button>
+                                <button id="admin-create-order-btn" class="create-btn" onclick="window._adminCreateClickFallback && window._adminCreateClickFallback(event)">Create New Order</button>
                             </div>
                             <div id="admin-order-message" style="margin-top:12px; color:var(--text-color);"></div>
                         </div>
@@ -8867,12 +9007,45 @@
                     const saveBtn = document.getElementById('admin-save-order-btn');
                     const cancelBtn = document.getElementById('admin-cancel-order-btn');
                     const createBtn = document.getElementById('admin-create-order-btn');
+                    const createFormBtn = document.getElementById('admin-create-order-form-btn');
+                    const createForm = document.getElementById('admin-create-order-form');
 
                     if (searchBtn) searchBtn.addEventListener('click', (e) => { e.preventDefault(); adminSearchOrder(); });
                     if (clearBtn) clearBtn.addEventListener('click', (e) => { e.preventDefault(); adminClearOrderForm(); });
                     if (saveBtn) saveBtn.addEventListener('click', (e) => { e.preventDefault(); adminSaveOrder(); });
                     if (cancelBtn) cancelBtn.addEventListener('click', (e) => { e.preventDefault(); adminCancelOrder(); });
-                    if (createBtn) createBtn.addEventListener('click', (e) => { e.preventDefault(); adminCreateOrder(); });
+
+                    // Prevent form default submit to avoid page reload
+                    if (createForm) createForm.addEventListener('submit', (e) => { e.preventDefault(); });
+
+                    // Robust invoker for adminCreateOrder: calls immediately if available, otherwise polls briefly
+                    const invokeAdminCreateOrder = (e) => {
+                        if (e && e.preventDefault) e.preventDefault();
+                        if (typeof window.adminCreateOrder === 'function') {
+                            try { window.adminCreateOrder(); } catch (err) { console.error('adminCreateOrder threw:', err); }
+                            return;
+                        }
+                        // Not ready yet - show message and poll for up to ~2s
+                        const msgEl = document.getElementById('create-order-message') || document.getElementById('admin-order-message');
+                        if (msgEl) msgEl.textContent = 'Initializing order handler, please wait...';
+                        let attempts = 0;
+                        const t = setInterval(() => {
+                            attempts += 1;
+                            if (typeof window.adminCreateOrder === 'function') {
+                                clearInterval(t);
+                                if (msgEl) msgEl.textContent = '';
+                                try { window.adminCreateOrder(); } catch (err) { console.error('adminCreateOrder threw after wait:', err); if (msgEl) msgEl.textContent = 'Failed to create order (see console).'; }
+                                return;
+                            }
+                            if (attempts > 10) { // ~2s
+                                clearInterval(t);
+                                if (msgEl) msgEl.textContent = 'Order handler not ready. Reload the page and try again.';
+                            }
+                        }, 200);
+                    };
+
+                    if (createBtn) createBtn.addEventListener('click', invokeAdminCreateOrder);
+                    if (createFormBtn) createFormBtn.addEventListener('click', invokeAdminCreateOrder);
                 }, 300);
 
             } catch (err) {
@@ -9201,7 +9374,7 @@
 <!-- Admin Firebase + Order management module -->
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
-    import { getFirestore, collection, query, where, getDocs, doc, getDoc, addDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
+    import { getFirestore, collection, query, where, getDocs, doc, getDoc, addDoc, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
 
     // Reuse existing Firestore instance if page already initialized it
     let adminDb = window.__appDB || null;
@@ -9314,98 +9487,248 @@
     // Cancel order (set status to cancelled)
     window.adminCancelOrder = async function adminCancelOrder() {
         try {
-            const panel = document.getElementById('admin-order-result');
-            const docId = panel && panel.getAttribute('data-docid');
-            if (!docId) { adminMessage('No loaded order to cancel. Please search for an order first.', true); return; }
-
-            // Get the order data before updating
-            const orderSnap = await getDoc(doc(db, 'orders', docId));
-            if (!orderSnap.exists()) {
-                adminMessage('Order not found.', true);
-                return;
-            }
-            
-            const orderData = orderSnap.data();
-            
-            // Update order status
-            await updateDoc(doc(db, 'orders', docId), { 
-                status: 'Cancelled',
-                cancelledAt: new Date().toISOString(),
-                cancelledBy: 'admin'
-            });
-
-            // Update the order data with new status
-            orderData.status = 'Cancelled';
-            orderData.cancelledAt = new Date().toISOString();
-            orderData.cancelledBy = 'admin';
-
-            // Send email notification using the new email service
-            await emailService.sendOrderActionEmail(orderData, 'cancelled', 'Your order has been cancelled by our admin team. If you have any questions, please contact our support team.');
-
-            adminMessage('Order cancelled and cancellation email sent to customer.');
-            // refresh form status
-            document.getElementById('admin-order-status').value = 'cancelled';
+            const confirmHtml = `
+                <div style="text-align: center;">
+                    <p>Are you sure you want to <strong>cancel</strong> this order?</p>
+                    <p style="color: #dc3545; font-size: 14px; margin-top: 16px;">
+                        This will update the order status and send a cancellation email to the customer.
+                    </p>
+                    <div style="display: flex; gap: 12px; margin-top: 20px;">
+                        <button onclick="confirmAdminCancelOrder()" class="cta-button" style="flex: 1; background: #dc3545;">Yes, Cancel Order</button>
+                        <button onclick="closeModal()" style="flex: 1; background: #6c757d;">No, Keep Order</button>
+                    </div>
+                </div>
+            `;
+            showModal('Confirm Cancellation', confirmHtml);
         } catch (err) {
             console.error('adminCancelOrder error', err);
-            adminMessage('Failed to cancel order. See console.', true);
+            adminMessage('Failed to initiate order cancellation. See console.', true);
+        }
+    };
+
+    window.confirmAdminCancelOrder = async function() {
+        closeModal();
+        const panel = document.getElementById('admin-order-result');
+        const docId = panel && panel.getAttribute('data-docid');
+        if (!docId) { adminMessage('No loaded order to cancel.', true); return; }
+
+        try {
+            const orderRef = doc(adminDb, 'orders', docId);
+            await updateDoc(orderRef, { status: 'Cancelled' });
+
+            const orderSnap = await getDoc(orderRef);
+            const orderData = { id: orderSnap.id, ...orderSnap.data() };
+            
+            // Use the globally available emailService instance
+            if (window.emailService) {
+                await window.emailService.sendOrderActionEmail(orderData, 'cancelled', 'Your order has been cancelled by our admin team. If you have any questions, please contact our support team.');
+            } else {
+                console.warn('emailService not found, skipping email notification.');
+            }
+
+            adminMessage('Order cancelled and cancellation email sent to customer.');
+            // refresh form status (guard element presence)
+            const adminStatusEl = document.getElementById('admin-order-status');
+            if (adminStatusEl) adminStatusEl.value = 'cancelled';
+        } catch (err) {
+            console.error('adminCancelOrder error', err);
+            adminMessage('Failed to confirm order cancellation. See console.', true);
         }
     };
 
     // Create a new order (admin-facing quick create)
     window.adminCreateOrder = async function adminCreateOrder() {
         try {
-            const customerName = document.getElementById('admin-order-customerName').value || 'Unknown';
-            const customerEmail = document.getElementById('admin-order-customerEmail').value || '';
-            const customerPhone = document.getElementById('admin-order-customerPhone').value || '';
-            const total = parseFloat(document.getElementById('admin-order-total').value) || 0;
-            const status = document.getElementById('admin-order-status').value || 'pending';
-            const deliveryAddress = document.getElementById('admin-order-deliveryAddress').value || '';
-            const itemsText = document.getElementById('admin-order-items').value || '[]';
-            let items = [];
-            try { items = JSON.parse(itemsText); } catch (e) { adminMessage('Items must be valid JSON array.', true); return; }
+            // Support both admin panel fields (admin-...) and the simple create form (create-...)
+            const el = id => document.getElementById(id);
+            const customerName = (el('admin-order-customerName') && el('admin-order-customerName').value) || (el('create-order-customerName') && el('create-order-customerName').value) || 'Unknown';
+            const customerEmail = (el('admin-order-customerEmail') && el('admin-order-customerEmail').value) || (el('create-order-customerEmail') && el('create-order-customerEmail').value) || '';
+            const customerPhone = (el('admin-order-customerPhone') && el('admin-order-customerPhone').value) || (el('create-order-customerPhone') && el('create-order-customerPhone').value) || '';
+            // total may be an input (#admin-order-total) or a span (#simple-order-total)
+            let total = 0;
+            if (el('admin-order-total') && el('admin-order-total').value) total = parseFloat(el('admin-order-total').value) || 0;
+            else if (el('simple-order-total') && el('simple-order-total').textContent) {
+                const txt = el('simple-order-total').textContent.replace(/[^0-9.\-]/g, '');
+                total = parseFloat(txt) || 0;
+            }
+            const status = ((el('admin-order-status') && el('admin-order-status').value) || (el('create-order-status') && el('create-order-status').value) || 'pending');
+            const deliveryAddress = (el('admin-order-deliveryAddress') && el('admin-order-deliveryAddress').value) || (el('create-order-deliveryAddress') && el('create-order-deliveryAddress').value) || '';
 
-            const newOrderId = `ORDER_${Date.now()}`;
-            const newOrder = {
-                orderId: newOrderId,
-                customerName,
-                customerEmail,
-                customerPhone,
-                total,
-                items,
-                status,
-                deliveryAddress,
-                createdAt: new Date().toISOString()
+            // Items: prefer admin-order-items textarea (JSON), else build from simpleOrderItems (selected products)
+            let items = [];
+            const itemsEl = el('admin-order-items') || el('create-order-items');
+            if (itemsEl && itemsEl.value) {
+                try { items = JSON.parse(itemsEl.value); } catch (e) { adminMessage('Items must be valid JSON array.', true); return; }
+            } else if (typeof simpleOrderItems !== 'undefined' && Array.isArray(simpleOrderItems) && simpleOrderItems.length) {
+                // Map selected simpleOrderItems into full item objects using simpleOrderProducts lookup
+                const productsMap = (typeof simpleOrderProducts !== 'undefined' && Array.isArray(simpleOrderProducts)) ? simpleOrderProducts.reduce((m,p)=> (m[p.id]=p,m), {}) : {};
+                items = simpleOrderItems.filter(i=>i.quantity && i.quantity>0).map(i=>{
+                    const prod = productsMap[i.id] || {};
+                    return { id: i.id, name: prod.name || i.name || 'Item', quantity: i.quantity, price: prod.price || i.price || 0, unit: prod.unit || '' };
+                });
+            }
+
+            // Generate orderId the same way as the storefront does for consistency
+            const orderId = "PA-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+            // Calculate subtotal from items (prefer reliable calculation rather than trusting 'total' input)
+            const subtotal = typeof calculateSubtotal === 'function' ? calculateSubtotal(items) : (Array.isArray(items) ? items.reduce((s,it)=>s+((it.price||0)*(it.quantity||0)),0) : 0);
+
+            // Try to read a transportation/delivery fee from either admin or create inputs/spans, fallback to 0
+            // Define a constant delivery fee for consistency, similar to the main site.
+            // Only apply the fee if there are items in the cart.
+            const DELIVERY_FEE = 100.00;
+            const transportationFee = subtotal > 0 ? DELIVERY_FEE : 0;
+
+            const totalComputed = subtotal + (Number(transportationFee) || 0);
+
+            // Prepare order data (kept intentionally simple compared to storefront but with the same keys)
+            const orderData = {
+                orderId: orderId,
+                status: status.charAt(0).toUpperCase() + status.slice(1),
+                date: new Date().toISOString(),
+                createdAt: new Date().toISOString(),
+                subtotal: subtotal,
+                subtotal: Number(subtotal) || 0,
+                transportationFee: Number(transportationFee) || 0,
+                total: totalComputed,
+                paymentMethod: 'Admin-Manual',
+                customer: {
+                    fullName: customerName,
+                    email: customerEmail,
+                    phoneNumber: customerPhone,
+                    deliveryAddress: deliveryAddress
+                },
+                items: items,
+                orderSource: 'Admin Panel',
+                processedAt: new Date().toISOString()
             };
 
-            const addRes = await addDoc(collection(adminDb, 'orders'), newOrder);
+            // Save order using setDoc so the Firestore document id equals the orderId (same flow as storefront)
+            await setDoc(doc(adminDb, 'orders', orderId), orderData);
 
-            // Enqueue created email
+            // Enqueue confirmation email using the same structure as the storefront
+            const emailData = {
+                orderId: orderId,
+                customerName: customerName,
+                customerEmail: customerEmail,
+                customerPhone: customerPhone,
+                items: items.map(i => ({ 
+                    name: i.name || i.title || 'Item', 
+                    quantity: i.quantity || i.qty || 1, 
+                    price: ((i.price || i.totalPrice || 0) && (Number(i.price || i.totalPrice) || 0)).toFixed ? (Number(i.price || i.totalPrice) || 0).toFixed(2) : String(i.price || i.totalPrice || 0), 
+                    unit: i.unit || '' 
+                })),
+                subtotal: (Number(subtotal) || 0).toFixed(2),
+                deliveryFee: (Number(transportationFee) || 0).toFixed(2),
+                total: (Number(totalComputed) || 0).toFixed(2),
+                deliveryAddress: deliveryAddress || 'N/A',
+                estimatedDelivery: '30 minutes',
+                paymentMethod: 'Admin-Manual',
+                orderDate: new Date().toLocaleString(),
+                // Add user details for tracking who created the order
+                userEmail: window.auth.currentUser ? window.auth.currentUser.email : 'admin@unknown',
+                userId: window.auth.currentUser ? window.auth.currentUser.uid : null,
+                userDisplayName: window.auth.currentUser ? window.auth.currentUser.displayName : 'Admin'
+            };
+
             await addDoc(collection(adminDb, 'mail'), {
                 to: customerEmail || 'noreply@princealex.pro',
                 message: {
-                    subject: `Order Created - ${newOrderId}`,
-                    html: `<p>Hi ${customerName},</p><p>An order has been created on your behalf. Order ID: <strong>${newOrderId}</strong>.</p>`
+                    subject: `Order Confirmation - ${orderId}`,
+                    html: `
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                            <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); padding: 30px; text-align: center; color: white;">
+                                <h1 style="margin: 0; font-size: 28px;">🥬 Order Confirmed!</h1>
+                                <p style="margin: 10px 0 0 0; font-size: 16px;">An order has been created on your behalf by our admin team.</p>
+                            </div>
+                            <div style="padding: 30px; background: white;">
+                                <p style="font-size: 16px; color: #333;">Hello ${emailData.customerName},</p>
+                                <p style="font-size: 16px; color: #333;">Your order has been created and is being prepared for delivery.</p>
+                                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                                    <h3 style="color: #4CAF50; margin: 0 0 15px 0;">📋 Order Details</h3>
+                                    <p style="margin: 5px 0;"><strong>Order ID:</strong> ${emailData.orderId}</p>
+                                    <p style="margin: 5px 0;"><strong>Order Date:</strong> ${emailData.orderDate}</p>
+                                    <p style="margin: 5px 0;"><strong>Customer Name:</strong> ${emailData.customerName}</p>
+                                    <p style="margin: 5px 0;"><strong>Phone Number:</strong> ${emailData.customerPhone}</p>
+                                    <p style="margin: 5px 0;"><strong>Payment Method:</strong> ${emailData.paymentMethod}</p>
+                                    <p style="margin: 5px 0;"><strong>Delivery Address:</strong> ${emailData.deliveryAddress}</p>
+                                </div>
+                                <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                                    <h3 style="color: #4CAF50; margin: 0 0 15px 0;">🛒 Order Items</h3>
+                                    ${emailData.items.map(item => `
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #ddd;">
+                                            <span>${item.name} (${item.quantity} ${item.unit})</span>
+                                            <span><strong>KES ${item.price}</strong></span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                                    <h3 style="color: #856404; margin: 0 0 15px 0;">💰 Order Summary</h3>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>Subtotal:</span><span>KES ${emailData.subtotal}</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>Delivery Fee:</span><span>KES ${emailData.deliveryFee}</span></div>
+                                    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; color: #4CAF50; border-top: 2px solid #4CAF50; padding-top: 10px;"><span>Total:</span><span>KES ${emailData.total}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    `
                 },
                 emailType: 'order_created',
-                orderId: newOrderId,
-                customerEmail,
-                customerName,
+                orderId: orderId,
+                customerEmail: customerEmail,
+                customerName: customerName,
                 createdAt: new Date().toISOString(),
                 status: 'pending',
                 priority: 'high'
             });
 
-            // populate form with created order
-            document.getElementById('admin-order-id').value = newOrderId;
+            // populate form with created order id and show panel (guard elements may not exist)
+            const adminOrderIdEl = document.getElementById('admin-order-id');
+            if (adminOrderIdEl) adminOrderIdEl.value = orderId;
             const panel = document.getElementById('admin-order-result');
-            if (panel) panel.setAttribute('data-docid', addRes.id);
-            showAdminOrderResult(true);
-            adminMessage('Order created and notification enqueued.');
+            if (panel) {
+                panel.setAttribute('data-docid', orderId);
+                showAdminOrderResult(true);
+            }
+            adminMessage('Order created and confirmation email enqueued.');
+            // Show a modal popup summarizing the created order and that email was queued
+            try {
+                const modalHtml = `
+                    <div style="text-align:left; max-width:480px;">
+                        <p>Order <strong>${orderId}</strong> has been created successfully.</p>
+                        <p><strong>Total:</strong> KES ${(Number(orderData.total) || 0).toFixed(2)}</p>
+                        <p><strong>Delivery Fee:</strong> KES ${(Number(orderData.transportationFee) || 0).toFixed(2)}</p>
+                        <p style="margin-top:12px;">A confirmation email has been queued to <strong>${emailData.customerEmail || 'the customer'}</strong>.</p>
+                        <div style="display:flex; gap:8px; margin-top:16px;">
+                            <button class="create-btn" onclick="closeModal();">OK</button>
+                            <button class="create-btn" onclick="navigator.clipboard && navigator.clipboard.writeText('${orderId}').then(()=>{ alert('Order ID copied to clipboard'); }).catch(()=>{ alert('Failed to copy'); });">Copy Order ID</button>
+                        </div>
+                    </div>
+                `;
+                window.showModal('Order Created', modalHtml);
+            } catch (mErr) { console.error('Failed to show order created modal', mErr); }
         } catch (err) {
             console.error('adminCreateOrder error', err);
             adminMessage('Failed to create order. See console.', true);
         }
     };
+
+// If any calls were queued while the handler wasn't ready, process them now
+try {
+    if (window.__adminCreateOrderQueue && window.__adminCreateOrderQueue.length) {
+        const queued = window.__adminCreateOrderQueue.slice();
+        window.__adminCreateOrderQueue = [];
+        console.log('Processing', queued.length, 'queued adminCreateOrder calls');
+        queued.forEach(args => {
+            try {
+                // call the real handler; allow async but don't await here
+                window.adminCreateOrder.apply(null, args);
+            } catch (e) {
+                console.error('Queued adminCreateOrder failed', e);
+            }
+        });
+    }
+} catch (e) { console.error('Failed to process adminCreateOrder queue', e); }
 
 </script>
 </body>
