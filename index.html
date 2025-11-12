@@ -6972,8 +6972,25 @@
         // Enhanced cart preview functions
         async function updateCartPreviewQuantity(productId, change) {
             const cart = await getCart();
-            const productInStore = allProducts.find(p => p.id === productId);
             const item = cart.find(i => i.id === productId);
+            let productInStore = null;
+
+            // Try to find the product in either of the loaded product arrays
+            if (typeof shopProducts !== 'undefined' && Array.isArray(shopProducts)) {
+                productInStore = shopProducts.find(p => p.id === productId);
+            }
+            if (!productInStore && typeof allProducts !== 'undefined' && Array.isArray(allProducts)) {
+                productInStore = allProducts.find(p => p.id === productId);
+            }
+
+            // If product not found in local arrays, fetch from Firestore as a fallback
+            if (!productInStore && window.db && window.doc) {
+                const productRef = window.doc(window.db, "products", productId);
+                const productSnap = await window.getDoc(productRef);
+                if (productSnap.exists()) {
+                    productInStore = { id: productSnap.id, ...productSnap.data() };
+                }
+            }
 
             if (item) {
                 if (change > 0 && item.quantity >= productInStore.stock) {
@@ -7984,6 +8001,21 @@
                 
                 console.log("✅ Customer details validated:", customerDetails);
                 
+                // Step 5: Validate customer details
+                if (!customerDetails || typeof customerDetails !== 'object') {
+                    console.error("❌ Customer details are missing or invalid:", customerDetails);
+                    showModal('Customer Details Error', 'Customer details are missing. Please fill in your delivery information again.');
+                    return;
+                }
+                
+                if (!customerDetails.fullName || !customerDetails.phoneNumber || !customerDetails.deliveryLocation) {
+                    console.error("❌ Required customer details missing:", customerDetails);
+                    showModal('Missing Information', 'Required customer information is missing. Please fill in all required fields.');
+                    return;
+                }
+                
+                console.log("✅ Customer details validated:", customerDetails);
+                
                 // Step 6: Create comprehensive order data
                 const orderData = { 
                     // Order identification
@@ -8000,15 +8032,10 @@
                     
                     // Voucher information
                     voucher: appliedVoucher ? {
-                        code: appliedVoucher.code,
+                        code: appliedVoucher.id, // Use the voucher ID as the code
                         description: appliedVoucher.description,
-                        discountAmount: appliedVoucher.discountType === 'percentage' 
-                            ? ((grandTotal - transportationFee) * appliedVoucher.discountAmount / 100)
-                            : appliedVoucher.discountAmount,
-                        discountType: appliedVoucher.discountType,
-                        originalTotal: grandTotal + (appliedVoucher.discountType === 'percentage' 
-                            ? ((grandTotal - transportationFee) * appliedVoucher.discountAmount / 100)
-                            : appliedVoucher.discountAmount)
+                        discountAmount: voucherDiscount, // Use the calculated discount
+                        discountType: appliedVoucher.discountType
                     } : null,
                     
                     // Customer information (complete details)
@@ -8133,6 +8160,8 @@
                             })),
                             subtotal: (grandTotal - transportationFee).toFixed(2),
                             deliveryFee: transportationFee.toFixed(2),
+                            voucherDiscount: appliedVoucher ? voucherDiscount.toFixed(2) : '0.00',
+                            voucherCode: appliedVoucher ? appliedVoucher.id : null,
                             total: grandTotal.toFixed(2),
                             deliveryAddress: `${customerDetails.deliveryLocation}, ${customerDetails.houseName || 'N/A'}`,
                             estimatedDelivery: '30 minutes',
@@ -8185,6 +8214,12 @@
                                                     <span>Subtotal:</span>
                                                     <span>KES ${emailData.subtotal}</span>
                                                 </div>
+                                                ${appliedVoucher ? `
+                                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: #dc3545;">
+                                                    <span>Voucher Discount (${emailData.voucherCode}):</span>
+                                                    <span>-KES ${emailData.voucherDiscount}</span>
+                                                </div>
+                                                ` : ''}
                                                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                                                     <span>Delivery Fee:</span>
                                                     <span>KES ${emailData.deliveryFee}</span>
@@ -8256,13 +8291,20 @@
                 
                 // Step 11: Save last order for confirmation page
                 saveToLocalStorage('lastOrder', { 
-                    id: orderId,
-                    items: orderItems, 
-                    status: 'Pending', 
-                    date: new Date().toISOString(),
-                    subtotal: grandTotal - transportationFee,
-                    transportationFee: transportationFee,
-                    total: grandTotal,
+                    id: orderId, // Use the generated order ID
+                    items: orderItems,
+                    status: 'Pending',
+                    date: new Date().toISOString(), // Use ISO string for consistency
+                    subtotal: orderData.subtotal, // Use subtotal from orderData
+                    transportationFee: orderData.transportationFee,
+                    total: orderData.total,
+                    // Add voucher details for the confirmation page
+                    voucher: appliedVoucher ? {
+                        code: appliedVoucher.id,
+                        discountAmount: voucherDiscount
+                    } : null,
+                    
+                    // Customer and user details
                     customer: customerDetails,
                     paymentMethod: paymentMethod,
                     userEmail: firebaseUser ? firebaseUser.email : null,
@@ -8314,10 +8356,18 @@
                     <p>Order ID: <strong>${lastOrder.id}</strong></p>
                     <p>Status: <strong>${lastOrder.status}</strong></p>
                     <p>Date Placed: ${new Date(lastOrder.date).toLocaleString()}</p>
+                    
+                    <h4>Payment Breakdown:</h4>
                     <p>Subtotal: <strong>KES ${lastOrder.subtotal.toFixed(2)}</strong></p>
+                    ${lastOrder.voucher ? `
+                        <p style="color: var(--accent-color-orange);">Voucher Discount (${lastOrder.voucher.code}): <strong>-KES ${lastOrder.voucher.discountAmount.toFixed(2)}</strong></p>
+                    ` : ''}
                     <p>Transportation Fee: <strong>KES ${lastOrder.transportationFee.toFixed(2)}</strong></p>
-                    <p>Grand Total: <strong>KES ${lastOrder.total.toFixed(2)}</strong></p>
-                    <p>Payment Method: <strong>${lastOrder.paymentMethod}</strong></p>
+                    <hr style="margin: 10px 0; border-top: 1px solid var(--border-color);">
+                    <p>Grand Total: <strong style="font-size: 1.2em; color: var(--primary-color);">KES ${lastOrder.total.toFixed(2)}</strong></p>
+                    
+                    <p style="margin-top: 20px;">Payment Method: <strong>${lastOrder.paymentMethod}</strong></p>
+                    
                     <h4>Customer Details:</h4>
                     <ul>
                         <li>Name: ${lastOrder.customer.fullName}</li>
@@ -11360,5 +11410,3 @@
 
 </body>
 </html>
-
-
