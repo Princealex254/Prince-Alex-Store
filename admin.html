@@ -5873,6 +5873,11 @@
                         <div class="order-info">
                             <span class="order-info-label">Total</span>
                             <span class="order-info-value">KES ${order.total ? order.total.toFixed(2) : '0.00'}</span>
+                            ${order.voucher ? `
+                                <span style="font-size: 12px; color: var(--accent-color-orange); font-weight: 600; margin-top: 4px;">
+                                    <i class="fas fa-ticket-alt"></i> Voucher Used
+                                </span>
+                            ` : ''}
                         </div>
                     </div>
                     
@@ -6043,6 +6048,11 @@
                                 <label>Status:</label>
                                 <span class="status-badge status-${orderStatus.toLowerCase().replace(' ', '-')}">${orderStatus}</span>
                             </div>
+                            ${order.voucher ? `
+                            <div class="info-item">
+                                <label>Voucher:</label>
+                                <span>${order.voucher.code} (-${order.voucher.discountAmount.toFixed(2)})</span>
+                            </div>` : ''}
                             <div class="info-item">
                                 <label>Items:</label>
                                 <span>${order.items ? order.items.length : 0} item(s)</span>
@@ -6561,6 +6571,12 @@
                                 <span class="detail-label">Subtotal</span>
                                 <span class="detail-value">KES ${order.subtotal ? order.subtotal.toFixed(2) : '0.00'}</span>
                             </div>
+                            ${order.voucher ? `
+                            <div class="detail-item" style="color: var(--accent-color-orange);">
+                                <span class="detail-label">Voucher Discount (${order.voucher.code})</span>
+                                <span class="detail-value">-KES ${order.voucher.discountAmount.toFixed(2)}</span>
+                            </div>
+                            ` : ''}
                             <div class="detail-item">
                                 <span class="detail-label">Delivery Fee</span>
                                 <span class="detail-value">KES ${order.transportationFee ? order.transportationFee.toFixed(2) : '0.00'}</span>
