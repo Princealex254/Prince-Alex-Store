@@ -3117,8 +3117,11 @@
         /* Professional Admin Layout Styles */
         .login-container {
             min-height: 100vh;
+            flex-grow: 1; /* Ensure it takes up available space */
             display: flex;
+            flex-direction: column;
             align-items: center;
+            
             justify-content: center;
             background: linear-gradient(135deg, var(--light-bg) 0%, #e8f5e8 100%);
             padding: 20px;
@@ -3155,6 +3158,11 @@
             display: flex;
             min-height: 100vh;
             background: var(--light-bg);
+        }
+
+        #admin-dashboard:not([style*="display: flex"]) {
+            /* When dashboard is hidden, don't let it take up space */
+            display: none !important;
         }
 
         /* Sidebar Styles */
@@ -3281,7 +3289,7 @@
         /* Main Content Area */
         .admin-main {
             flex: 1;
-            margin-left: 280px;
+            margin-left: 280px; /* Add margin to account for the fixed sidebar */
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -3360,6 +3368,8 @@
         .admin-content {
             flex: 1;
             padding: 24px;
+            max-width: 1600px; /* Add a max-width for very large screens */
+            margin: 0 auto;    /* Center the content area */
             overflow-y: auto;
         }
 
@@ -4098,6 +4108,10 @@
                         <i class="fas fa-plus-circle"></i>
                         <span>Add Order</span>
                     </a>
+                    <a href="#" class="nav-item" data-page="edit-orders">
+                        <i class="fas fa-edit"></i>
+                        <span>Edit Orders</span>
+                    </a>
                 </div>
                 
                 <div class="nav-section">
@@ -4258,6 +4272,7 @@
                 <h3>Add New Product</h3>
                 <form id="add-product-form" class="admin-form">
                     <input type="text" id="product-name" placeholder="Product Name" required>
+                    <input type="text" id="product-id" placeholder="Custom Product ID (e.g., VEG-001)" required>
                     <input type="url" id="product-image-url" placeholder="Image URL (e.g., https://.../image.jpg)" required>
                     <div id="image-preview" style="display: none; margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
                         <!-- Image preview will be shown here -->
@@ -4299,199 +4314,323 @@
                 </div>
             </div>
 
-            <!-- Add Order Section -->
-            <div id="admin-add-order-section" class="admin-section admin-page">
-                <div class="section-header">
-                    <h2>Add New Order</h2>
-                    <p>Manually create a new order for a customer.</p>
+             <!-- Add Order Section -->
+             <div id="admin-add-order-section" class="admin-section admin-page">
+                 <div class="section-header">
+                     <h2>Add New Order</h2>
+                     <p>Manually create a new order for a customer.</p>
+                 </div>
+                 <div class="forms-container" style="max-width:900px; margin: 0 auto 30px;">
+                     <div id="order-customer-search-bar" style="position:relative; z-index:2; background:#fff; border-bottom:2px solid #1976d2; box-shadow:0 2px 12px rgba(25,118,210,0.08); border-radius:14px 14px 0 0; padding:24px 24px 18px 24px; margin-bottom:0;">
+                         <label for="simple-order-customer-search" style="font-weight:700; font-size:1.2em; color:#1976d2; margin-bottom:10px; display:block;">Enter Customer Email to Start Order</label>
+                         <div style="display:flex;gap:14px;align-items:center;">
+                             <input type="email" id="simple-order-customer-search" placeholder="Type customer email..." style="flex:1; padding:14px; border-radius:10px; border:2px solid #1976d2; font-size:1.1em; background:#f8fafc;">
+                             <button type="button" id="simple-order-find-customer" style="padding:14px 28px; background:#1976d2; color:#fff; border:none; border-radius:10px; font-weight:700; font-size:1.1em; cursor:pointer; box-shadow:0 2px 8px rgba(25,118,210,0.10);">Find Customer</button>
+                         </div>
+                         <div id="simple-order-customer-result" style="margin-top:12px; font-size:1.1em; min-height:24px;"></div>
+                     </div>
+                     <form id="admin-create-order-form" class="admin-form" style="margin-top:-2px; background:#f8fafc; border-radius:0 0 14px 14px; padding:32px 24px 24px 24px; box-shadow:0 2px 12px rgba(25,118,210,0.04);">
+                         <div id="simple-order-customer-fields" style="display:none; margin-bottom:18px;">
+                             <input type="text" id="create-order-customerName" placeholder="Customer Fullname" required />
+                             <input type="email" id="create-order-customerEmail" placeholder="Customer Email" required />
+                             <input type="text" id="create-order-customerPhone" placeholder="Customer Phone" />
+                             <input type="text" id="create-order-deliveryAddress" placeholder="Delivery Address" required />
+                         </div>
+                         <div style="margin-bottom:20px;">
+                             <label style="display: block; margin-bottom: 8px; font-weight: 600;">Select Products</label>
+                             <div id="simple-order-products" style="border:1.5px solid var(--border-color); border-radius:8px; padding:12px; background:#f8fafc; max-height:260px; overflow:auto; margin-bottom:8px;">
+                                 <p style="color:#888;">Loading products...</p>
+                             </div>
+                         </div>
+                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom: 20px; align-items:center;">
+                             <div><strong>Total:</strong> <span id="simple-order-total">KES 0.00</span></div>
+                             <select id="create-order-status" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;" required>
+                                 <option value="Pending">Pending</option>
+                                 <option value="Confirmed">Confirmed</option>
+                                 <option value="Processing">Processing</option>
+                                 <option value="On Transit">On Transit</option>
+                                 <option value="Delivered">Delivered</option>
+                                 <option value="Cancelled">Cancelled</option>
+                             </select>
+                             <select id="create-order-payment-method" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;" required>
+                                 <option value="Admin-Manual">Admin Manual</option>
+                                 <option value="Cash on Delivery">Cash on Delivery</option>
+                                 <option value="M-Pesa">M-Pesa</option>
+                                 <option value="Card">Card Payment</option>
+                             </select>
+                         </div>
+                         <button type="button" id="admin-create-order-form-btn" class="create-btn" onclick="window._adminCreateClickFallback && window._adminCreateClickFallback(event)" disabled>Create New Order</button>
+                         <div id="create-order-message" style="margin-top:12px; color:var(--text-color);"></div>
+                     </form>
+                 </div>
+                 <script>
+                     // Queue shim: allow clicks to enqueue create requests if handler isn't ready yet.
+                     window.__adminCreateOrderQueue = window.__adminCreateOrderQueue || [];
+                     if (typeof window.adminCreateOrder !== 'function') {
+                         window.adminCreateOrder = function() {
+                             // push arguments for later processing
+                             try { window.__adminCreateOrderQueue.push(Array.from(arguments)); console.log('adminCreateOrder queued'); } catch(e){ console.error('queue push failed', e); }
+                         };
+                     }
+ 
+                     // Fallback click handler for Create buttons in case module wiring hasn't attached yet.
+                     window._adminCreateClickFallback = function(e) {
+                         try {
+                             if (e && e.preventDefault) e.preventDefault();
+                             console.log('Fallback create button clicked');
+                             const msgEl = document.getElementById('create-order-message') || document.getElementById('admin-order-message');
+                             if (typeof window.adminCreateOrder === 'function' && (!window.__adminCreateOrderQueue || window.__adminCreateOrderQueue.length===0)) {
+                                 if (msgEl) msgEl.textContent = '';
+                                 window.adminCreateOrder();
+                                 return;
+                             }
+                             // If handler not ready, ensure a queued call exists and inform user
+                             try { window.__adminCreateOrderQueue.push([]); } catch(e){}
+                             if (msgEl) msgEl.textContent = 'Order handler not ready. Your request will be processed shortly.';
+                         } catch (err) {
+                             console.error('Fallback click handler error', err);
+                         }
+                     };
+                 </script>
+ 
+                 <script type="module">
+                 // --- Simple Product Picker for Add Order ---
+                 let simpleOrderProducts = [];
+                 let simpleOrderItems = [];
+                 window.simpleOrderCustomer = null; // Make this global
+                 const DELIVERY_FEE = 100.00; // Define delivery fee constant
+                 import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+                 // Use existing db instance from main Firebase initialization
+                 async function loadSimpleOrderProducts() {
+                     try {
+                         const productsSnap = await getDocs(collection(db, 'products'));
+                         simpleOrderProducts = [];
+                         productsSnap.forEach(doc => {
+                             const p = doc.data();
+                             simpleOrderProducts.push({ id: doc.id, name: p.name, price: p.price || 0, unit: p.unit || 'per item' });
+                         });
+                         renderSimpleOrderProducts();
+                     } catch (err) {
+                         document.getElementById('simple-order-products').innerHTML = '<p style="color:#c00">Failed to load products.</p>';
+                     }
+                 }
+                 function renderSimpleOrderProducts() {
+                     const el = document.getElementById('simple-order-products');
+                     if (!simpleOrderProducts.length) { el.innerHTML = '<p style="color:#888">No products available.</p>'; return; }
+                     el.innerHTML = simpleOrderProducts.map(prod => {
+                         const item = simpleOrderItems.find(i => i.id === prod.id) || { quantity: 0 };
+                         return `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                             <div><strong>${prod.name}</strong> <span style="color:#666;font-size:13px;">KES ${prod.price.toFixed(2)} ${prod.unit}</span></div>
+                             <div style="display:flex;align-items:center;gap:6px;">
+                                 <button type="button" onclick="window.adminOrder.updateQty('${prod.id}',-1)" style="padding:2px 8px;">-</button>
+                                 <input type="number" min="0" value="${item.quantity}" style="width:50px;text-align:center;" onchange="window.adminOrder.setQty('${prod.id}',this.value)">
+                                 <button type="button" onclick="window.adminOrder.updateQty('${prod.id}',1)" style="padding:2px 8px;">+</button>
+                             </div>
+                         </div>`;
+                     }).join('');
+                 }
+                 window.updateSimpleOrderQty = function(id, delta) {
+                     let item = simpleOrderItems.find(i => i.id === id);
+                     if (!item) { item = { id, quantity: 0 }; simpleOrderItems.push(item); }
+                     item.quantity = Math.max(0, (item.quantity || 0) + delta);
+                     renderSimpleOrderProducts();
+                     checkOrderReadiness();
+                     updateSimpleOrderTotal();
+                 }
+                 function setSimpleOrderQty(id, qty) {
+                     qty = Math.max(0, Number(qty) || 0);
+                     let item = simpleOrderItems.find(i => i.id === id);
+                     if (!item) { item = { id, quantity: 0 }; simpleOrderItems.push(item); }
+                     item.quantity = qty;
+                     renderSimpleOrderProducts();
+                     checkOrderReadiness();
+                     updateSimpleOrderTotal();
+                 }
+                 // Expose functions to the global window object for onclick/onchange handlers
+                 window.adminOrder = { updateQty: updateSimpleOrderQty, setQty: setSimpleOrderQty };
+ 
+                 function updateSimpleOrderTotal() {
+                     let subtotal = 0;
+                     simpleOrderItems.forEach(item => {
+                         const prod = simpleOrderProducts.find(p => p.id === item.id);
+                         if (prod && item.quantity > 0) subtotal += prod.price * item.quantity;
+                     });
+                     // Add delivery fee to the total
+                     const total = subtotal > 0 ? subtotal + DELIVERY_FEE : 0;
+                     document.getElementById('simple-order-total').textContent = `KES ${total.toFixed(2)}`;
+                 }
+                 // --- Enable/Disable Create Order Button ---
+                 function checkOrderReadiness() {
+                     const createBtn = document.getElementById('admin-create-order-form-btn');
+                     if (!createBtn) return;
+                     const isReady = simpleOrderCustomer && simpleOrderItems.some(item => item.quantity > 0);
+                     createBtn.disabled = !isReady;
+                 }
+                 // --- Customer Search ---
+                 document.getElementById('simple-order-find-customer').onclick = async function() {
+                     const email = document.getElementById('simple-order-customer-search').value.trim();
+                     const resultEl = document.getElementById('simple-order-customer-result');
+                     if (!email) {
+                         resultEl.innerHTML = '<span style="color:#c00">Please enter a customer email address.</span>';
+                         document.getElementById('simple-order-customer-fields').style.display = 'none';
+                         checkOrderReadiness();
+                         return;
+                     }
+                     resultEl.innerHTML = 'Searching...';
+                     try {
+                         const customersCol = collection(db, "customers");
+                         const q = query(customersCol, where("email", "==", email));
+                         const querySnapshot = await getDocs(q);
+                         if (querySnapshot.empty) {
+                             resultEl.innerHTML = `<span style="color:#c00">No customer found with email: <strong>${email}</strong></span>`;
+                             document.getElementById('simple-order-customer-fields').style.display = 'none';
+                             checkOrderReadiness();
+                             return;
+                         }
+                         const customerDoc = querySnapshot.docs[0];
+                     window.simpleOrderCustomer = { id: customerDoc.id, ...customerDoc.data() };
+                         document.getElementById('create-order-customerName').value = simpleOrderCustomer.fullname || simpleOrderCustomer.name || '';
+                         document.getElementById('create-order-customerEmail').value = simpleOrderCustomer.email || '';
+                         document.getElementById('create-order-customerPhone').value = simpleOrderCustomer.phone || '';
+                         document.getElementById('create-order-deliveryAddress').value = simpleOrderCustomer.deliveryLocation || '';
+                         document.getElementById('simple-order-customer-fields').style.display = '';
+                         resultEl.innerHTML = `<span style="color:#1976d2">Customer found: <strong>${simpleOrderCustomer.fullname || simpleOrderCustomer.name || simpleOrderCustomer.email}</strong></span>`;
+                         checkOrderReadiness();
+                     } catch (error) {
+                         console.error("Error searching customer:", error);
+                         resultEl.innerHTML = `<span style="color:#c00">Search failed: ${error.message}</span>`;
+                         document.getElementById('simple-order-customer-fields').style.display = 'none';
+                         checkOrderReadiness();
+                     }
+                 };
+                 // Load products when Add Order section is shown
+                 document.addEventListener('DOMContentLoaded', () => {
+                     if (document.getElementById('admin-add-order-section')) {
+                         loadSimpleOrderProducts();
+                     }
+                 });
+                 </script>
+                     </form>
+                 </div>
+            </div>
+
+            <!-- Edit Orders Section -->
+            <div id="admin-edit-orders-section" class="admin-section admin-page">
+                <h3>Edit Existing Order</h3>
+
+                <!-- Search -->
+                <div class="search-input-group">
+                    <input id="orderSearchInput" class="search-input"
+                    placeholder="Order ID / Phone / Email">
+                    <button class="search-btn" id="search-order-btn-legacy">Search</button>
                 </div>
-                <div class="forms-container" style="max-width:900px; margin: 0 auto 30px;">
-                    <div id="order-customer-search-bar" style="position:relative; z-index:2; background:#fff; border-bottom:2px solid #1976d2; box-shadow:0 2px 12px rgba(25,118,210,0.08); border-radius:14px 14px 0 0; padding:24px 24px 18px 24px; margin-bottom:0;">
-                        <label for="simple-order-customer-search" style="font-weight:700; font-size:1.2em; color:#1976d2; margin-bottom:10px; display:block;">Enter Customer Email to Start Order</label>
-                        <div style="display:flex;gap:14px;align-items:center;">
-                            <input type="email" id="simple-order-customer-search" placeholder="Type customer email..." style="flex:1; padding:14px; border-radius:10px; border:2px solid #1976d2; font-size:1.1em; background:#f8fafc;">
-                            <button type="button" id="simple-order-find-customer" style="padding:14px 28px; background:#1976d2; color:#fff; border:none; border-radius:10px; font-weight:700; font-size:1.1em; cursor:pointer; box-shadow:0 2px 8px rgba(25,118,210,0.10);">Find Customer</button>
-                        </div>
-                        <div id="simple-order-customer-result" style="margin-top:12px; font-size:1.1em; min-height:24px;"></div>
+
+                <!-- Results -->
+                <div id="editOrderResult" style="margin-top: 24px;"></div>
+            </div>
+
+            <!-- Order Edit Modal -->
+            <div id="admin-order-edit-modal" class="modal" style="align-items: flex-start; padding-top: 5vh;">
+                <div class="modal-content" style="max-width: 800px; text-align: left;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 id="edit-modal-title">Edit Order</h3>
+                        <span class="close-button" onclick="closeAdminOrderEditModal()">&times;</span>
                     </div>
-                    <form id="admin-create-order-form" class="admin-form" style="margin-top:-2px; background:#f8fafc; border-radius:0 0 14px 14px; padding:32px 24px 24px 24px; box-shadow:0 2px 12px rgba(25,118,210,0.04);">
-                        <div id="simple-order-customer-fields" style="display:none; margin-bottom:18px;">
-                            <input type="text" id="create-order-customerName" placeholder="Customer Fullname" required />
-                            <input type="email" id="create-order-customerEmail" placeholder="Customer Email" required />
-                            <input type="text" id="create-order-customerPhone" placeholder="Customer Phone" />
-                            <input type="text" id="create-order-deliveryAddress" placeholder="Delivery Address" required />
-                        </div>
-                        <div style="margin-bottom:20px;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Select Products</label>
-                            <div id="simple-order-products" style="border:1.5px solid var(--border-color); border-radius:8px; padding:12px; background:#f8fafc; max-height:260px; overflow:auto; margin-bottom:8px;">
-                                <p style="color:#888;">Loading products...</p>
-                            </div>
-                        </div>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom: 20px; align-items:center;">
-                            <div><strong>Total:</strong> <span id="simple-order-total">KES 0.00</span></div>
-                            <select id="create-order-status" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;" required>
-                                <option value="Pending">Pending</option>
-                                <option value="Confirmed">Confirmed</option>
-                                <option value="Processing">Processing</option>
-                                <option value="On Transit">On Transit</option>
-                                <option value="Delivered">Delivered</option>
-                                <option value="Cancelled">Cancelled</option>
-                            </select>
-                        </div>
-                        <button type="button" id="admin-create-order-form-btn" class="create-btn" onclick="window._adminCreateClickFallback && window._adminCreateClickFallback(event)" disabled>Create New Order</button>
-                        <div id="create-order-message" style="margin-top:12px; color:var(--text-color);"></div>
-                    </form>
-                </div>
-                <script>
-                    // Queue shim: allow clicks to enqueue create requests if handler isn't ready yet.
-                    window.__adminCreateOrderQueue = window.__adminCreateOrderQueue || [];
-                    if (typeof window.adminCreateOrder !== 'function') {
-                        window.adminCreateOrder = function() {
-                            // push arguments for later processing
-                            try { window.__adminCreateOrderQueue.push(Array.from(arguments)); console.log('adminCreateOrder queued'); } catch(e){ console.error('queue push failed', e); }
-                        };
-                    }
-
-                    // Fallback click handler for Create buttons in case module wiring hasn't attached yet.
-                    window._adminCreateClickFallback = function(e) {
-                        try {
-                            if (e && e.preventDefault) e.preventDefault();
-                            console.log('Fallback create button clicked');
-                            const msgEl = document.getElementById('create-order-message') || document.getElementById('admin-order-message');
-                            if (typeof window.adminCreateOrder === 'function' && (!window.__adminCreateOrderQueue || window.__adminCreateOrderQueue.length===0)) {
-                                if (msgEl) msgEl.textContent = '';
-                                window.adminCreateOrder();
-                                return;
-                            }
-                            // If handler not ready, ensure a queued call exists and inform user
-                            try { window.__adminCreateOrderQueue.push([]); } catch(e){}
-                            if (msgEl) msgEl.textContent = 'Order handler not ready. Your request will be processed shortly.';
-                        } catch (err) {
-                            console.error('Fallback click handler error', err);
-                        }
-                    };
-                </script>
-
-                <script type="module">
-                // --- Simple Product Picker for Add Order ---
-                let simpleOrderProducts = [];
-                let simpleOrderItems = [];
-                let simpleOrderCustomer = null;
-                const DELIVERY_FEE = 100.00; // Define delivery fee constant
-                import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-                // Use existing db instance from main Firebase initialization
-                async function loadSimpleOrderProducts() {
-                    try {
-                        const productsSnap = await getDocs(collection(db, 'products'));
-                        simpleOrderProducts = [];
-                        productsSnap.forEach(doc => {
-                            const p = doc.data();
-                            simpleOrderProducts.push({ id: doc.id, name: p.name, price: p.price || 0, unit: p.unit || 'per item' });
-                        });
-                        renderSimpleOrderProducts();
-                    } catch (err) {
-                        document.getElementById('simple-order-products').innerHTML = '<p style="color:#c00">Failed to load products.</p>';
-                    }
-                }
-                function renderSimpleOrderProducts() {
-                    const el = document.getElementById('simple-order-products');
-                    if (!simpleOrderProducts.length) { el.innerHTML = '<p style="color:#888">No products available.</p>'; return; }
-                    el.innerHTML = simpleOrderProducts.map(prod => {
-                        const item = simpleOrderItems.find(i => i.id === prod.id) || { quantity: 0 };
-                        return `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                            <div><strong>${prod.name}</strong> <span style="color:#666;font-size:13px;">KES ${prod.price.toFixed(2)} ${prod.unit}</span></div>
-                            <div style="display:flex;align-items:center;gap:6px;">
-                                <button type="button" onclick="window.adminOrder.updateQty('${prod.id}',-1)" style="padding:2px 8px;">-</button>
-                                <input type="number" min="0" value="${item.quantity}" style="width:50px;text-align:center;" onchange="window.adminOrder.setQty('${prod.id}',this.value)">
-                                <button type="button" onclick="window.adminOrder.updateQty('${prod.id}',1)" style="padding:2px 8px;">+</button>
-                            </div>
-                        </div>`;
-                    }).join('');
-                }
-                window.updateSimpleOrderQty = function(id, delta) {
-                    let item = simpleOrderItems.find(i => i.id === id);
-                    if (!item) { item = { id, quantity: 0 }; simpleOrderItems.push(item); }
-                    item.quantity = Math.max(0, (item.quantity || 0) + delta);
-                    renderSimpleOrderProducts();
-                    checkOrderReadiness();
-                    updateSimpleOrderTotal();
-                }
-                function setSimpleOrderQty(id, qty) {
-                    qty = Math.max(0, Number(qty) || 0);
-                    let item = simpleOrderItems.find(i => i.id === id);
-                    if (!item) { item = { id, quantity: 0 }; simpleOrderItems.push(item); }
-                    item.quantity = qty;
-                    renderSimpleOrderProducts();
-                    checkOrderReadiness();
-                    updateSimpleOrderTotal();
-                }
-                // Expose functions to the global window object for onclick/onchange handlers
-                window.adminOrder = { updateQty: updateSimpleOrderQty, setQty: setSimpleOrderQty };
-
-                function updateSimpleOrderTotal() {
-                    let subtotal = 0;
-                    simpleOrderItems.forEach(item => {
-                        const prod = simpleOrderProducts.find(p => p.id === item.id);
-                        if (prod && item.quantity > 0) subtotal += prod.price * item.quantity;
-                    });
-                    // Add delivery fee to the total
-                    const total = subtotal > 0 ? subtotal + DELIVERY_FEE : 0;
-                    document.getElementById('simple-order-total').textContent = `KES ${total.toFixed(2)}`;
-                }
-                // --- Enable/Disable Create Order Button ---
-                function checkOrderReadiness() {
-                    const createBtn = document.getElementById('admin-create-order-form-btn');
-                    if (!createBtn) return;
-                    const isReady = simpleOrderCustomer && simpleOrderItems.some(item => item.quantity > 0);
-                    createBtn.disabled = !isReady;
-                }
-                // --- Customer Search ---
-                document.getElementById('simple-order-find-customer').onclick = async function() {
-                    const email = document.getElementById('simple-order-customer-search').value.trim();
-                    const resultEl = document.getElementById('simple-order-customer-result');
-                    if (!email) {
-                        resultEl.innerHTML = '<span style="color:#c00">Please enter a customer email address.</span>';
-                        document.getElementById('simple-order-customer-fields').style.display = 'none';
-                        checkOrderReadiness();
-                        return;
-                    }
-                    resultEl.innerHTML = 'Searching...';
-                    try {
-                        const customersCol = collection(db, "customers");
-                        const q = query(customersCol, where("email", "==", email));
-                        const querySnapshot = await getDocs(q);
-                        if (querySnapshot.empty) {
-                            resultEl.innerHTML = `<span style="color:#c00">No customer found with email: <strong>${email}</strong></span>`;
-                            document.getElementById('simple-order-customer-fields').style.display = 'none';
-                            checkOrderReadiness();
-                            return;
-                        }
-                        const customerDoc = querySnapshot.docs[0];
-                        simpleOrderCustomer = { id: customerDoc.id, ...customerDoc.data() };
-                        document.getElementById('create-order-customerName').value = simpleOrderCustomer.fullname || simpleOrderCustomer.name || '';
-                        document.getElementById('create-order-customerEmail').value = simpleOrderCustomer.email || '';
-                        document.getElementById('create-order-customerPhone').value = simpleOrderCustomer.phone || '';
-                        document.getElementById('create-order-deliveryAddress').value = simpleOrderCustomer.deliveryLocation || '';
-                        document.getElementById('simple-order-customer-fields').style.display = '';
-                        resultEl.innerHTML = `<span style="color:#1976d2">Customer found: <strong>${simpleOrderCustomer.fullname || simpleOrderCustomer.name || simpleOrderCustomer.email}</strong></span>`;
-                        checkOrderReadiness();
-                    } catch (error) {
-                        console.error("Error searching customer:", error);
-                        resultEl.innerHTML = `<span style="color:#c00">Search failed: ${error.message}</span>`;
-                        document.getElementById('simple-order-customer-fields').style.display = 'none';
-                        checkOrderReadiness();
-                    }
-                };
-                // Load products when Add Order section is shown
-                document.addEventListener('DOMContentLoaded', () => {
-                    if (document.getElementById('admin-add-order-section')) {
-                        loadSimpleOrderProducts();
-                    }
-                });
-                </script>
-                    </form>
+                    <div id="edit-modal-body">
+                        <!-- Editable order content will be loaded here -->
+                    </div>
                 </div>
             </div>
+
+            <!-- Add Product to Order Modal -->
+            <div id="admin-add-product-modal" class="modal" style="align-items: flex-start; padding-top: 10vh;">
+                <div class="modal-content" style="max-width: 600px; text-align: left;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3>Add Product to Order</h3>
+                        <span class="close-button" onclick="closeAdminAddProductModal()">&times;</span>
+                    </div>
+                    <div id="add-product-modal-body">
+                        <div class="search-input-group" style="margin-bottom: 16px;">
+                            <input id="addProductSearchInput" class="search-input" placeholder="Search for a product to add...">
+                        </div>
+                        <div id="add-product-list" style="max-height: 40vh; overflow-y: auto;">
+                            <!-- Searchable product list will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .product-add-item {
+                    display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 8px;
+                }
+                .product-add-item:hover { background-color: var(--light-bg); }
+                .product-add-item-info { flex-grow: 1; }
+                .product-add-item-info strong { color: var(--dark-text); }
+                .product-add-item-info span { color: var(--primary-color); font-size: 14px; margin-left: 8px; }
+                .product-add-item .action-btn { font-size: 12px; padding: 6px 12px; }
+            </style>
+
+
+            <!-- Edit Order Section -->
+            <div id="admin-edit-order-section" class="admin-section admin-page">
+                <div class="section-header">
+                    <h2>Edit Existing Order</h2>
+                    <p>Quickly find and modify an order's details, items, or status.</p>
+                </div>
+
+                <!-- Quick Order ID Search Section -->
+                <div class="quick-order-search-section" style="max-width: 900px; margin: 0 auto 24px;">
+                    <h3><i class="fas fa-search"></i> Find Order by ID</h3>
+                    <div class="quick-search-container">
+                        <div class="quick-search-input-group">
+                            <input type="text" id="editOrderSearchInput" placeholder="Enter Order ID (e.g., PA-L1X2Y3-A4B5)" class="quick-search-input">
+                            <button type="button" id="edit-page-quick-search-btn" class="quick-search-btn">
+                                <i class="fas fa-search"></i> Find Order
+                            </button>
+                        </div>
+                     </div>
+                </div>
+
+                <!-- Order Edit Form -->
+                <div id="edit-order-form-container" class="admin-section" style="display: none; max-width: 900px; margin: 24px auto;">
+                    <div class="details-section">
+                        <h4>👤 Customer Information</h4>
+                        <div class="details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Full Name</span>
+                                <span id="editCustomerName" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Email</span>
+                                <span id="editCustomerEmail" class="detail-value"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Phone Number</span>
+                                <span id="editCustomerPhone" class="detail-value"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="details-section">
+                        <h4>🛒 Order Items</h4>
+                        <div id="editOrderItems" class="items-list">
+                            <!-- Items will be rendered here -->
+                        </div>
+                        <button class="add-item-btn" onclick="openAddItemModal()" style="margin-top: 16px;"><i class="fas fa-plus"></i> Add Item</button>
+                    </div>
+
+                    <div class="details-section">
+                        <h4>💰 Order Summary</h4>
+                        <p>Subtotal: <span id="editSubtotal">KES 0.00</span></p>
+                        <p><strong>Total: <span id="editTotal">KES 0.00</span></strong></p>
+                    </div>
+
+                    <div class="edit-actions">
+                        <button onclick="saveEditedOrder()" class="save-btn">Save Changes</button>
+                    </div>
+                </div>
+             </div>
 
             <!-- Manage Orders Section -->
                 <div id="admin-orders-section" class="admin-section admin-page">
@@ -4803,12 +4942,12 @@
     </div>
 
     <!-- Custom Message Modal -->
-    <div id="message-modal" class="modal">
+    <div id="alertModal" class="modal">
         <div class="modal-content">
-            <span class="close-button" onclick="closeModal()">&times;</span>
-            <h3 id="modal-title"></h3>
-            <p id="modal-message"></p>
-            <button onclick="closeModal()">OK</button>
+            <span class="close-button" onclick="document.getElementById('alertModal').style.display='none'">&times;</span>
+            <h3 id="alertModalTitle"></h3>
+            <p id="alertModalMessage"></p>
+            <button onclick="document.getElementById('alertModal').style.display='none'">OK</button>
         </div>
     </div>
 
@@ -4837,7 +4976,7 @@
                 <h3 class="order-details-title">Edit Order</h3>
                 <span class="close-button" onclick="closeOrderEditModal()">&times;</span>
             </div>
-            <div class="order-edit-body">
+            <div id="edit-modal-body" class="order-edit-body">
                 <div class="edit-section">
                     <h4>Order Items</h4>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
@@ -4890,10 +5029,11 @@
                 <span class="close-button" onclick="closeAddItemModal()">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="search-section">
-                    <input type="text" id="product-search" placeholder="Search products..." class="search-input" onkeyup="searchProducts()">
+                <div class="search-section" style="display: flex; gap: 10px; margin-bottom: 16px;">
+                    <input type="text" id="product-search" placeholder="Search products by name or category..." class="search-input" oninput="debouncedSearch()" style="flex-grow: 1;">
+                    <button onclick="searchProducts()" class="search-btn" style="padding: 12px 20px;">Search</button>
                 </div>
-                <div id="products-list" class="products-list">
+                <div id="add-item-products-list" class="products-list">
                     <!-- Products will be populated here -->
                 </div>
             </div>
@@ -5024,53 +5164,64 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-    // Expose db and auth to window so non-module scripts can access them
-    // (Some other <script> blocks in this file use Firestore without module scope.)
-    window.db = db;
-    window.firebaseApp = app;
+        // Expose db and auth to window so non-module scripts can access them.
+        // (Some other <script> blocks in this file use Firestore without module scope.)
+        window.db = db;
+        window.firebaseApp = app;
+        window.collection = collection;
+        window.getDocs = getDocs;
+        window.query = query;
+        window.orderBy = orderBy;
+        window.doc = doc;
+        window.setDoc = setDoc;
+        window.addDoc = addDoc;
+        window.updateDoc = updateDoc;
+        window.deleteDoc = deleteDoc;
+        window.where = where;
+        window.getDoc = getDoc;
+        window.limit = limit;
         const auth = getAuth(app);
+        window.auth = auth; // ✅ THE FIX: Expose the auth object globally.
 
         // Global variable to store current Firebase user
         let firebaseUser = null;
 
-        // --- Modal Alert Functions ---
-        function showModal(title, message, isError = false) {
-            try {
-                const modal = document.getElementById('message-modal');
-                const modalTitle = document.getElementById('modal-title');
-                const modalMessage = document.getElementById('modal-message');
-                
-                console.log('Modal elements:', { modal, modalTitle, modalMessage });
-                
-                if (!modal || !modalTitle || !modalMessage) {
-                    console.error('Modal elements not found:', { modal, modalTitle, modalMessage });
-                    // Fallback to browser alert
-                    alert(`${title}: ${message}`);
-                    return; // This return is now valid inside the function
-                }
-                
-                modalTitle.textContent = title;
-                modalMessage.innerHTML = message;
-                
-                // Add error styling if needed
-                if (isError) {
-                    modalTitle.style.color = '#dc3545';
-                } else {
-                    modalTitle.style.color = '#28a745';
-                }
-                
-                modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden'; // Prevent background scrolling
-                
-                console.log('Modal shown successfully:', title, message);
-            } catch (error) {
-                console.error('Error showing modal:', error);
-                // Fallback to browser alert
-                alert(`${title}: ${message}`);
+        // 1. Add a guaranteed alert helper (simple & safe)
+        function showAlert(title, message, isError = false) {
+            const modal = document.getElementById('alertModal');
+            const modalTitle = document.getElementById('alertModalTitle');
+            const modalMessage = document.getElementById('alertModalMessage');
+
+            if (!modal || !modalTitle || !modalMessage) {
+                console.error("Alert modal elements not found!");
+                alert(`${title}: ${message}`); // Fallback
+                return;
             }
+
+            modalTitle.textContent = title;
+            modalMessage.innerHTML = message; // Use innerHTML to allow for line breaks
+            modalTitle.style.color = isError ? '#F44336' : '#4CAF50';
+            modal.style.display = 'flex';
+        }
+        window.showAlert = showAlert; // Expose to global scope
+
+        // --- Modal Alert Functions ---
+        // This function now acts as a wrapper for the new, reliable showAlert function.
+        function showModal(title, message, isError = false) {
+            showAlert(title, message, isError);
         }
         // Expose showModal to global scope for module scripts
         window.showModal = showModal;
+
+        // Moved from later script block to be defined before use
+        function searchProducts() {
+            const searchTerm = document.getElementById('product-search').value.toLowerCase();
+            const filteredProducts = availableProducts.filter(product => 
+                product.name.toLowerCase().includes(searchTerm) ||
+                (product.category && product.category.toLowerCase().includes(searchTerm))
+            );
+            populateProductsList(filteredProducts);
+        }
 
         function closeModal() {
             try {
@@ -5093,17 +5244,70 @@
         // Expose closeModal to global scope for onclick events
         window.closeModal = closeModal;
 
+        // --- Order Editing Functions (Moved Up) ---
+        let activeOrder = null;
+        // Make this a global variable so all modules can access it.
+        window.originalOrderSnapshot = null;
+
+        async function searchOrderForEdit() {
+            const orderId = document.getElementById('editOrderSearchInput').value.trim();
+            if (!orderId) {
+                alert("Please enter an Order ID.");
+                return;
+            }
+
+            try {
+                const orderRef = doc(db, "orders", orderId);
+                const orderSnap = await getDoc(orderRef);
+
+                if (!orderSnap.exists()) {
+                    alert("Order not found.");
+                    document.getElementById('edit-order-form-container').style.display = 'none';
+                    return;
+                }
+
+                currentEditingOrder = { id: orderSnap.id, ...orderSnap.data() }; // Use the correct global variable
+                window.originalOrderSnapshot = JSON.parse(JSON.stringify(currentEditingOrder)); // Deep copy for comparison
+
+                // Populate customer info
+                document.getElementById('editCustomerName').textContent = currentEditingOrder.customer?.fullName || 'N/A';
+                document.getElementById('editCustomerEmail').textContent = currentEditingOrder.userEmail || 'N/A';
+                document.getElementById('editCustomerPhone').textContent = currentEditingOrder.customer?.phoneNumber || 'N/A';
+
+                // This was the main bug. It was calling the function with an undefined variable.
+                // It should call the function that opens the main edit modal with the correct data.
+                currentOrderId = currentEditingOrder.id; // Set the global ID for the modal
+                toggleOrderEditMode(); // This opens the correct, unified modal
+
+                // We no longer need the separate form container, as the modal handles everything.
+                // document.getElementById('edit-order-form-container').style.display = 'block';
+
+            } catch (error) {
+                console.error("Error searching for order to edit:", error);
+                alert("Failed to find order: " + error.message);
+            }
+        }
+
+        // ✅ FIX: Attach event listener programmatically to avoid scope issues with modules.
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchButton = document.getElementById('edit-page-quick-search-btn');
+            if (searchButton) {
+                searchButton.addEventListener('click', searchOrderForEdit);
+            }
+        });
+        // Expose searchOrderForEdit to the global window object for inline event handlers
+        // This is necessary because the function is called from an `onclick` attribute in the HTML.
+        window.searchOrderForEdit = searchOrderForEdit;
+
+
         // --- Professional Admin Page Switching Logic ---
         function switchAdminPage(pageName) {
-            // Hide all admin pages
             const adminPages = document.querySelectorAll('.admin-page');
             adminPages.forEach(page => page.classList.remove('active'));
 
-            // Remove active class from all nav items
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item => item.classList.remove('active'));
 
-            // Show the requested page
             const targetPage = document.getElementById(`admin-${pageName}-section`);
             if (targetPage) {
                 targetPage.classList.add('active');
@@ -5118,12 +5322,10 @@
                 'customers': 'Customer Management',
                 'add-order': 'Add New Order',
                 'referrals': 'Referral Management',
+                'edit-orders': 'Edit Orders',
                 'vouchers': 'Voucher Management',
-                'contacts': 'Contact Messages'
+                'contacts': 'Contact Messages',
             };
-            if (pageTitle && pageTitles[pageName]) {
-                pageTitle.textContent = pageTitles[pageName];
-            }
 
             // Add active class to current nav item
             const currentNavItem = document.querySelector(`[data-page="${pageName}"]`);
@@ -5144,8 +5346,14 @@
                 loadReferralData();
             } else if (pageName === 'vouchers') {
                 loadVouchers();
+            } else if (pageName === 'edit-orders') {
+                // No initial data load needed for edit-orders page
             } else if (pageName === 'contacts') {
                 loadContactSubmissions();
+            }
+
+            if (pageTitle && pageTitles[pageName]) {
+                pageTitle.textContent = pageTitles[pageName];
             }
         }
 
@@ -5178,7 +5386,11 @@
                             <div class="order-status">
                                 <span class="status-badge status-${order.status ? order.status.toLowerCase().replace(' ', '-') : 'pending'}">${order.status || 'Pending'}</span>
                             </div>
-                            <div class="order-total">KES ${order.total ? order.total.toFixed(2) : '0.00'}</div>
+                        <div class="order-total">
+                            KES ${order.total ? order.total.toFixed(2) : 
+                                (Array.isArray(order.items) ? order.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0).toFixed(2) : '0.00')
+                            }
+                        </div>
                         `;
                         recentOrdersList.appendChild(orderItem);
                     });
@@ -5253,11 +5465,9 @@
 
         // --- UI Update based on Admin Authentication State ---
         function updateAdminUI() {
-            console.log("updateAdminUI called, firebaseUser:", firebaseUser);
             
             const adminLoginSection = document.getElementById('admin-login-section');
             const adminDashboard = document.getElementById('admin-dashboard');
-            
             console.log("Elements found:", {
                 adminLoginSection: !!adminLoginSection,
                 adminDashboard: !!adminDashboard
@@ -5265,7 +5475,6 @@
 
             // Check if user is logged in (any authenticated Firebase user is now considered an admin)
             if (firebaseUser) {
-                console.log("User is logged in, showing admin dashboard");
                 if (adminLoginSection) adminLoginSection.style.display = 'none'; // Hide login form
                 if (adminDashboard) adminDashboard.style.display = 'flex'; // Show admin dashboard
                 
@@ -5278,7 +5487,6 @@
                 // Default to dashboard page on login
                 switchAdminPage('dashboard');
             } else {
-                console.log("User is not logged in, showing login form");
                 if (adminLoginSection) adminLoginSection.style.display = 'block'; // Show login form
                 if (adminDashboard) adminDashboard.style.display = 'none'; // Hide admin dashboard
             }
@@ -5295,7 +5503,6 @@
             
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                console.log('Login form submitted');
                 
                 const emailInput = document.getElementById('admin-email');
                 const passwordInput = document.getElementById('admin-password');
@@ -5314,11 +5521,8 @@
                     return;
                 }
                 
-                console.log('Attempting login with email:', email);
-                
                 try {
                     await signInWithEmailAndPassword(auth, email, password);
-                    console.log('Login successful');
                     
                     // Try modal first, fallback to alert
                     try {
@@ -5372,10 +5576,7 @@
         // Firebase Auth State Listener: Crucial for updating UI on login/logout
         onAuthStateChanged(auth, (user) => {
             firebaseUser = user; // Update the global user object
-            console.log("Auth state changed. Current user:", firebaseUser ? firebaseUser.email : "No user"); // Debug log
-            console.log("Calling updateAdminUI...");
             updateAdminUI(); // Call the UI update function
-            console.log("updateAdminUI completed");
         });
 
         // --- Professional Navigation Event Listeners ---
@@ -5422,8 +5623,8 @@
 
         // --- 🛒 2. Manage Products ---
         document.getElementById('add-product-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
             const productName = document.getElementById('product-name').value;
+            const customProductId = document.getElementById('product-id').value;
             const productImageUrl = document.getElementById('product-image-url').value;
             const productDescription = document.getElementById('product-description').value;
             const productPrice = parseFloat(document.getElementById('product-price').value);
@@ -5433,7 +5634,7 @@
             const productRating = parseFloat(document.getElementById('product-rating').value);
             const productTagsInput = document.getElementById('product-tags').value;
 
-            if (!productName || !productImageUrl || !productDescription || isNaN(productPrice) || !productUnit || isNaN(productStock) || !productCategory) {
+            if (!productName || !customProductId || !productImageUrl || !productDescription || isNaN(productPrice) || !productUnit || isNaN(productStock) || !productCategory) {
                 showModal('Error', 'Please fill in all required product details correctly.', true);
                 return;
             }
@@ -5459,14 +5660,12 @@
             // Process tags
             const productTags = productTagsInput ? productTagsInput.split(',').map(tag => tag.trim()).filter(tag => tag) : ['fresh'];
 
-            // Debug logs before attempting to add product
-            console.log("Attempting to add product...");
-            console.log("Current firebaseUser:", firebaseUser ? firebaseUser.email : "No user logged in");
-            console.log("Auth.currentUser:", auth.currentUser ? auth.currentUser.email : "No user from auth.currentUser");
-
             try {
-                await addDoc(collection(db, "products"), {
+                // Use the custom product ID from the form as the document ID
+                const productRef = doc(db, "products", customProductId);
+                await setDoc(productRef, {
                     name: productName,
+                    productId: customProductId, // Save the custom ID in the document as well
                     image: productImageUrl,
                     description: productDescription,
                     price: productPrice,
@@ -5584,7 +5783,6 @@
 
         // Expose editProduct to the global scope for onclick events
         window.editProduct = async function(productId) {
-            try {
                 const productRef = doc(db, "products", productId);
                 const productSnap = await getDoc(productRef);
                 
@@ -5602,6 +5800,10 @@
                             <div style="margin-bottom: 16px;">
                                 <label style="display: block; margin-bottom: 8px; font-weight: 600;">Product Name</label>
                                 <input type="text" id="edit-product-name" value="${product.name || ''}" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;" required>
+                            </div>
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600;">Custom Product ID</label>
+                                <input type="text" id="edit-custom-product-id" value="${product.productId || ''}" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;" required>
                             </div>
                             <div style="margin-bottom: 16px;">
                                 <label style="display: block; margin-bottom: 8px; font-weight: 600;">Image URL</label>
@@ -5656,17 +5858,13 @@
                 `;
                 
                 showModal('Edit Product', editFormHtml);
-                
-            } catch (error) {
-                showModal('Error', `Failed to load product for editing: ${error.message}`, true);
-                console.error("Error loading product for edit:", error);
-            }
         };
 
         // Save product edit
         window.saveProductEdit = async function(productId) {
             try {
                 const productName = document.getElementById('edit-product-name').value;
+                const customProductId = document.getElementById('edit-custom-product-id').value;
                 const productImageUrl = document.getElementById('edit-product-image-url').value;
                 const productDescription = document.getElementById('edit-product-description').value;
                 const productPrice = parseFloat(document.getElementById('edit-product-price').value);
@@ -5676,7 +5874,7 @@
                 const productRating = parseFloat(document.getElementById('edit-product-rating').value);
                 const productTagsInput = document.getElementById('edit-product-tags').value;
 
-                if (!productName || !productImageUrl || !productDescription || isNaN(productPrice) || !productUnit || isNaN(productStock) || !productCategory) {
+                if (!productName || !customProductId || !productImageUrl || !productDescription || isNaN(productPrice) || !productUnit || isNaN(productStock) || !productCategory) {
                     showModal('Error', 'Please fill in all required product details correctly.', true);
                     return;
                 }
@@ -5705,6 +5903,7 @@
                 const productRef = doc(db, "products", productId);
                 await updateDoc(productRef, {
                     name: productName,
+                    productId: customProductId,
                     image: productImageUrl,
                     description: productDescription,
                     price: productPrice,
@@ -5757,6 +5956,8 @@
         let allOrders = [];
         let filteredOrders = [];
         let currentOrderId = null;
+        // --- State for new edit logic (variables moved up) ---
+        // ---------------------------------
 
         async function loadOrders() {
             const ordersList = document.getElementById('orders-list');
@@ -5872,7 +6073,11 @@
                         </div>
                         <div class="order-info">
                             <span class="order-info-label">Total</span>
-                            <span class="order-info-value">KES ${order.total ? order.total.toFixed(2) : '0.00'}</span>
+                            <span class="order-info-value">
+                                KES ${order.total ? order.total.toFixed(2) : 
+                                    (Array.isArray(order.items) ? order.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0).toFixed(2) : '0.00')
+                                }
+                            </span>
                             ${order.voucher ? `
                                 <span style="font-size: 12px; color: var(--accent-color-orange); font-weight: 600; margin-top: 4px;">
                                     <i class="fas fa-ticket-alt"></i> Voucher Used
@@ -5959,149 +6164,6 @@
             dateFilter.addEventListener('change', performSearch);
             refreshBtn.addEventListener('click', loadOrders);
             
-            // Quick Order ID Search functionality
-            const quickSearchBtn = document.getElementById('quick-search-btn');
-            const quickSearchInput = document.getElementById('quick-order-id-search');
-            const quickSearchResults = document.getElementById('quick-search-results');
-            
-            if (quickSearchBtn && quickSearchInput && quickSearchResults) {
-                quickSearchBtn.addEventListener('click', performQuickOrderSearch);
-                quickSearchInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        performQuickOrderSearch();
-                    }
-                });
-            }
-        }
-
-        // Quick Order Search Function
-        async function performQuickOrderSearch() {
-            const orderId = document.getElementById('quick-order-id-search').value.trim();
-            const resultsDiv = document.getElementById('quick-search-results');
-            
-            if (!orderId) {
-                showModal('Error', 'Please enter an Order ID to search.', true);
-                return;
-            }
-            
-            try {
-                // Show loading state
-                resultsDiv.innerHTML = `
-                    <div style="text-align: center; padding: 20px;">
-                        <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: var(--primary-color);"></i>
-                        <p style="margin-top: 10px; color: var(--text-color);">Searching for order...</p>
-                    </div>
-                `;
-                resultsDiv.style.display = 'block';
-                
-                // Search for the order
-                const order = allOrders.find(o => o.id.toLowerCase() === orderId.toLowerCase());
-                
-                if (!order) {
-                    resultsDiv.innerHTML = `
-                        <div style="text-align: center; padding: 20px; color: var(--error-color);">
-                            <i class="fas fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 10px;"></i>
-                            <p><strong>Order Not Found</strong></p>
-                            <p>No order found with ID: ${orderId}</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                // Display order details with action buttons
-                const customerName = order.customer ? order.customer.fullName : 'Unknown Customer';
-                const customerEmail = order.userEmail || 'No email';
-                const customerPhone = order.customer ? order.customer.phoneNumber : 'No phone';
-                const orderDate = new Date(order.date).toLocaleDateString();
-                const orderStatus = order.status || 'Unknown';
-                
-                // Calculate totals properly
-                const subtotal = order.items ? order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) : 0;
-                const deliveryFee = order.transportationFee || order.deliveryFee || 0;
-                const totalAmount = subtotal + deliveryFee;
-                
-                resultsDiv.innerHTML = `
-                    <div class="order-search-result">
-                        <div class="order-header">
-                            <h4><i class="fas fa-receipt"></i> Order Details</h4>
-                            <span class="order-id-badge">${order.id}</span>
-                        </div>
-                        
-                        <div class="order-info-grid">
-                            <div class="info-item">
-                                <label>Customer:</label>
-                                <span>${customerName}</span>
-                            </div>
-                            <div class="info-item">
-                                <label>Email:</label>
-                                <span>${customerEmail}</span>
-                            </div>
-                            <div class="info-item">
-                                <label>Phone:</label>
-                                <span>${customerPhone}</span>
-                            </div>
-                            <div class="info-item">
-                                <label>Date:</label>
-                                <span>${orderDate}</span>
-                            </div>
-                            <div class="info-item">
-                                <label>Status:</label>
-                                <span class="status-badge status-${orderStatus.toLowerCase().replace(' ', '-')}">${orderStatus}</span>
-                            </div>
-                            ${order.voucher ? `
-                            <div class="info-item">
-                                <label>Voucher:</label>
-                                <span>${order.voucher.code} (-${order.voucher.discountAmount.toFixed(2)})</span>
-                            </div>` : ''}
-                            <div class="info-item">
-                                <label>Items:</label>
-                                <span>${order.items ? order.items.length : 0} item(s)</span>
-                            </div>
-                        </div>
-                        
-                        <div class="order-summary-breakdown">
-                            <h5><i class="fas fa-calculator"></i> Order Summary</h5>
-                            <div class="summary-row">
-                                <span>Subtotal:</span>
-                                <span>KES ${subtotal.toFixed(2)}</span>
-                            </div>
-                            <div class="summary-row">
-                                <span>Delivery Fee:</span>
-                                <span>KES ${deliveryFee.toFixed(2)}</span>
-                            </div>
-                            <div class="summary-row total-row">
-                                <span><strong>Total Amount:</strong></span>
-                                <span class="total-amount">KES ${totalAmount.toFixed(2)}</span>
-                            </div>
-                        </div>
-                        
-                        <div class="order-action-buttons">
-                            <button class="order-action-btn edit" onclick="editOrderById('${order.id}')">
-                                <i class="fas fa-edit"></i> Edit Order
-                            </button>
-                            <button class="order-action-btn add" onclick="addItemToOrder('${order.id}')">
-                                <i class="fas fa-plus"></i> Add Item
-                            </button>
-                            <button class="order-action-btn remove" onclick="removeItemFromOrder('${order.id}')">
-                                <i class="fas fa-minus"></i> Remove Item
-                            </button>
-                            <button class="order-action-btn cancel" onclick="cancelOrderById('${order.id}')">
-                                <i class="fas fa-times"></i> Cancel Order
-                            </button>
-                        </div>
-                    </div>
-                `;
-                
-            } catch (error) {
-                console.error('Error searching for order:', error);
-                resultsDiv.innerHTML = `
-                    <div style="text-align: center; padding: 20px; color: var(--error-color);">
-                        <i class="fas fa-exclamation-circle" style="font-size: 24px; margin-bottom: 10px;"></i>
-                        <p><strong>Search Error</strong></p>
-                        <p>Failed to search for order: ${error.message}</p>
-                    </div>
-                `;
-            }
         }
 
         // Enhanced Order Action Functions with Professional Email Integration
@@ -6133,35 +6195,12 @@
                     showModal('Error', 'Order not found.', true);
                     return;
                 }
-                
-                // Open the add item modal
                 currentOrderId = orderId;
-                openAddItemModal();
-                
-            } catch (error) {
-                console.error('Error adding item to order:', error);
-                showModal('Error', `Failed to add item: ${error.message}`, true);
-            }
-        };
-
-        window.removeItemFromOrder = async function(orderId) {
-            try {
-                const order = allOrders.find(o => o.id === orderId);
-                if (!order) {
-                    showModal('Error', 'Order not found.', true);
-                    return;
-                }
-                
-                // Open the existing order edit modal to remove items
-                currentOrderId = orderId;
+                // Open the main edit modal which now contains the "Add Item" functionality
                 toggleOrderEditMode();
-                
-                // Send email notification
-                await emailService.sendOrderActionEmail(order, 'item_removed', 'An item has been removed from your order. Please review the updated order details.');
-                
             } catch (error) {
-                console.error('Error removing item from order:', error);
-                showModal('Error', `Failed to remove item: ${error.message}`, true);
+                console.error('Error preparing to add item:', error);
+                showModal('Error', `Failed to open product list: ${error.message}`, true);
             }
         };
 
@@ -6208,6 +6247,44 @@
             }
         };
 
+        // Enhanced Order Action Functions with Professional Email Integration
+        window.editOrderById = async function(orderId) {
+            try {
+                const order = allOrders.find(o => o.id === orderId);
+                if (!order) {
+                    showModal('Error', 'Order not found.', true);
+                    return;
+                }
+                
+                // Open the existing order edit modal
+                currentOrderId = orderId;
+                toggleOrderEditMode();
+                
+                // Send email notification
+                await emailService.sendOrderActionEmail(order, 'edit', 'Your order has been edited by our admin team. Please review the changes below.');
+                
+            } catch (error) {
+                console.error('Error editing order:', error);
+                showModal('Error', `Failed to edit order: ${error.message}`, true);
+            }
+        };
+
+        window.addItemToOrder = async function(orderId) {
+            try {
+                const order = allOrders.find(o => o.id === orderId);
+                if (!order) {
+                    showModal('Error', 'Order not found.', true);
+                    return;
+                }
+                currentOrderId = orderId;
+                // Open the main edit modal which now contains the "Add Item" functionality
+                toggleOrderEditMode();
+            } catch (error) {
+                console.error('Error preparing to add item:', error);
+                showModal('Error', `Failed to open product list: ${error.message}`, true);
+            }
+        };
+
         // Professional Email System - Matching Index.html Format
         class EmailService {
             constructor() {
@@ -6250,11 +6327,42 @@
                 }
             }
 
+            async sendViaFirestoreMailCollection(order, action, message, additionalData = {}, emailHtml = null) {
+                try {
+                    // Use same Firestore mail collection format as index.html
+                    await addDoc(collection(db, "mail"), {
+                        to: order.userEmail,
+                        message: {
+                            subject: `Order ${order.id} Update - ${action.charAt(0).toUpperCase() + action.slice(1)} | Prince Alex Store`,
+                            html: emailHtml || this.createOrderActionEmailTemplate(order, action, message, additionalData)
+                        },
+                        emailType: 'order_action',
+                        customerEmail: order.userEmail,
+                        customerName: order.customer ? order.customer.fullName : 'Valued Customer',
+                        adminEmail: 'noreply@princealex.pro',
+                        createdAt: new Date().toISOString(),
+                        status: 'pending',
+                        priority: 'high',
+                        orderData: {
+                            orderId: order.id || order.orderId || null,
+                            action: action,
+                            message: message,
+                            additionalData: additionalData
+                        }
+                    });
+                    
+                    showModal('Email Queued', `Email notification has been queued for sending to ${order.userEmail}. Check the mail collection for processing.`);
+                    
+                } catch (error) {
+                    console.error('Error queuing email in Firestore:', error);
+                    showModal('Email Collection Failed', 'Failed to queue email notification. Please send manually.');
+                }
+            }
+
             async sendOrderActionEmail(order, action, message, additionalData = {}) {
                 try {
                     const customerEmail = order.userEmail;
                     if (!customerEmail) {
-                        console.log('No email address found for order, collecting email for manual sending');
                         await this.collectEmailForManualSending(order, action, message, additionalData);
                         return;
                     }
@@ -6377,39 +6485,6 @@
                 return subtotal + deliveryFee;
             }
 
-            async sendViaFirestoreMailCollection(order, action, message, additionalData = {}, emailHtml = null) {
-                try {
-                    // Use same Firestore mail collection format as index.html
-                    await addDoc(collection(db, "mail"), {
-                        to: order.userEmail,
-                        message: {
-                            subject: `Order ${order.id} Update - ${action.charAt(0).toUpperCase() + action.slice(1)} | Prince Alex Store`,
-                            html: emailHtml || this.createOrderActionEmailTemplate(order, action, message, additionalData)
-                        },
-                        emailType: 'order_action',
-                        customerEmail: order.userEmail,
-                        customerName: order.customer ? order.customer.fullName : 'Valued Customer',
-                        adminEmail: 'noreply@princealex.pro',
-                        createdAt: new Date().toISOString(),
-                        status: 'pending',
-                        priority: 'high',
-                        orderData: {
-                            orderId: order.id,
-                            action: action,
-                            message: message,
-                            additionalData: additionalData
-                        }
-                    });
-                    
-                    console.log('Email queued in Firestore mail collection');
-                    showModal('Email Queued', `Email notification has been queued for sending to ${order.userEmail}. Check the mail collection for processing.`);
-                    
-                } catch (error) {
-                    console.error('Error queuing email in Firestore:', error);
-                    showModal('Email Collection Failed', 'Failed to queue email notification. Please send manually.');
-                }
-            }
-
             async collectEmailForManualSending(order, action, message, additionalData = {}) {
                 try {
                     // Store email data in Firestore for manual processing (same format as index.html)
@@ -6428,7 +6503,7 @@
                         status: 'pending',
                         priority: 'high',
                         orderData: {
-                            orderId: order.id,
+                            orderId: order.id || order.orderId || null,
                             action: action,
                             message: message,
                             additionalData: additionalData
@@ -6436,7 +6511,6 @@
                     };
 
                     await addDoc(emailCollection, emailData);
-                    console.log('Email data collected for manual sending:', emailData);
                     
                     // Show notification to admin
                     showModal('Email Queued', `Email notification has been queued for manual sending to ${order.userEmail || 'customer'}. Check the mail collection.`);
@@ -6457,6 +6531,48 @@
             await emailService.sendOrderActionEmail(order, action, message, additionalData);
         }
 
+        window.cancelOrderById = async function(orderId) {
+            try {
+                // ✅ FIX: Fetch the order directly from Firestore to ensure data is current.
+                // This avoids relying on the potentially stale 'allOrders' array.
+                const orderRef = doc(db, "orders", orderId);
+                const orderSnap = await getDoc(orderRef);
+
+                if (!orderSnap.exists()) {
+                    showModal('Error', 'Order not found.', true);
+                    return;
+                } 
+
+                const order = { id: orderSnap.id, ...orderSnap.data() };
+                
+                // Confirm cancellation
+                const confirmed = confirm(`Are you sure you want to cancel order ${orderId}? This action cannot be undone.`);
+                if (!confirmed) return;
+                
+                // Update order status to cancelled
+                await updateDoc(orderRef, {
+                    status: 'Cancelled',
+                    cancelledAt: new Date().toISOString(),
+                    cancelledBy: 'admin'
+                });
+                
+                // Update the local order object with the new status
+                order.status = 'Cancelled';
+                
+                // Refresh orders list
+                loadOrders(); // Refresh the main list in the background
+                document.getElementById('editOrderResult').innerHTML = '<p>Order has been cancelled. Search again to see updated status.</p>';
+                
+                // Send email notification with updated order data
+                await emailService.sendOrderActionEmail(order, 'cancelled', 'Your order has been cancelled. If you have any questions, please contact our support team.');
+                
+                showModal('Success', `Order ${orderId} has been cancelled successfully and customer has been notified.`);
+                
+            } catch (error) {
+                console.error('Error cancelling order:', error);
+                showModal('Error', `Failed to cancel order: ${error.message}`, true);
+            }
+        };
         // --- Order Details View Functions ---
         window.viewOrderDetails = async function(orderId) {
             try {
@@ -6583,7 +6699,11 @@
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Total Amount</span>
-                                <span class="detail-value" style="font-weight: 700; color: var(--primary-color);">KES ${order.total ? order.total.toFixed(2) : '0.00'}</span>
+                                <span class="detail-value" style="font-weight: 700; color: var(--primary-color);">
+                                    KES ${order.total ? order.total.toFixed(2) : 
+                                        (Array.isArray(order.items) ? order.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0).toFixed(2) : '0.00')
+                                    }
+                                </span>
                             </div>
                         </div>
                         </div>
@@ -6797,26 +6917,36 @@
 
         // --- Order Editing Functions ---
         let currentEditingOrder = null;
-        let originalOrderData = null;
-
+        let originalOrderData = null; // Declare globally
         window.toggleOrderEditMode = function() {
-            if (!currentOrderId) {
-                showModal('Error', 'No order selected for editing.', true);
+            let orderToEdit;
+
+            // ✅ THE FIX: Check if an order is already loaded into the editing state.
+            // This happens when coming from the "Edit Orders" page.
+            if (currentEditingOrder && currentEditingOrder.id) {
+                orderToEdit = currentEditingOrder;
+            } 
+            // Otherwise, use the flow from the "Manage Orders" page.
+            else {
+                if (!currentOrderId) {
+                    showAlert('Error', 'No order selected for editing.', true);
+                    return;
+                }
+                orderToEdit = allOrders.find(o => o.id === currentOrderId);
+            }
+
+            if (!orderToEdit) {
+                showAlert('Error', 'Order data could not be found to open the editor.', true);
                 return;
             }
 
-            const order = allOrders.find(o => o.id === currentOrderId);
-            if (!order) {
-                showModal('Error', 'Order not found.', true);
-                return;
-            }
-
-            // Store original order data for comparison
-        originalOrderData = JSON.parse(JSON.stringify(order)); // Deep copy
-        currentEditingOrder = JSON.parse(JSON.stringify(order)); // Deep copy for current editing
+        // Store original order data for comparison. This is the crucial fix.
+        // It ensures the snapshot is taken when opening the modal from the "Manage Orders" page.
+        window.originalOrderSnapshot = JSON.parse(JSON.stringify(orderToEdit)); // Deep copy for comparison
+        currentEditingOrder = JSON.parse(JSON.stringify(orderToEdit)); // Deep copy for current editing
 
             // Populate the edit modal
-            populateOrderEditModal(order);
+            populateOrderEditModal(currentEditingOrder);
             document.getElementById('order-edit-modal').style.display = 'flex';
         }
 
@@ -6998,22 +7128,36 @@
                 });
 
                 // Populate products list
-                populateProductsList(availableProducts);
+                window.populateProductsList(availableProducts);
                 
                 // Show modal
                 document.getElementById('add-item-modal').style.display = 'flex'; // Show modal
                 document.getElementById('product-search').value = ''; // Clear search input
-            } catch (error) {
+            } catch (error) { // This is the existing openAddItemModal
                 console.error('Error loading products:', error);
                 showModal('Error', 'Failed to load products.', true);
             }
         }
 
-        function populateProductsList(products) {
-            const productsList = document.getElementById('products-list');
-            
+        window.searchProducts = function() {
+            const searchTerm = document.getElementById('product-search').value.toLowerCase();
+            const filteredProducts = availableProducts.filter(product =>
+                (product.category && product.category.toLowerCase().includes(searchTerm))
+            );
+            window.populateProductsList(filteredProducts);
+        }
+
+        // Moved from the second module script to be in the same scope as the functions that call it.
+        window.populateProductsList = function(products) {
+            const productsList = document.getElementById('add-item-products-list'); // Corrected ID
+
+            if (!productsList) {
+                console.warn('add-item-products-list element not found for populating.');
+                return;
+            }
+
             if (products.length === 0) {
-                productsList.innerHTML = '<p style="text-align: center; color: #666;">No products available.</p>';
+                productsList.innerHTML = '<p style="text-align: center; color: #666;">No products found.</p>';
                 return;
             }
 
@@ -7024,24 +7168,129 @@
                         <div class="product-name">${product.name}</div>
                         <div class="product-price">KES ${product.price ? product.price.toFixed(2) : '0.00'} ${product.unit || 'per item'}</div>
                     </div>
-                    <button class="add-to-order-btn" onclick="addProductToOrder('${product.id}')">
-                        <i class="fas fa-plus"></i> Add
-                    </button>
+                    <button class="add-to-order-btn" onclick="addProductToOrder('${product.id}')"><i class="fas fa-plus"></i> Add</button>
                 </div>
             `).join('');
         }
 
-        window.searchProducts = function() {
-            const searchTerm = document.getElementById('product-search').value.toLowerCase();
-            const filteredProducts = availableProducts.filter(product => 
-                product.name.toLowerCase().includes(searchTerm) ||
-                (product.category && product.category.toLowerCase().includes(searchTerm))
-            );
-            populateProductsList(filteredProducts);
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                const context = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
         }
 
+        // Debounced version of the search function for a smoother experience on input
+        window.debouncedSearch = debounce(searchProducts, 300);
+
+        // --- Get Order Modification Differences Function ---
+        // This function compares two order objects and returns a list of changes for history.
+        window.getModificationDifferences = function(originalOrder, modifiedOrder) {
+            const changes = [];
+            if (!originalOrder || !modifiedOrder) return ['Order data is missing for comparison.'];
+
+            // 1. Compare Status
+            if (originalOrder.status !== modifiedOrder.status) {
+                changes.push(`Status changed from "${originalOrder.status}" to "${modifiedOrder.status}".`);
+            } // Compare deliveryDate (if present and changed)
+            const originalDeliveryDate = originalOrder.deliveryDate || originalOrder.deliveryInfo?.estimatedDelivery;
+            const modifiedDeliveryDate = modifiedOrder.deliveryDate || modifiedOrder.deliveryInfo?.estimatedDelivery;
+            if (originalDeliveryDate !== modifiedDeliveryDate) {
+                changes.push(`Delivery date changed from "${originalDeliveryDate || 'N/A'}" to "${modifiedDeliveryDate || 'N/A'}".`);
+            } // Compare adminNotes (if present and changed)
+            if (originalOrder.adminNotes !== modifiedOrder.adminNotes) {
+                changes.push(`Admin notes updated.`);
+            }
+
+            // Compare items more thoroughly (count, individual item changes)
+            if (originalOrder.items.length !== modifiedOrder.items.length) {
+                changes.push(`Item count changed from ${originalOrder.items.length} to ${modifiedOrder.items.length}.`);
+            } else {
+                // Check for changes in individual items (quantity or price)
+                originalOrder.items.forEach((originalItem, index) => {
+                    const modifiedItem = modifiedOrder.items[index];
+                    if (!modifiedItem || originalItem.id !== modifiedItem.id || originalItem.quantity !== modifiedItem.quantity || originalItem.price !== modifiedItem.price) {
+                        changes.push(`Item list modified.`);
+                    }
+                });
+            }
+            if (originalOrder.total !== modifiedOrder.total) {
+                changes.push(`Total amount changed from KES ${originalOrder.total.toFixed(2)} to KES ${modifiedOrder.total.toFixed(2)}.`);
+            }
+
+            return changes.length > 0 ? changes : ['No significant changes detected.'];
+        };
+
+        // --- Get Current Order Editable Fields from UI/State ---
+        // This function reads the current values of editable fields from the UI or current editing state.
+        // It's used to construct the payload for saving the order.
+        window.getOrderChanges = function() {
+            
+            // Assuming currentEditingOrder holds the latest state of status and deliveryDate
+            // as there are no direct UI inputs for them in the order-edit-modal itself.
+            const orderStatus = currentEditingOrder?.status || 'Pending';
+            const deliveryDate = currentEditingOrder?.deliveryInfo?.estimatedDelivery || null; 
+            
+            return {
+                status: orderStatus,
+                deliveryDate: deliveryDate,
+                adminNotes: modificationNotes
+            };
+        };
+
+        // --- Get Order Modification Differences Function ---
+        // This function compares two order objects and returns a list of changes for history.
+        window.getModificationDifferences = function(originalOrder, modifiedOrder) {
+            const changes = [];
+            if (!originalOrder || !modifiedOrder) return ['Order data is missing for comparison.'];
+
+            // 1. Compare Status
+            if (originalOrder.status !== modifiedOrder.status) {
+                changes.push(`Status changed from "${originalOrder.status}" to "${modifiedOrder.status}".`);
+            }
+
+            // 2. Compare items
+            const originalItemsMap = new Map(originalOrder.items.map(item => [item.productId || item.id, item]));
+            const modifiedItemsMap = new Map(modifiedOrder.items.map(item => [item.productId || item.id, item]));
+
+            // Check for removed/quantity-changed items
+            originalItemsMap.forEach((origItem, id) => {
+                if (!modifiedItemsMap.has(id)) {
+                    changes.push(`Removed item: ${origItem.name}.`);
+                } else {
+                    const modItem = modifiedItemsMap.get(id);
+                    if (origItem.quantity !== modItem.quantity) {
+                        changes.push(`Quantity of ${origItem.name} changed from ${origItem.quantity} to ${modItem.quantity}.`);
+                    }
+                }
+            });
+
+            // Check for added items
+            modifiedItemsMap.forEach((modItem, id) => {
+                if (!originalItemsMap.has(id)) {
+                    changes.push(`Added item: ${modItem.name} (Qty: ${modItem.quantity}).`);
+                }
+            });
+
+            // 3. Compare Total
+            if (originalOrder.total.toFixed(2) !== modifiedOrder.total.toFixed(2)) {
+                changes.push(`Total amount changed from KES ${originalOrder.total.toFixed(2)} to KES ${modifiedOrder.total.toFixed(2)}.`);
+            }
+
+            return changes;
+        };
+
+        // Expose addItemToOrder to the global scope for onclick events
         window.addProductToOrder = async function(productId) {
             const product = availableProducts.find(p => p.id === productId);
+            if (!currentEditingOrder) {
+                console.error("addProductToOrder called but no order is being edited.");
+                showModal('Error', 'No active order to add items to. Please open an order to edit first.', true);
+                closeAddItemModal();
+                return;
+            }
             if (!product) return;
 
             // Check if product already exists in order
@@ -7053,11 +7302,10 @@
             } else {
                 // Add new item to order
                 const newItem = {
-                    id: productId,
+                    productId: productId,
                     name: product.name,
                     price: product.price || 0,
                     quantity: 1,
-                    unit: product.unit || 'per item',
                     image: product.image || '/images/placeholder.jpg'
                 };
                 currentEditingOrder.items.push(newItem);
@@ -7088,147 +7336,82 @@
             showModal('Success', `${product.name} has been added to the order and customer has been notified.`);
         }
 
+        // ✅ STEP 8: SAVE EDITED ORDER (ADAPTED FOR FIREBASE)
+        window.saveOrderChanges = async function () {
+            if (!currentEditingOrder || !currentEditingOrder.id) {
+                showModal('Error', 'No order selected to save.', true);
+                return;
+            }
+
+            // 1️⃣ Validate items
+            if (!Array.isArray(currentEditingOrder.items) || currentEditingOrder.items.length === 0) {
+                showModal('Error', 'An order must have at least one product.', true);
+                return;
+            }
+
+            // 2️⃣ Recalculate totals (never trust UI)
+            const totals = calculateOrderTotals(currentEditingOrder);
+
+            currentEditingOrder.subtotal = totals.subtotal;
+            currentEditingOrder.transportationFee = totals.deliveryFee;
+            currentEditingOrder.total = totals.total;
+
+            // 3️⃣ Detect changes for history
+            const changes = getModificationDifferences( // This now correctly accesses the global snapshot
+                originalOrderSnapshot,
+                currentEditingOrder
+            );
+
+            if (changes.length === 0) {
+                showModal('Info', 'No changes were made.');
+                return;
+            }
+
+            // 4️⃣ Build update payload
+            const auth = getAuth(window.firebaseApp);
+            const updatePayload = {
+                items: currentEditingOrder.items,
+                subtotal: currentEditingOrder.subtotal,
+                transportationFee: currentEditingOrder.transportationFee,
+                total: currentEditingOrder.total,
+                status: currentEditingOrder.status || originalOrderSnapshot.status,
+                updatedAt: new Date().toISOString(),
+
+                modificationHistory: [
+                    ...(originalOrderSnapshot.modificationHistory || []),
+                    {
+                        modifiedAt: new Date().toISOString(),
+                        modifiedBy: auth.currentUser?.email || 'Admin',
+                        changes
+                    }
+                ]
+            };
+
+            // 3. Final corrected save block (bulletproof)
+            try {
+                // 5️⃣ Save to Firestore (same document)
+                const orderRef = doc(db, 'orders', currentEditingOrder.id);
+                await updateDoc(orderRef, updatePayload);
+
+                console.log('Order saved:', updatePayload);
+                // 6️⃣ Sync snapshots
+                window.originalOrderSnapshot = JSON.parse(JSON.stringify(currentEditingOrder));
+
+                showAlert('Success', 'Order updated successfully.');
+                setTimeout(() => {
+                    closeOrderEditModal();
+                    loadOrders(); // Refresh the main orders list
+                }, 600);
+
+            } catch (error) {
+                console.error('Save order failed:', error);
+                showAlert('Error', 'Failed to save order changes. See console for details.', true);
+            }
+        };
+
         window.closeAddItemModal = function() {
             document.getElementById('add-item-modal').style.display = 'none';
             document.getElementById('product-search').value = '';
-        }
-
-        window.saveOrderChanges = async function() {
-            if (!currentEditingOrder || !currentOrderId) {
-                showModal('Error', 'No order changes to save.', true);
-                return;
-            }
-
-            // Check if order has items
-            if (!currentEditingOrder.items || currentEditingOrder.items.length === 0) {
-                const confirmCancel = confirm('This order has no items left. Do you want to cancel this order?');
-                if (confirmCancel) {
-                    await cancelOrder();
-                }
-                return;
-            }
-
-            try {
-                // Show loading state
-                const saveBtn = document.querySelector('.save-btn');
-                const originalText = saveBtn.textContent;
-                saveBtn.disabled = true;
-                saveBtn.textContent = 'Saving...';
-
-                // Prepare order update data
-                const orderUpdateData = {
-                    items: currentEditingOrder.items,
-                    subtotal: currentEditingOrder.subtotal,
-                    total: currentEditingOrder.total,
-                    totalAmount: currentEditingOrder.totalAmount, // Ensure totalAmount is updated
-                    transportationFee: currentEditingOrder.transportationFee,
-                    deliveryFee: currentEditingOrder.deliveryFee, // Keep both for compatibility
-                    lastModified: new Date(),
-                    modificationNotes: document.getElementById('modification-notes').value.trim()
-                };
-
-                // Add modification history
-                if (!currentEditingOrder.modificationHistory) {
-                    currentEditingOrder.modificationHistory = [];
-                }
-                
-                currentEditingOrder.modificationHistory.push({
-                    timestamp: new Date(),
-                    adminUser: firebaseUser ? firebaseUser.email : 'Unknown Admin',
-                    changes: getOrderChanges(originalOrderData, currentEditingOrder),
-                    notes: orderUpdateData.modificationNotes
-                });
-
-                orderUpdateData.modificationHistory = currentEditingOrder.modificationHistory;
-
-                // Update order in Firestore
-                const orderRef = doc(db, 'orders', currentOrderId);
-                await updateDoc(orderRef, orderUpdateData);
-
-                // Send notification email to customer
-                await emailService.sendOrderActionEmail(
-                    currentEditingOrder, 
-                    'order_modified', 
-                    'Your order has been successfully updated. Please review the changes below.',
-                    {
-                        notes: orderUpdateData.modificationNotes,
-                        changes: getOrderChanges(originalOrderData, currentEditingOrder),
-                        modificationHistory: currentEditingOrder.modificationHistory
-                    }
-                );
-
-                // Update local data
-                const orderIndex = allOrders.findIndex(o => o.id === currentOrderId);
-                if (orderIndex !== -1) {
-                    allOrders[orderIndex] = { ...allOrders[orderIndex], ...orderUpdateData };
-                }
-
-                // Refresh orders list
-                await loadOrders();
-
-                // Close modal and show success message
-                closeOrderEditModal();
-                showModal('Success', 'Order has been successfully updated and the customer has been notified.');
-
-            } catch (error) {
-                console.error('Error saving order changes:', error);
-                showModal('Error', `Failed to save order changes: ${error.message}`, true);
-            } finally {
-                // Restore button state
-                const saveBtn = document.querySelector('.save-btn');
-                if (saveBtn) {
-                    saveBtn.disabled = false;
-                    saveBtn.textContent = 'Save Changes';
-                }
-            }
-        }
-
-        function getOrderChanges(original, modified) {
-            const changes = [];
-            
-            // Compare items
-            const originalItems = original.items || [];
-            const modifiedItems = modified.items || [];
-            
-            // Find added items
-            modifiedItems.forEach(modifiedItem => {
-                const originalItem = originalItems.find(item => item.id === modifiedItem.id);
-                if (!originalItem) {
-                    changes.push(`Added ${modifiedItem.quantity} x ${modifiedItem.name} (KES ${modifiedItem.price.toFixed(2)} each)`);
-                } else if (originalItem.quantity !== modifiedItem.quantity) {
-                    const quantityChange = modifiedItem.quantity - originalItem.quantity;
-                    if (quantityChange > 0) {
-                        changes.push(`Increased quantity of ${modifiedItem.name} by ${quantityChange} (now ${modifiedItem.quantity})`);
-                    } else {
-                        changes.push(`Decreased quantity of ${modifiedItem.name} by ${Math.abs(quantityChange)} (now ${modifiedItem.quantity})`);
-                    }
-                }
-            });
-            
-            // Find removed items
-            originalItems.forEach(originalItem => {
-                const modifiedItem = modifiedItems.find(item => item.id === originalItem.id);
-                if (!modifiedItem) {
-                    changes.push(`Removed ${originalItem.quantity} x ${originalItem.name}`);
-                }
-            });
-            
-            // Compare totals
-            if (original.subtotal !== modified.subtotal) {
-                const subtotalChange = modified.subtotal - original.subtotal;
-                changes.push(`Subtotal changed from KES ${original.subtotal.toFixed(2)} to KES ${modified.subtotal.toFixed(2)} (${subtotalChange > 0 ? '+' : ''}KES ${subtotalChange.toFixed(2)})`);
-            }
-            
-            if (original.total !== modified.total) {
-                const totalChange = modified.total - original.total;
-                changes.push(`Total amount changed from KES ${original.total.toFixed(2)} to KES ${modified.total.toFixed(2)} (${totalChange > 0 ? '+' : ''}KES ${totalChange.toFixed(2)})`);
-            }
-            
-            if (changes.length === 0) {
-                changes.push('Order details were updated');
-            }
-            
-            return changes;
         }
 
         async function sendOrderModificationNotification(modifiedOrder, originalOrder) {
@@ -7338,7 +7521,7 @@
                 await updateDoc(orderRef, {
                     status: 'Cancelled',
                     cancelledAt: new Date(),
-                    cancellationReason: 'All items removed by admin',
+                    cancellationReason: uiEditableFields.adminNotes || 'All items removed by admin.',
                     lastModified: new Date()
                 });
 
@@ -7537,17 +7720,13 @@
 
         // Search for customer by email
         window.searchCustomer = async function() {
-            console.log('searchCustomer called');
             const email = document.getElementById('customer-search-email').value.trim();
-            console.log('Searching for email:', email);
             
             if (!email) {
                 showModal('Error', 'Please enter a customer email address.', true);
                 return;
             }
 
-            try {
-                console.log('Querying customers collection...');
                 const customersCol = collection(db, "customers");
                 const q = query(customersCol, where("email", "==", email));
                 const querySnapshot = await getDocs(q);
@@ -7562,15 +7741,10 @@
 
                 const customerDoc = querySnapshot.docs[0];
                 currentCustomer = { id: customerDoc.id, ...customerDoc.data() };
-                console.log('Customer found:', currentCustomer);
                 
                 displayCustomerProfile(currentCustomer);
                 showCustomerSections();
                 
-            } catch (error) {
-                console.error("Error searching customer:", error);
-                showModal('Error', `Failed to search customer: ${error.message}`, true);
-            }
         };
 
         // Display customer profile
@@ -7626,20 +7800,15 @@
 
         // Show customer sections
         function showCustomerSections() {
-            console.log('showCustomerSections called');
             const detailsSection = document.getElementById('customer-details-section');
             const actionsSection = document.getElementById('customer-actions-section');
             
             if (detailsSection) {
                 detailsSection.style.display = 'block';
-                console.log('Customer details section shown');
-            } else {
-                console.error('Customer details section not found');
             }
             
             if (actionsSection) {
                 actionsSection.style.display = 'block';
-                console.log('Customer actions section shown');
             } else {
                 console.error('Customer actions section not found');
             }
@@ -7730,13 +7899,10 @@
 
         // Customer Actions
         window.editCustomerProfile = function() {
-            console.log('editCustomerProfile called');
             if (!currentCustomer) {
-                console.log('No customer selected');
                 showModal('Error', 'No customer selected.', true);
                 return;
             }
-            console.log('Editing customer:', currentCustomer.fullname);
             
             const editFormHtml = `
                 <div style="text-align: left; max-width: 500px;">
@@ -7815,13 +7981,10 @@
 
         // Reset customer password
         window.resetCustomerPassword = async function() {
-            console.log('resetCustomerPassword called');
             if (!currentCustomer) {
-                console.log('No customer selected');
                 showModal('Error', 'No customer selected.', true);
                 return;
             }
-            console.log('Resetting password for:', currentCustomer.email);
 
             const confirmHtml = `
                 <div style="text-align: center;">
@@ -7847,7 +8010,6 @@
                 closeModal();
                 
                 // Log the action
-                console.log(`Password reset requested for customer: ${currentCustomer.email}`);
                 
             } catch (error) {
                 showModal('Error', `Failed to send password reset: ${error.message}`, true);
@@ -7857,13 +8019,10 @@
 
         // View customer orders
         window.viewCustomerOrders = async function() {
-            console.log('viewCustomerOrders called');
             if (!currentCustomer) {
-                console.log('No customer selected');
                 showModal('Error', 'No customer selected.', true);
                 return;
             }
-            console.log('Viewing orders for:', currentCustomer.fullname);
 
             try {
                 const ordersCol = collection(db, "orders");
@@ -7908,13 +8067,10 @@
 
         // View customer referrals
         window.viewCustomerReferrals = async function() {
-            console.log('viewCustomerReferrals called');
             if (!currentCustomer) {
-                console.log('No customer selected');
                 showModal('Error', 'No customer selected.', true);
                 return;
             }
-            console.log('Viewing referrals for:', currentCustomer.fullname);
 
             try {
                 const referralsCol = collection(db, "referrals");
@@ -7960,13 +8116,10 @@
 
         // Send customer message
         window.sendCustomerMessage = function() {
-            console.log('sendCustomerMessage called');
             if (!currentCustomer) {
-                console.log('No customer selected');
                 showModal('Error', 'No customer selected.', true);
                 return;
             }
-            console.log('Sending message to:', currentCustomer.fullname);
 
             const messageFormHtml = `
                 <div style="text-align: left; max-width: 500px;">
@@ -8043,13 +8196,10 @@
 
         // Toggle customer status
         window.toggleCustomerStatus = async function() {
-            console.log('toggleCustomerStatus called');
             if (!currentCustomer) {
-                console.log('No customer selected');
                 showModal('Error', 'No customer selected.', true);
                 return;
             }
-            console.log('Toggling status for:', currentCustomer.fullname, 'Current status:', currentCustomer.status);
 
             const newStatus = currentCustomer.status === 'active' ? 'inactive' : 'active';
             const action = newStatus === 'active' ? 'activate' : 'deactivate';
@@ -8445,50 +8595,12 @@
             console.log('Admin content forced to show');
         };
 
-        // Test login process (for debugging)
-        window.testLoginProcess = function() {
-            alert('Testing login process...');
-            console.log('Testing login process...');
-            
-            // Test modal
-            try {
-                showModal('Test', 'This is a test modal');
-            } catch (e) {
-                console.error('Modal test failed:', e);
-                alert('Modal test failed: ' + e.message);
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchBtn = document.getElementById('search-order-btn-legacy');
+            if (searchBtn) {
+                searchBtn.addEventListener('click', () => window.searchOrder());
             }
-            
-            // Test Firebase connection
-            console.log('Firebase App:', app);
-            console.log('Firebase Auth:', auth);
-            console.log('Current User:', firebaseUser);
-        };
-
-        // Debug function to test customer management system
-        window.debugCustomerManagement = function() {
-            console.log('=== Customer Management Debug Info ===');
-            console.log('Current Customer:', currentCustomer);
-            console.log('Customer Search Input:', document.getElementById('customer-search-email'));
-            console.log('Customer Details Section:', document.getElementById('customer-details-section'));
-            console.log('Customer Actions Section:', document.getElementById('customer-actions-section'));
-            console.log('Customer Profile Display:', document.getElementById('customer-profile-display'));
-            console.log('All Customers List:', document.getElementById('all-customers-list'));
-            
-            // Test if all customer action functions exist
-            const functions = [
-                'searchCustomer', 'editCustomerProfile', 'resetCustomerPassword',
-                'viewCustomerOrders', 'viewCustomerReferrals', 'sendCustomerMessage',
-                'toggleCustomerStatus', 'quickViewCustomer', 'selectCustomer'
-            ];
-            
-            functions.forEach(funcName => {
-                const func = window[funcName];
-                console.log(`${funcName}:`, typeof func === 'function' ? '✅ Defined' : '❌ Missing');
-            });
-            
-            console.log('==============================');
-        };
-
+        });
         // --- Voucher Management Functions ---
         let allVouchers = [];
         let filteredVouchers = [];
@@ -8498,7 +8610,6 @@
             try {
                 console.log('Loading vouchers...');
                 const vouchersRef = collection(db, 'vouchers');
-                const querySnapshot = await getDocs(vouchersRef);
                 
                 allVouchers = [];
                 querySnapshot.forEach((doc) => {
@@ -8509,7 +8620,6 @@
                 // Sort by creation date (newest first)
                 allVouchers.sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date));
                 
-                console.log(`Loaded ${allVouchers.length} vouchers`);
                 updateVoucherStats();
                 filterVouchers();
                 
@@ -8638,21 +8748,15 @@
 
         // Open create voucher modal
         function openCreateVoucherModal() {
-            console.log('Opening voucher modal...');
             const modal = document.getElementById('create-voucher-modal');
-            console.log('Modal element:', modal);
             
             if (!modal) {
                 console.error('Modal element not found!');
                 showModal('Error', 'Voucher modal not found. Please refresh the page.', true);
                 return;
             }
-            
-            console.log('Modal current display:', modal.style.display);
             modal.style.display = 'flex';
             document.body.style.overflow = 'hidden';
-            console.log('Modal display set to:', modal.style.display);
-            console.log('Modal should now be visible');
             
             // Debug: Check if form fields are visible
             setTimeout(() => {
@@ -8703,8 +8807,6 @@
 
         // Simple voucher creation function
         async function createVoucherSimple() {
-            console.log('=== SIMPLE VOUCHER CREATION STARTED ===');
-            
             try {
                 // Get form elements first
                 const voucherCodeEl = document.getElementById('voucher-code');
@@ -8716,11 +8818,6 @@
                 const expiryDateEl = document.getElementById('voucher-expiry-date');
                 const isActiveEl = document.getElementById('voucher-is-active');
                 
-                console.log('Form elements found:', {
-                    voucherCodeEl, descriptionEl, discountTypeEl, discountAmountEl,
-                    minOrderEl, usageLimitEl, expiryDateEl, isActiveEl
-                });
-                
                 // Get form values
                 const voucherCode = voucherCodeEl ? voucherCodeEl.value.trim().toUpperCase() : '';
                 const description = descriptionEl ? descriptionEl.value.trim() : '';
@@ -8730,13 +8827,6 @@
                 const usageLimit = usageLimitEl && usageLimitEl.value ? parseInt(usageLimitEl.value) : null;
                 const expiryDate = expiryDateEl ? expiryDateEl.value : '';
                 const isActive = isActiveEl ? isActiveEl.checked : true;
-                
-                console.log('Form data collected:', {
-                    voucherCode, description, discountType, discountAmount,
-                    minOrderAmount, usageLimit, expiryDate, isActive
-                });
-                
-                console.log('Raw voucher code value:', voucherCodeEl ? voucherCodeEl.value : 'Element not found');
                 
                 // Basic validation
                 if (!voucherCode) {
@@ -8787,8 +8877,6 @@
                     createdBy: firebaseUser ? firebaseUser.uid : 'admin'
                 };
                 
-                console.log('Saving voucher to Firestore:', voucherData);
-                
                 // Disable button to prevent double submission
                 const createBtn = document.getElementById('create-voucher-btn');
                 createBtn.disabled = true;
@@ -8797,8 +8885,6 @@
                 // Save to Firestore
                 const voucherRef = doc(db, 'vouchers', voucherCode);
                 await setDoc(voucherRef, voucherData);
-                
-                console.log('Voucher created successfully:', voucherData);
                 
                 // Refresh vouchers list
                 await loadVouchers();
@@ -8872,28 +8958,6 @@
             showModal('Delete Voucher', confirmHtml);
         }
 
-        // Confirm delete voucher
-        window.confirmDeleteVoucher = async function(voucherId) {
-            try {
-                const voucherRef = doc(db, 'vouchers', voucherId);
-                await deleteDoc(voucherRef);
-                
-                // Update local data
-                allVouchers = allVouchers.filter(v => v.id !== voucherId);
-                
-                // Refresh display
-                updateVoucherStats();
-                filterVouchers();
-                
-                closeModal();
-                showModal('Success', 'Voucher deleted successfully!');
-                
-            } catch (error) {
-                console.error('Error deleting voucher:', error);
-                showModal('Error', `Failed to delete voucher: ${error.message}`, true);
-            }
-        };
-
         // Refresh vouchers
         function refreshVouchers() {
             loadVouchers();
@@ -8902,67 +8966,6 @@
         // Edit voucher (placeholder for future implementation)
         function editVoucher(voucherId) {
             showModal('Edit Voucher', 'Voucher editing functionality will be implemented in a future update.', true);
-        }
-
-        // Debug function for voucher creation
-        window.debugVoucherCreation = function() {
-            console.log('=== Voucher Creation Debug Info ===');
-            console.log('Firebase User:', firebaseUser);
-            console.log('Firebase DB:', db);
-            console.log('All Vouchers:', allVouchers);
-            console.log('Voucher Functions Available:');
-            console.log('- openCreateVoucherModal:', typeof openCreateVoucherModal);
-            console.log('- createVoucher:', typeof createVoucher);
-            console.log('- loadVouchers:', typeof loadVouchers);
-            console.log('- showModal:', typeof showModal);
-            console.log('Voucher Form Elements:');
-            console.log('- voucher-code:', document.getElementById('voucher-code'));
-            console.log('- voucher-description:', document.getElementById('voucher-description'));
-            console.log('- voucher-discount-type:', document.getElementById('voucher-discount-type'));
-            console.log('- voucher-discount-amount:', document.getElementById('voucher-discount-amount'));
-            console.log('- create-voucher-form:', document.getElementById('create-voucher-form'));
-            console.log('Voucher Button Elements:');
-            const createBtn = document.querySelector('.voucher-actions .create-btn');
-            console.log('- Create Voucher Button:', createBtn);
-            console.log('- Button onclick:', createBtn ? createBtn.onclick : 'No onclick');
-            console.log('- Button style:', createBtn ? createBtn.style.cssText : 'No style');
-            console.log('- Button computed style:', createBtn ? window.getComputedStyle(createBtn) : 'No computed style');
-            console.log('=====================================');
-        };
-
-        // Test function to manually trigger voucher modal
-        window.testVoucherModal = function() {
-            console.log('Testing voucher modal...');
-            alert('Testing voucher modal - check console for details');
-            try {
-                openCreateVoucherModal();
-                console.log('Modal opened successfully');
-            } catch (error) {
-                console.error('Error opening modal:', error);
-                alert('Error opening modal: ' + error.message);
-            }
-        };
-
-        // Test function to check form fields
-        window.testFormFields = function() {
-            console.log('=== TESTING FORM FIELDS ===');
-            const fields = [
-                'voucher-code', 'voucher-description', 'voucher-discount-type',
-                'voucher-discount-amount', 'voucher-min-order', 'voucher-usage-limit',
-                'voucher-expiry-date', 'voucher-is-active'
-            ];
-            
-            fields.forEach(fieldId => {
-                const element = document.getElementById(fieldId);
-                console.log(`${fieldId}:`, element ? element.value || element.checked : 'NOT FOUND');
-            });
-            
-            // Test setting a value
-            const codeField = document.getElementById('voucher-code');
-            if (codeField) {
-                codeField.value = 'TEST123';
-                console.log('Set voucher-code to TEST123, current value:', codeField.value);
-            }
         };
 
         /* ----------------- Order Management (Admin) ----------------- */
@@ -9099,7 +9102,7 @@
                 `;
 
                 const emailsCol = collection(db, 'mail');
-                const querySnapshot = await getDocs(query(emailsCol, where('emailType', 'in', ['order_action', 'order_action_manual']), orderBy('createdAt', 'desc')));
+                const querySnapshot = await getDocs(query(emailsCol, where('emailType', 'in', ['order_action', 'order_action_manual'])));
 
                 if (querySnapshot.empty) {
                     emailsList.innerHTML = `
@@ -9113,8 +9116,16 @@
                 }
 
                 emailsList.innerHTML = '';
+                
+                // Convert to array and sort client-side to avoid composite index requirement
+                const emails = [];
                 querySnapshot.forEach(doc => {
-                    const emailData = { id: doc.id, ...doc.data() };
+                    emails.push({ id: doc.id, ...doc.data() });
+                });
+                
+                emails.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+                emails.forEach(emailData => {
                     const emailItem = createEmailItem(emailData);
                     emailsList.appendChild(emailItem);
                 });
@@ -9186,8 +9197,28 @@
                 if (emailData.message && emailData.message.html) {
                     // Use Brevo API if available, otherwise queue in mail collection
                     const emailService = new EmailService();
+                    
+                    // Fetch full order data to ensure template generation works
+                    let orderData = emailData.orderData || {};
+                    if (orderData.orderId) {
+                        try {
+                            const orderDocRef = doc(db, 'orders', orderData.orderId);
+                            const orderDocSnap = await getDoc(orderDocRef);
+                            if (orderDocSnap.exists()) {
+                                orderData = { ...orderData, ...orderDocSnap.data(), id: orderDocSnap.id };
+                            }
+                        } catch (err) {
+                            console.warn('Error fetching fresh order data for email:', err);
+                        }
+                    }
+                    
+                    // Ensure userEmail is set for the email service
+                    if (!orderData.userEmail && emailData.customerEmail) {
+                        orderData.userEmail = emailData.customerEmail;
+                    }
+
                     await emailService.sendOrderActionEmail(
-                        emailData.orderData || {},
+                        orderData,
                         emailData.orderData?.action || 'order_update',
                         emailData.orderData?.message || 'Order update notification',
                         emailData.orderData?.additionalData || {}
@@ -9253,8 +9284,27 @@
                         // Try to send the email using the same format as index.html
                         if (emailData.message && emailData.message.html) {
                             const emailService = new EmailService();
+                            
+                            // Fetch full order data
+                            let orderData = emailData.orderData || {};
+                            if (orderData.orderId) {
+                                try {
+                                    const orderDocRef = doc(db, 'orders', orderData.orderId);
+                                    const orderDocSnap = await getDoc(orderDocRef);
+                                    if (orderDocSnap.exists()) {
+                                        orderData = { ...orderData, ...orderDocSnap.data(), id: orderDocSnap.id };
+                                    }
+                                } catch (err) {
+                                    console.warn('Error fetching fresh order data for email:', err);
+                                }
+                            }
+
+                            if (!orderData.userEmail && emailData.customerEmail) {
+                                orderData.userEmail = emailData.customerEmail;
+                            }
+
                             await emailService.sendOrderActionEmail(
-                                emailData.orderData || {},
+                                orderData,
                                 emailData.orderData?.action || 'order_update',
                                 emailData.orderData?.message || 'Order update notification',
                                 emailData.orderData?.additionalData || {}
@@ -9344,19 +9394,16 @@
         window.editVoucher = editVoucher;
         window.toggleVoucherStatus = toggleVoucherStatus;
         window.deleteVoucher = deleteVoucher;
-        window.debugVoucherCreation = debugVoucherCreation;
-        window.testVoucherModal = testVoucherModal;
-        window.testFormFields = testFormFields;
+        window.sendPendingEmail = sendPendingEmail;
+        window.deletePendingEmail = deletePendingEmail;
 
         // Initial load of UI when the DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM Content Loaded - Admin page initialized');
             updateAdminUI(); // Set initial visibility based on auth state
             
             // Add click event listener to new voucher button
             const newVoucherBtn = document.getElementById('new-voucher-btn');
             if (newVoucherBtn) {
-                console.log('New voucher button found, adding click listener');
                 newVoucherBtn.addEventListener('click', function(e) {
                     console.log('New voucher button clicked!', e);
                     e.preventDefault();
@@ -9369,47 +9416,19 @@
             // Add click event listener to new create voucher button
             const createVoucherBtn = document.getElementById('create-voucher-btn');
             if (createVoucherBtn) {
-                console.log('Create voucher button found, adding click listener');
                 createVoucherBtn.addEventListener('click', function(e) {
                     console.log('Create voucher button clicked!', e);
                     e.preventDefault();
                     createVoucherSimple();
                 });
-            } else {
-                console.log('Create voucher button not found');
             }
-            
-            // Run debug info
-            setTimeout(() => {
-                window.debugAdminLogin();
-            }, 1000);
         });
 
 </script>
 
 <!-- Admin Firebase + Order management module -->
 <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
-    import { getFirestore, collection, query, where, getDocs, doc, getDoc, addDoc, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
-
-    // Reuse existing Firestore instance if page already initialized it
-    let adminDb = window.__appDB || null;
-
-    if (!adminDb) {
-        // Only initialize if Firestore wasn't already initialized earlier in this page
-        const firebaseConfigLocal = {
-            apiKey: "AIzaSyDGErPBeQ1Fdx9EHPXOHepoEoOx7P2f57o",
-            authDomain: "princealextravel.firebaseapp.com",
-            projectId: "princealextravel",
-            storageBucket: "princealextravel.firebasestorage.app",
-            messagingSenderId: "947577729462",
-            appId: "1:947577729462:web:dd4b4c7cb4a984c5e3d117"
-        };
-        const appLocal = initializeApp(firebaseConfigLocal);
-        adminDb = getFirestore(appLocal);
-        window.__appDB = adminDb;
-    }
-
+    import { getAuth } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
     // Utility: show a short admin message
     function adminMessage(text, isError=false) {
         const el = document.getElementById('admin-order-message');
@@ -9422,9 +9441,12 @@
     // Find order by orderId
     window.adminSearchOrder = async function adminSearchOrder() {
         const orderId = (document.getElementById('admin-order-id') || {}).value || '';
-        if (!orderId) { adminMessage('Please enter an Order ID to search.', true); return; }
-        try {
-            const ordersCol = collection(adminDb, 'orders');
+        if (!orderId) { 
+            adminMessage('Please enter an Order ID to search.', true); 
+            return; 
+        }
+        try { 
+            const ordersCol = collection(db, 'orders');
             const q = query(ordersCol, where('orderId', '==', orderId));
             const snap = await getDocs(q);
             if (snap.empty) {
@@ -9434,7 +9456,6 @@
             }
             const docSnap = snap.docs[0];
             const data = docSnap.data();
-            // populate fields
             document.getElementById('admin-order-customerName').value = data.customerName || '';
             document.getElementById('admin-order-customerEmail').value = data.customerEmail || '';
             document.getElementById('admin-order-customerPhone').value = data.customerPhone || '';
@@ -9442,7 +9463,6 @@
             document.getElementById('admin-order-status').value = data.status || '';
             document.getElementById('admin-order-deliveryAddress').value = data.deliveryAddress || '';
             document.getElementById('admin-order-items').value = JSON.stringify(data.items || [], null, 2);
-            // store doc id
             const panel = document.getElementById('admin-order-result');
             if (panel) panel.setAttribute('data-docid', docSnap.id);
             showAdminOrderResult(true);
@@ -9471,7 +9491,7 @@
             const itemsText = document.getElementById('admin-order-items').value || '[]';
             try { updated.items = JSON.parse(itemsText); } catch (e) { adminMessage('Items must be valid JSON array.', true); return; }
 
-            await updateDoc(doc(adminDb, 'orders', docId), updated);
+            await updateDoc(doc(db, 'orders', docId), updated);
 
             // Enqueue an email notifying customer of update
             try {
@@ -9487,7 +9507,6 @@
                     customerName: updated.customerName,
                     createdAt: new Date().toISOString(),
                     status: 'pending',
-                    priority: 'medium'
                 });
             } catch (mailErr) {
                 console.error('Failed to enqueue update email', mailErr);
@@ -9516,7 +9535,7 @@
                 </div>
             `;
             showModal('Confirm Cancellation', confirmHtml);
-        } catch (err) {
+        } catch (err) { // This was missing
             console.error('adminCancelOrder error', err);
             adminMessage('Failed to initiate order cancellation. See console.', true);
         }
@@ -9529,7 +9548,7 @@
         if (!docId) { adminMessage('No loaded order to cancel.', true); return; }
 
         try {
-            const orderRef = doc(adminDb, 'orders', docId);
+            const orderRef = doc(db, 'orders', docId);
             await updateDoc(orderRef, { status: 'Cancelled' });
 
             const orderSnap = await getDoc(orderRef);
@@ -9568,6 +9587,7 @@
                 total = parseFloat(txt) || 0;
             }
             const status = ((el('admin-order-status') && el('admin-order-status').value) || (el('create-order-status') && el('create-order-status').value) || 'pending');
+            const paymentMethod = (el('create-order-payment-method') && el('create-order-payment-method').value) || 'Admin-Manual';
             const deliveryAddress = (el('admin-order-deliveryAddress') && el('admin-order-deliveryAddress').value) || (el('create-order-deliveryAddress') && el('create-order-deliveryAddress').value) || '';
 
             // Items: prefer admin-order-items textarea (JSON), else build from simpleOrderItems (selected products)
@@ -9579,8 +9599,8 @@
                 // Map selected simpleOrderItems into full item objects using simpleOrderProducts lookup
                 const productsMap = (typeof simpleOrderProducts !== 'undefined' && Array.isArray(simpleOrderProducts)) ? simpleOrderProducts.reduce((m,p)=> (m[p.id]=p,m), {}) : {};
                 items = simpleOrderItems.filter(i=>i.quantity && i.quantity>0).map(i=>{
-                    const prod = productsMap[i.id] || {};
-                    return { id: i.id, name: prod.name || i.name || 'Item', quantity: i.quantity, price: prod.price || i.price || 0, unit: prod.unit || '' };
+                    const product = productsMap[i.id] || {};
+                    return { productId: i.id, name: product.name || 'Item', quantity: i.quantity, price: product.price || 0 };
                 });
             }
 
@@ -9588,7 +9608,7 @@
             const orderId = "PA-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
 
             // Calculate subtotal from items (prefer reliable calculation rather than trusting 'total' input)
-            const subtotal = typeof calculateSubtotal === 'function' ? calculateSubtotal(items) : (Array.isArray(items) ? items.reduce((s,it)=>s+((it.price||0)*(it.quantity||0)),0) : 0);
+            const subtotal = Array.isArray(items) ? items.reduce((s, it) => s + ((it.price || 0) * (it.quantity || 0)), 0) : 0;
 
             // Try to read a transportation/delivery fee from either admin or create inputs/spans, fallback to 0
             // Define a constant delivery fee for consistency, similar to the main site.
@@ -9599,29 +9619,41 @@
             const totalComputed = subtotal + (Number(transportationFee) || 0);
 
             // Prepare order data (kept intentionally simple compared to storefront but with the same keys)
+            // ✅ THE FIX: Align this data structure with the one from index.html
             const orderData = {
                 orderId: orderId,
+                userId: simpleOrderCustomer?.id || null, // Add customer's user ID
+                userDisplayName: customerName, // Add user display name
+                userEmail: customerEmail, // Add top-level user email
                 status: status.charAt(0).toUpperCase() + status.slice(1),
-                date: new Date().toISOString(),
                 createdAt: new Date().toISOString(),
-                subtotal: subtotal,
-                subtotal: Number(subtotal) || 0,
+                subtotal: Number(subtotal) || 0, // Corrected to a single subtotal field
                 transportationFee: Number(transportationFee) || 0,
                 total: totalComputed,
-                paymentMethod: 'Admin-Manual',
+                paymentMethod: paymentMethod,
                 customer: {
                     fullName: customerName,
                     email: customerEmail,
+                    idNumber: simpleOrderCustomer?.idNumber || '', // Add customer ID number
                     phoneNumber: customerPhone,
-                    deliveryAddress: deliveryAddress
+                    deliveryLocation: deliveryAddress // Use consistent field name
                 },
-                items: items,
+                items: items.map(item => ({ // Ensure items have a consistent structure
+                    ...item,
+                    image: (window.simpleOrderProducts || []).find(p => p.id === item.productId)?.image || '',
+                    unit: (window.simpleOrderProducts || []).find(p => p.id === item.productId)?.unit || 'per item'
+                })),
+                deliveryInfo: { // Add consistent deliveryInfo object
+                    estimatedDelivery: '30 minutes',
+                    deliveryStatus: 'Pending',
+                    deliveryNotes: deliveryAddress || 'No special instructions'
+                },
                 orderSource: 'Admin Panel',
-                processedAt: new Date().toISOString()
+                version: '2.0', // Add version for consistency
             };
 
             // Save order using setDoc so the Firestore document id equals the orderId (same flow as storefront)
-            await setDoc(doc(adminDb, 'orders', orderId), orderData);
+            await setDoc(doc(db, 'orders', orderId), orderData);
 
             // Enqueue confirmation email using the same structure as the storefront
             const emailData = {
@@ -9632,7 +9664,7 @@
                 items: items.map(i => ({ 
                     name: i.name || i.title || 'Item', 
                     quantity: i.quantity || i.qty || 1, 
-                    price: ((i.price || i.totalPrice || 0) && (Number(i.price || i.totalPrice) || 0)).toFixed ? (Number(i.price || i.totalPrice) || 0).toFixed(2) : String(i.price || i.totalPrice || 0), 
+                    price: Number(i.price || i.totalPrice || 0), 
                     unit: i.unit || '' 
                 })),
                 subtotal: (Number(subtotal) || 0).toFixed(2),
@@ -9640,15 +9672,18 @@
                 total: (Number(totalComputed) || 0).toFixed(2),
                 deliveryAddress: deliveryAddress || 'N/A',
                 estimatedDelivery: '30 minutes',
-                paymentMethod: 'Admin-Manual',
-                orderDate: new Date().toLocaleString(),
+                paymentMethod: paymentMethod,
+                orderDate: new Date().toLocaleString(), // This is fine for email display
+                // Add missing fields to email data for consistency
+                userDisplayName: customerName,
+                deliveryNotes: deliveryAddress || 'No special instructions',
                 // Add user details for tracking who created the order
                 userEmail: window.auth.currentUser ? window.auth.currentUser.email : 'admin@unknown',
                 userId: window.auth.currentUser ? window.auth.currentUser.uid : null,
                 userDisplayName: window.auth.currentUser ? window.auth.currentUser.displayName : 'Admin'
             };
 
-            await addDoc(collection(adminDb, 'mail'), {
+            await addDoc(collection(db, 'mail'), {
                 to: customerEmail || 'noreply@princealex.pro',
                 message: {
                     subject: `Order Confirmation - ${orderId}`,
@@ -9674,16 +9709,16 @@
                                     <h3 style="color: #4CAF50; margin: 0 0 15px 0;">🛒 Order Items</h3>
                                     ${emailData.items.map(item => `
                                         <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #ddd;">
-                                            <span>${item.name} (${item.quantity} ${item.unit})</span>
-                                            <span><strong>KES ${item.price}</strong></span>
+                                            <span>${item.name} (x${item.quantity})</span>
+                                            <span><strong>KES ${(item.price * item.quantity).toFixed(2)}</strong></span>
                                         </div>
                                     `).join('')}
                                 </div>
-                                <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
                                     <h3 style="color: #856404; margin: 0 0 15px 0;">💰 Order Summary</h3>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>Subtotal:</span><span>KES ${emailData.subtotal}</span></div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>Delivery Fee:</span><span>KES ${emailData.deliveryFee}</span></div>
-                                    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; color: #4CAF50; border-top: 2px solid #4CAF50; padding-top: 10px;"><span>Total:</span><span>KES ${emailData.total}</span></div>
+                                    <div style="display: flex; justify-content: space-between; padding: 5px 0;"><span>Subtotal:</span><span>KES ${emailData.subtotal}</span></div>
+                                    <div style="display: flex; justify-content: space-between; padding: 5px 0;"><span>Delivery Fee:</span><span>KES ${emailData.deliveryFee}</span></div>
+                                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-top: 2px solid var(--primary-color); margin-top: 10px; font-weight: bold; font-size: 18px; color: var(--primary-color);"><span>Total:</span><span>KES ${emailData.total}</span></div>
                                 </div>
                             </div>
                         </div>
@@ -9709,11 +9744,26 @@
             adminMessage('Order created and confirmation email enqueued.');
             // Show a modal popup summarizing the created order and that email was queued
             try {
+                // ✅ THE FIX: Generate an HTML list of items from the orderData.items array.
+                const itemsHtml = orderData.items.map(item => `
+                    <div style="display: flex; justify-content: space-between; font-size: 14px; padding: 4px 0; border-bottom: 1px solid #eee;">
+                        <span>${item.name} (x${item.quantity})</span>
+                        <span>KES ${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                `).join('');
+
                 const modalHtml = `
                     <div style="text-align:left; max-width:480px;">
                         <p>Order <strong>${orderId}</strong> has been created successfully.</p>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 16px 0;">
+                            <h5 style="margin: 0 0 10px 0; color: var(--primary-color);">Order Summary</h5>
+                            ${itemsHtml}
+                            <div style="display: flex; justify-content: space-between; font-size: 14px; padding-top: 8px; margin-top: 4px;">
+                                <span>Delivery Fee:</span>
+                                <span>KES ${(Number(orderData.transportationFee) || 0).toFixed(2)}</span>
+                            </div>
+                        </div>
                         <p><strong>Total:</strong> KES ${(Number(orderData.total) || 0).toFixed(2)}</p>
-                        <p><strong>Delivery Fee:</strong> KES ${(Number(orderData.transportationFee) || 0).toFixed(2)}</p>
                         <p style="margin-top:12px;">A confirmation email has been queued to <strong>${emailData.customerEmail || 'the customer'}</strong>.</p>
                         <div style="display:flex; gap:8px; margin-top:16px;">
                             <button class="create-btn" onclick="closeModal();">OK</button>
@@ -9730,21 +9780,359 @@
     };
 
 // If any calls were queued while the handler wasn't ready, process them now
-try {
-    if (window.__adminCreateOrderQueue && window.__adminCreateOrderQueue.length) {
-        const queued = window.__adminCreateOrderQueue.slice();
-        window.__adminCreateOrderQueue = [];
-        console.log('Processing', queued.length, 'queued adminCreateOrder calls');
-        queued.forEach(args => {
-            try {
-                // call the real handler; allow async but don't await here
-                window.adminCreateOrder.apply(null, args);
-            } catch (e) {
-                console.error('Queued adminCreateOrder failed', e);
-            }
-        });
+    // Moved from the first module script to be in the same scope as the functions that call it.
+    // Expose functions to the global window object for inline event handlers
+    window.searchOrderForEdit = searchOrderForEdit;
+
+    try {
+        if (window.__adminCreateOrderQueue && window.__adminCreateOrderQueue.length) {
+            const queued = window.__adminCreateOrderQueue.slice();
+            window.__adminCreateOrderQueue = [];
+            console.log('Processing', queued.length, 'queued adminCreateOrder calls');
+            queued.forEach(args => {
+                try {
+                    // call the real handler; allow async but don't await here
+                    window.adminCreateOrder.apply(null, args);
+                } catch (e) {
+                    console.error('Queued adminCreateOrder failed', e);
+                }
+            });
+        }
+    } catch (e) { console.error('Failed to process adminCreateOrder queue', e); }
+
+    let allAdminProducts = []; // Cache for products
+    let currentEditingOrder = null; // Holds the state of the order being edited in the modal
+
+
+    async function getOrders() {
+        const ordersCol = collection(db, 'orders');
+        const snapshot = await getDocs(ordersCol);
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     }
-} catch (e) { console.error('Failed to process adminCreateOrder queue', e); }
+
+    window.searchOrder = async function searchOrder() {
+        const q = document.getElementById('orderSearchInput').value.trim().toLowerCase();
+        const editOrderResult = document.getElementById('editOrderResult');
+        if (!q) {
+            editOrderResult.innerHTML = "<p>Please enter a search term.</p>";
+            return;
+        }
+
+        editOrderResult.innerHTML = "<p>Searching...</p>";
+        const orders = await getOrders();
+
+        const order = orders.find(o =>
+            (o.id && o.id.toLowerCase().includes(q)) ||
+            (o.customer && o.customer.phone && o.customer.phone.includes(q)) ||
+            (o.customer && o.customer.email && o.customer.email.toLowerCase().includes(q)) ||
+            (o.userEmail && o.userEmail.toLowerCase().includes(q))
+        );
+
+        if (!order) {
+            editOrderResult.innerHTML = "<p>No order found</p>";
+            return;
+        }
+
+        renderEditOrder(order);
+    }
+
+    window.renderEditOrder = function(order) {
+        const editOrderResult = document.getElementById('editOrderResult');
+        const customerName = order.customer?.name || order.customer?.fullName || 'N/A';
+        const customerPhone = order.customer?.phone || order.customer?.phoneNumber || 'N/A';
+        // Correctly calculate total. Use order.total if it exists. 
+        // Otherwise, reduce the items array, summing up the 'totalPrice' for each item.
+        // Add a check for `order.items` to prevent errors if it's missing.
+        const orderTotal = order.total || (Array.isArray(order.items) ? order.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0) : 0);
+
+        editOrderResult.innerHTML = `
+            <div class="order-card">
+                <h4>Order ${order.id}</h4>
+                <p>${customerName} — ${customerPhone}</p>
+                <p>Status: <span class="status-badge status-${order.status || 'pending'}">${order.status || 'Pending'}</span></p>
+                <p>Total: <strong>KES ${orderTotal.toFixed(2)}</strong></p>
+                <div class="order-actions">
+                    <button class="btn-view" onclick="window.openAdminOrderEditModal('${order.id}')">
+                        <i class="fas fa-edit"></i> Edit This Order
+                    </button>
+                    <button class="action-btn cancel" onclick="window.cancelOrderById('${order.id}')">
+                        <i class="fas fa-times-circle"></i> Cancel Order
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    // Helper function to calculate order totals
+    window.calculateOrderTotals = function(order) { 
+        if (!order || !order.items) {
+            console.warn("calculateOrderTotals called with invalid order object:", order);
+            return { subtotal: 0, deliveryFee: 0, total: 0 };
+        }
+        const subtotal = order.items.reduce((sum, item) => sum + (item.price * (item.qty || item.quantity)), 0);
+        // Use a fixed delivery fee for admin orders, or retrieve from order if it exists
+        const deliveryFee = order.transportationFee || order.deliveryFee || ADMIN_DELIVERY_FEE;
+        const total = subtotal > 0 ? subtotal + deliveryFee : 0;
+        return { subtotal, deliveryFee, total };
+    }
+
+    // --- Modal Based Editing ---
+
+    window.openAdminOrderEditModal = async function(orderId) { // This is the correct function to modify
+        // Guard against being called without an orderId, which causes the error.
+        if (!orderId) {
+            showModal('Error', 'An order must be selected before it can be edited.', true);
+            console.error("openAdminOrderEditModal was called without an orderId.");
+            return;
+        }
+        try {
+            const orderRef = doc(db, "orders", orderId);
+            const orderSnap = await getDoc(orderRef);
+            if (!orderSnap.exists()) {
+                showModal('Error', 'Order not found!', true);
+                return;
+            }
+
+            // ✅ THE FIX: Ensure the order ID is always preserved when loading an order for editing.
+            // The .data() method does not include the document ID, so it must be added explicitly.
+            // Also, create the snapshot here to ensure it's available for the save function.
+            currentEditingOrder = { 
+                id: orderSnap.id, 
+                ...orderSnap.data() 
+            };
+            window.originalOrderSnapshot = JSON.parse(JSON.stringify(currentEditingOrder));
+
+            const modal = document.getElementById('order-edit-modal');
+            if (!modal) {
+                console.error('Order edit modal element not found!');
+                return;
+            }
+        const modalTitle = document.getElementById('edit-modal-title');
+        if(modalTitle) modalTitle.textContent = `Edit Order ${orderId}`;
+
+        // 2. Call the new rendering functions
+        renderEditableOrderItems(currentEditingOrder.items);
+        updateEditOrderTotals();
+
+        modal.style.display = 'flex'; // This was inside an unclosed try block
+    } catch (err) {
+        console.error('openAdminOrderEditModal error:', err);
+        showAlert('Error', 'Could not open the order editor. See console for details.', true);
+    }
+    };
+
+    function renderEditableOrderItems(items = []) {
+        const listEl = document.getElementById('editable-items-list');
+
+        if (!listEl) return;
+
+        if (!Array.isArray(items) || items.length === 0) {
+            listEl.innerHTML = '<p style="color:#666">No products in this order.</p>';
+            return;
+        }
+
+        listEl.innerHTML = items.map((item, index) => `
+            <div class="editable-item">
+                <div>
+                    <strong>${item.name}</strong><br>
+                    <small>KES ${item.price} × ${item.quantity}</small>
+                </div>
+
+                <div style="display:flex; gap:8px;">
+                    <input type="number" min="1"
+                        value="${item.quantity}"
+                        onchange="updateItemQty(${index}, this.value)"
+                        style="width:70px">
+
+                    <button onclick="removeItemFromOrder(${index})"
+                            style="background:#dc3545;color:#fff;border:none;padding:6px 10px;border-radius:6px">
+                        ✕
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    window.updateItemQty = function(index, qty) {
+        if (currentEditingOrder && currentEditingOrder.items[index]) {
+            currentEditingOrder.items[index].quantity = Number(qty);
+            updateEditOrderTotals();
+        }
+    }
+
+    window.removeItemFromOrder = function(index) {
+        if (currentEditingOrder && currentEditingOrder.items[index]) {
+            currentEditingOrder.items.splice(index, 1);
+            renderEditableOrderItems(currentEditingOrder.items);
+            updateEditOrderTotals();
+        }
+    }
+
+    function updateEditOrderTotals() {
+        if (!currentEditingOrder) return;
+        const { subtotal, deliveryFee, total } = calculateOrderTotals(currentEditingOrder);
+
+        const subtotalEl = document.getElementById('edit-subtotal');
+        const deliveryFeeEl = document.getElementById('edit-delivery-fee');
+        const totalEl = document.getElementById('edit-total');
+
+        if(subtotalEl) subtotalEl.textContent = `KES ${subtotal.toFixed(2)}`;
+        if(deliveryFeeEl) deliveryFeeEl.textContent = `KES ${deliveryFee.toFixed(2)}`;
+        if(totalEl) totalEl.textContent = `KES ${total.toFixed(2)}`;
+    }
+
+    function renderEditModalContent() {
+        if (!currentEditingOrder) {
+            console.error("renderEditModalContent called but currentEditingOrder is null.");
+            return;
+        }
+        const modalBody = document.getElementById('edit-modal-body');
+        if (!modalBody) {
+            console.error("edit-modal-body element not found!");
+            return;
+        }
+        // Recalculate totals for display
+        const { subtotal, deliveryFee, total } = calculateOrderTotals(currentEditingOrder);
+
+        modalBody.innerHTML = `
+            <div class="edit-section">
+                <h4>Order Items</h4>
+                <div id="editable-items-list" class="editable-items-list">
+                ${currentEditingOrder.items.map((item, i) => `
+                    <div class="editable-item" data-item-index="${i}">
+                        <div class="item-details" style="flex-grow:1;">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-unit">@ KES ${item.price.toFixed(2)}</div>
+                        </div>
+                        <div class="item-quantity-controls">
+                        <button class="quantity-btn" onclick="updateModalItemQuantity(${i}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>
+                            <i class="fas fa-minus"></i>
+                        </button>
+                            <input type="number" class="quantity-input" value="${item.quantity}" min="1" onchange="updateModalItemQuantity(${i}, 0, this.value)">
+                        <button class="quantity-btn" onclick="updateModalItemQuantity(${i}, 1)">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <div class="item-price">KES ${(item.price * item.quantity).toFixed(2)}</div>
+                        <button class="remove-item-btn" onclick="removeModalItem(${i})"><i class="fas fa-trash"></i></button>
+                    </div>
+                `).join("")}
+            </div>
+            <div class="edit-section">
+                <button class="add-item-btn" onclick="openAddItemModal()"><i class="fas fa-plus"></i> Add Another Item</button>
+            </div>
+            <div class="edit-section">
+                <h4>Order Summary</h4>
+                <div class="order-summary-edit">
+                    <div class="summary-row"><span>Subtotal:</span><span id="edit-subtotal">KES ${subtotal.toFixed(2)}</span></div>
+                    <div class="summary-row"><span>Delivery Fee:</span><span id="edit-delivery-fee">KES ${deliveryFee.toFixed(2)}</span></div>
+                    <div class="summary-row total-row"><span>Total:</span><span id="edit-total">KES ${total.toFixed(2)}</span></div>
+                </div>
+            </div>
+            <div class="edit-actions">
+                <button class="cancel-btn" onclick="closeOrderEditModal()">Cancel</button>
+                <button class="save-btn" onclick="saveOrderChanges()">Save Changes</button>
+            </div>
+        `;
+    }
+
+    window.removeModalItem = async function(index) {
+        currentEditingOrder.items.splice(index, 1);
+        renderEditModalContent(); // Re-render the modal content
+        // This should call the new rendering logic, not the old one.
+        renderEditableOrderItems(currentEditingOrder.items);
+        updateEditOrderTotals();
+    };
+
+    // Debounce function to limit the rate at which a function can fire.
+    let addProductSearchTimeout; // This is fine here
+
+    window.openAdminAddProductModal = async function() {
+        if (allAdminProducts.length === 0) {
+            const productsSnap = await getDocs(collection(db, 'products'));
+            allAdminProducts = productsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        }
+        renderAddProductList(allAdminProducts);
+        document.getElementById('add-item-modal').style.display = 'flex';
+        document.getElementById('addProductSearchInput').onkeyup = (event) => {
+            clearTimeout(addProductSearchTimeout);
+            addProductSearchTimeout = setTimeout(() => {
+                const query = event.target.value.trim().toLowerCase();
+                const filtered = allAdminProducts.filter(p => p.name.toLowerCase().includes(query));
+                renderAddProductList(filtered);
+            }, 300); // Debounce for 300ms
+        };
+    }
+
+    function renderAddProductList(products) {
+        const listEl = document.getElementById('add-product-list'); // Ensure this element exists in the add-item-modal
+        if (products.length === 0) {
+            listEl.innerHTML = '<p>No products found.</p>';
+            return;
+        }
+        listEl.innerHTML = products.map(p => `
+            <div class="product-add-item">
+                <div class="product-add-item-info">
+                    <strong>${p.name}</strong>
+                    <span>KES ${p.price.toFixed(2)}</span>
+                </div>
+                <button class="action-btn" onclick="addProductToOrder('${p.id}')">Add</button>
+            </div>
+        `).join('');
+    }
+
+    window.addModalItem = function(productId) {
+        const product = allAdminProducts.find(p => p.id === productId);
+        if (!product) return;
+        const qty = Number(prompt(`Quantity for ${product.name}?`, 1));
+        if (!qty || qty <= 0) return;
+
+        const existingItem = currentEditingOrder.items.find(item => item.productId === productId);
+        if (existingItem) {
+            existingItem.qty = (existingItem.qty || existingItem.quantity) + qty;
+        } else {
+            currentEditingOrder.items.push({
+                productId: product.id,
+                name: product.name,
+                price: product.price,
+                qty: qty
+            });
+        }
+        
+        renderEditModalContent();
+        closeAdminAddProductModal();
+    }
+
+    window.closeAdminOrderEditModal = function() {
+        document.getElementById('admin-order-edit-modal').style.display = 'none';
+        currentEditingOrder = null;
+    }
+
+    window.closeAdminAddProductModal = function() {
+        document.getElementById('admin-add-product-modal').style.display = 'none';
+        document.getElementById('addProductSearchInput').value = '';
+    }
+
+    // 6️⃣ Cancel Order (Adapted for Firebase)
+    window.cancelOrder = async function cancelOrder(orderId) {
+        if (!confirm("Cancel this order?")) return;
+        const orderRef = doc(db, "orders", orderId);
+        await updateDoc(orderRef, { 
+            status: "cancelled", 
+            updatedAt: new Date().toISOString(), 
+            emailPending: true 
+        });
+        alert("Order cancelled");
+        closeAdminOrderEditModal();
+        searchOrder(); // Refresh search result
+    }
+
+    window.saveOrder = async function saveOrder(orderId) {
+        const orderRef = doc(db, "orders", orderId);
+            // Just update the timestamp, as item changes are saved instantly. // This function seems unused.
+        await updateDoc(orderRef, { updatedAt: new Date().toISOString(), emailPending: true });
+        alert("Order saved. Email queued for sending.");
+        // A backend worker/function should look for `emailPending: true` to send notifications.
+    }
 
 </script>
 </body>
