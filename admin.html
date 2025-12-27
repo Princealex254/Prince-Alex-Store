@@ -7006,7 +7006,7 @@
                         <div class="details-section">
                             <h4>Actions</h4>
                             <div class="order-actions">
-                                <button class="action-btn btn-view" onclick="toggleOrderEditMode()">
+                                <button class="action-btn btn-view ${!hasOrderPerm ? 'disabled-btn' : ''}" onclick="toggleOrderEditMode()" ${!hasOrderPerm ? 'disabled' : ''}>
                                     <i class="fas fa-edit"></i> Edit This Order
                                 </button>
                                 <!-- More actions can be added here -->
@@ -7374,6 +7374,11 @@
         // Global state for the order currently being edited in a modal
         window.currentEditingOrder = null;
         window.toggleOrderEditMode = function() {
+            if (!window.hasPermission('orders')) {
+                showModal('Permission Denied', 'You do not have permission to edit orders.', true);
+                return;
+            }
+
             let orderToEdit;
 
             // ✅ THE FIX: Check if an order is already loaded into the editing state.
@@ -7486,6 +7491,11 @@
         }
 
         window.removeItemFromOrder = async function(index) {
+            if (!window.hasPermission('orders')) {
+                showModal('Permission Denied', 'You do not have permission to edit orders.', true);
+                return;
+            }
+
             if (currentEditingOrder && currentEditingOrder.items[index]) {
                 const item = currentEditingOrder.items[index];
                 const confirmRemove = confirm(`Are you sure you want to remove "${item.name}" from this order?`);
@@ -7571,6 +7581,11 @@
         let availableProducts = [];
 
         window.openAddItemModal = async function() {
+            if (!window.hasPermission('orders')) {
+                showModal('Permission Denied', 'You do not have permission to edit orders.', true);
+                return;
+            }
+
             try {
                 // Load products from Firestore
                 const productsCol = collection(db, 'products');
@@ -7739,6 +7754,11 @@
 
         // Expose addItemToOrder to the global scope for onclick events
         window.addProductToOrder = async function(productId) {
+            if (!window.hasPermission('orders')) {
+                showModal('Permission Denied', 'You do not have permission to edit orders.', true);
+                return;
+            }
+
             const product = availableProducts.find(p => p.id === productId);
             if (!currentEditingOrder) {
                 console.error("addProductToOrder called but no order is being edited.");
@@ -8046,6 +8066,7 @@
                 const houseName = order.customer ? order.customer.houseName : 'N/A';
                 
                 // Format items for display (defensive: handle missing items or missing fields)
+                const hasOrderPerm = window.hasPermission('orders');
                 let itemsHtml = '';
                 const itemsArr = Array.isArray(order.items) ? order.items : [];
                 itemsArr.forEach(item => {
@@ -10165,6 +10186,11 @@
         const deleteSelectedEmailsBtn = document.getElementById('delete-selected-emails-btn');
         if (deleteSelectedEmailsBtn) {
             deleteSelectedEmailsBtn.addEventListener('click', async function() {
+                if (!window.hasPermission('emails')) {
+                    showModal('Permission Denied', 'You do not have permission to delete emails.', true);
+                    return;
+                }
+
                 const selectedCheckboxes = document.querySelectorAll('.email-select-checkbox:checked');
                 const idsToDelete = Array.from(selectedCheckboxes).map(cb => cb.value);
                 
@@ -11090,6 +11116,8 @@
         // Correctly calculate total. Use order.total if it exists. 
         const orderTotal = order.total || (Array.isArray(order.items) ? order.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0) : 0);
         const isCancelled = order.status === 'Cancelled';
+        const hasOrderPerm = window.hasPermission('orders');
+        const isRestricted = isCancelled && window.currentUserRole !== 'super_admin';
 
         editOrderResult.innerHTML = `
             <div class="order-card">
@@ -11098,10 +11126,10 @@
                 <p>Status: <span class="status-badge status-${order.status || 'pending'}">${order.status || 'Pending'}</span></p>
                 <p>Total: <strong>KES ${orderTotal.toFixed(2)}</strong></p>
                 <div class="order-actions">
-                    <button class="btn-view ${isCancelled ? 'disabled-btn' : ''}" onclick="window.openAdminOrderEditModal('${order.id}')" title="${isCancelled ? 'Cannot edit a cancelled order' : 'Edit This Order'}">
+                    <button class="btn-view ${isRestricted || !hasOrderPerm ? 'disabled-btn' : ''}" onclick="window.openAdminOrderEditModal('${order.id}')" title="${isRestricted ? 'Cannot edit a cancelled order' : (!hasOrderPerm ? 'Permission denied' : 'Edit This Order')}">
                         <i class="fas fa-edit"></i> Edit This Order
                     </button>
-                    <button class="action-btn cancel ${isCancelled ? 'disabled-btn' : ''}" onclick="window.cancelOrderById('${order.id}')" title="${isCancelled ? 'Order is already cancelled' : 'Cancel Order'}">
+                    <button class="action-btn cancel ${isCancelled || !hasOrderPerm ? 'disabled-btn' : ''}" onclick="window.cancelOrderById('${order.id}')" title="${isCancelled ? 'Order is already cancelled' : (!hasOrderPerm ? 'Permission denied' : 'Cancel Order')}">
                         <i class="fas fa-times-circle"></i> Cancel Order
                     </button>
                 </div>
@@ -11125,6 +11153,11 @@
     // --- Modal Based Editing ---
 
     window.openAdminOrderEditModal = async function(orderId) { // This is the correct function to modify
+        if (!window.hasPermission('orders')) {
+            showModal('Permission Denied', 'You do not have permission to edit orders.', true);
+            return;
+        }
+
         // Guard against being called without an orderId, which causes the error.
         if (!orderId) {
             showModal('Error', 'An order must be selected before it can be edited.', true);
