@@ -8298,11 +8298,18 @@
             }
             
             if (actionsSection) {
-                if (window.hasPermission('customers')) {
-                    actionsSection.style.display = 'block';
-                } else {
-                    actionsSection.style.display = 'none';
-                }
+                actionsSection.style.display = 'block'; // Always show the section
+                const hasCustomerPerm = window.hasPermission('customers');
+                actionsSection.querySelectorAll('button.action-btn').forEach(btn => {
+                    btn.disabled = !hasCustomerPerm;
+                    if (!hasCustomerPerm) {
+                        btn.classList.add('disabled-btn');
+                        btn.title = 'Permission Denied';
+                    } else {
+                        btn.classList.remove('disabled-btn');
+                        btn.title = ''; // Or set to its original title if it has one
+                    }
+                });
             } else {
                 console.error('Customer actions section not found');
             }
@@ -10372,7 +10379,7 @@
                 if (window.hasPermission(requiredPerm)) {
                     item.style.display = 'flex';
                 } else {
-                    item.style.display = 'none';
+                    item.style.display = 'flex'; // Show all nav items, but actions will be disabled on the page
                 }
             });
 
