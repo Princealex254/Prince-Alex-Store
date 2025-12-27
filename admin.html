@@ -2560,6 +2560,26 @@
             cursor: not-allowed;
         }
 
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .admin-table th, .admin-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .admin-table th {
+            background-color: var(--light-bg);
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+        .admin-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
         .order-summary {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -4169,6 +4189,10 @@
                         <i class="fas fa-user-shield"></i>
                         <span>Admin Users</span>
                     </a>
+                    <a href="#" class="nav-item" data-page="activity-logs">
+                        <i class="fas fa-history"></i>
+                        <span>Activity Logs</span>
+                    </a>
                 </div>
                 
                 <div class="nav-section">
@@ -4962,6 +4986,34 @@
                 </div>
             </div>
 
+            <!-- Admin Activity Logs Section -->
+            <div id="admin-activity-logs-section" class="admin-section admin-page">
+                <div class="section-header">
+                    <h2>Admin Activity Logs</h2>
+                    <p>View audit trail of admin actions (Super Admin Only)</p>
+                </div>
+
+                <div class="voucher-filters">
+                    <h4>🔍 Filter Logs</h4>
+                    <div class="filter-controls">
+                        <input type="date" id="log-date-filter" onchange="loadActivityLogs()" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                        <button onclick="loadActivityLogs()" class="action-btn refresh-btn">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <button onclick="downloadLogsPDF()" class="action-btn" style="background: #6c757d; color: white;">
+                            <i class="fas fa-file-pdf"></i> Download PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div id="activity-logs-list" class="orders-container">
+                    <div class="loading-state">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading logs...</p>
+                    </div>
+                </div>
+            </div>
+
                 <!-- Voucher Management Section -->
                 <div id="admin-vouchers-section" class="admin-section admin-page">
                     <div class="section-header">
@@ -5289,6 +5341,7 @@
 
     <footer>
         <p>&copy; 2025 Prince Alex Store Admin. All Rights Reserved.</p>
+        <p>&copy; 2024 Prince Alex Store Admin. All Rights Reserved.</p>
     </footer>
 
     <script type="module">
@@ -5460,6 +5513,11 @@
                 if(btn) btn.disabled = !window.hasPermission('orders');
             }
 
+            if (pageName === 'activity-logs' && window.currentUserRole !== 'super_admin') {
+                showModal('Access Denied', 'Only Super Admins can view activity logs.', true);
+                return;
+            }
+
             const adminPages = document.querySelectorAll('.admin-page');
             adminPages.forEach(page => page.classList.remove('active'));
 
@@ -5484,6 +5542,7 @@
                 'vouchers': 'Voucher Management',
                 'contacts': 'Contact Messages',
                 'admin-users': 'Admin User Management',
+                'activity-logs': 'Admin Activity Logs',
             };
 
             // Add active class to current nav item
@@ -5513,6 +5572,8 @@
                 loadManageEmails();
             } else if (pageName === 'admin-users') {
                 loadAdminUsers();
+            } else if (pageName === 'activity-logs') {
+                loadActivityLogs();
             }
 
             if (pageTitle && pageTitles[pageName]) {
@@ -5689,6 +5750,7 @@
                 
                 try {
                     await signInWithEmailAndPassword(auth, email, password);
+                    await logAdminActivity('admin_login', `Admin logged in: ${email}`, email);
                     
                     // Try modal first, fallback to alert
                     try {
@@ -5744,6 +5806,7 @@
                         const SUPER_ADMINS = ['princealexdigital@gmail.com', 'noreply@princealex.pro'];
                         
                         if (adminDoc.exists() || SUPER_ADMINS.includes(user.email)) {
+                            await logAdminActivity('admin_login_google', `Admin logged in via Google: ${user.email}`, user.email);
                             showModal('Login Successful', `Welcome back, ${user.displayName || 'Admin'}!`);
                             // onAuthStateChanged will handle the UI update
                         } else {
@@ -5761,6 +5824,9 @@
 
         document.getElementById('admin-logout-btn').addEventListener('click', async () => {
             try {
+                if (firebaseUser) {
+                    await logAdminActivity('admin_logout', `Admin logged out: ${firebaseUser.email}`);
+                }
                 await signOut(auth);
                 showModal('Logged Out', 'You have been successfully logged out from the admin panel.');
                 // UI update handled by onAuthStateChanged listener
@@ -5878,6 +5944,7 @@
                     tags: productTags,
                     createdAt: new Date().toISOString()
                 });
+                await logAdminActivity('product_add', `Added new product: ${productName} (${customProductId})`);
                 showModal('Success', 'Product added successfully! The product will be visible on the customer page immediately.');
                 document.getElementById('add-product-form').reset();
                 document.getElementById('image-preview').style.display = 'none'; // Hide preview
@@ -6122,6 +6189,7 @@
                     tags: productTags,
                     lastUpdated: new Date().toISOString()
                 });
+                await logAdminActivity('product_update', `Updated product: ${productName} (${productId})`);
 
                 showModal('Success', 'Product updated successfully!');
                 closeModal();
@@ -6157,6 +6225,7 @@
             closeModal(); // Close the confirmation modal
             try {
                 await deleteDoc(doc(db, "products", productId));
+                await logAdminActivity('product_delete', `Deleted product: ${productId}`);
                 showModal('Success', 'Product deleted successfully!');
                 loadProducts(); // Reload the list
             } catch (error) {
@@ -6440,6 +6509,8 @@
                     cancelledBy: 'admin'
                 });
                 
+                await logAdminActivity('order_cancel', `Cancelled order ${orderId}`);
+
                 // Update the local order object with the new status
                 order.status = 'Cancelled';
                 order.cancelledAt = new Date().toISOString();
@@ -7022,6 +7093,7 @@
                     status: newStatus,
                     lastUpdated: new Date().toISOString()
                 });
+                await logAdminActivity('order_status_update', `Updated order ${currentOrderId} to ${newStatus}`);
 
                 // Update local data
                 order.status = newStatus;
@@ -7781,6 +7853,7 @@
                 // 5️⃣ Save to Firestore (same document)
                 const orderRef = doc(db, 'orders', currentEditingOrder.id);
                 await updateDoc(orderRef, updatePayload);
+                await logAdminActivity('order_edit', `Edited order ${currentEditingOrder.id}. Changes: ${changes.join(', ')}`);
 
                 console.log('Order saved:', updatePayload);
                 // 6️⃣ Sync snapshots
@@ -7946,6 +8019,7 @@
             try {
                 const orderRef = doc(db, "orders", orderId);
                 await updateDoc(orderRef, { status: "Delivered" });
+                await logAdminActivity('order_status_update', `Marked order ${orderId} as Delivered`);
                 showModal('Success', 'Order status updated to Delivered!');
                 loadOrders(); // Reload the order list
             } catch (error) {
@@ -8102,6 +8176,7 @@
             closeModal(); // Close the confirmation modal
             try {
                 await deleteDoc(doc(db, "contactSubmissions", messageId));
+                await logAdminActivity('contact_delete', `Deleted contact message ${messageId}`);
                 showModal('Success', 'Message deleted successfully!');
                 loadContactSubmissions(); // Reload the list
             } catch (error) {
@@ -8369,6 +8444,7 @@
                     status: status,
                     lastUpdated: new Date().toISOString()
                 });
+                await logAdminActivity('customer_edit', `Updated profile for customer ${currentCustomer.email}`);
 
                 showModal('Success', 'Customer profile updated successfully!');
                 closeModal();
@@ -8415,6 +8491,7 @@
             try {
                 // Note: In a real implementation, you would use Firebase Admin SDK
                 // For now, we'll simulate the password reset
+                await logAdminActivity('customer_password_reset', `Initiated password reset for ${currentCustomer.email}`);
                 showModal('Password Reset Sent', `Password reset email has been sent to ${currentCustomer.email}. The customer will receive instructions to reset their password.`);
                 closeModal();
                 
@@ -8632,6 +8709,7 @@
                     status: 'pending',
                     priority: 'medium'
                 });
+                await logAdminActivity('customer_message', `Sent message to ${currentCustomer.email}: ${subject}`);
 
                 showModal('Message Sent', `Message has been sent to ${currentCustomer.email}. The customer will receive your message via email.`);
                 closeModal();
@@ -8783,6 +8861,7 @@
                     status: 'pending',
                     priority: 'medium'
                 });
+                await logAdminActivity('customer_status_change', `Changed status of ${currentCustomer.email} to ${newStatus}`);
 
                 showModal('Status Updated', `Customer status has been updated to ${newStatus}. An email notification has been sent to ${currentCustomer.email}.`);
                 closeModal();
@@ -9353,6 +9432,7 @@
                 // Save to Firestore
                 const voucherRef = doc(db, 'vouchers', voucherCode);
                 await setDoc(voucherRef, voucherData);
+                await logAdminActivity('voucher_create', `Created voucher ${voucherCode}`);
                 
                 // Send email if customer email is provided
                 if (customerEmail) {
@@ -9447,6 +9527,7 @@
                     isActive: newStatus,
                     lastModified: new Date().toISOString()
                 });
+                await logAdminActivity('voucher_status_change', `Changed status of voucher ${voucherId} to ${newStatus ? 'active' : 'inactive'}`);
                 
                 // Update local data
                 const voucherIndex = allVouchers.findIndex(v => v.id === voucherId);
@@ -9484,6 +9565,24 @@
             
             showModal('Delete Voucher', confirmHtml);
         }
+
+        window.confirmDeleteVoucher = async function(voucherId) {
+            if (!window.hasPermission('vouchers')) {
+                showModal('Permission Denied', 'You do not have permission to delete vouchers.', true);
+                return;
+            }
+
+            closeModal();
+            try {
+                await deleteDoc(doc(db, "vouchers", voucherId));
+                await logAdminActivity('voucher_delete', `Deleted voucher ${voucherId}`);
+                showModal('Success', 'Voucher deleted successfully!');
+                loadVouchers();
+            } catch (error) {
+                showModal('Error', `Failed to delete voucher: ${error.message}`, true);
+                console.error("Error deleting voucher:", error);
+            }
+        };
 
         // Refresh vouchers
         function refreshVouchers() {
@@ -9763,6 +9862,7 @@
 
                 // Delete from mail collection
                 await deleteDoc(emailRef);
+                await logAdminActivity('email_send', `Sent pending email ${emailId}`);
                 
                 // Reload the list
                 await loadPendingEmails();
@@ -9787,6 +9887,7 @@
 
                 const emailRef = doc(db, 'mail', emailId);
                 await deleteDoc(emailRef);
+                await logAdminActivity('email_delete', `Deleted pending email ${emailId}`);
                 
                 // Reload the list
                 await loadPendingEmails();
@@ -9856,6 +9957,7 @@
                         
                         // Delete from mail collection
                         await deleteDoc(doc(db, 'mail', docSnap.id));
+                        await logAdminActivity('email_send_all', `Sent pending email ${docSnap.id} in batch`);
                         successCount++;
                     } catch (error) {
                         console.error(`Error sending email ${docSnap.id}:`, error);
@@ -10078,6 +10180,7 @@
                     
                     const deletePromises = idsToDelete.map(id => deleteDoc(doc(db, 'mail', id)));
                     await Promise.all(deletePromises);
+                    await logAdminActivity('email_delete_batch', `Deleted ${idsToDelete.length} emails`);
                     
                     showModal('Success', `${idsToDelete.length} emails deleted successfully.`);
                     await loadManageEmails();
@@ -10166,6 +10269,7 @@
                 updatedAt: new Date().toISOString()
             });
             showModal('Success', 'Email queued for resending.');
+            await logAdminActivity('email_resend', `Resent email ${emailId}`);
             loadManageEmails();
         } catch (e) {
             console.error(e);
@@ -10181,6 +10285,7 @@
 
         if(!confirm('Are you sure you want to delete this email record?')) return;
         await deleteDoc(doc(db, 'mail', emailId));
+        await logAdminActivity('email_delete_record', `Deleted email record ${emailId}`);
         showModal('Success', 'Email deleted.');
         loadManageEmails();
     };
@@ -10223,6 +10328,36 @@
             return window.currentUserPermissions && window.currentUserPermissions.includes(permission);
         };
 
+        function applyUIPermissions() {
+            const allNavItems = document.querySelectorAll('.nav-item[data-page]');
+            
+            allNavItems.forEach(item => {
+                let page = item.dataset.page;
+                
+                // Skip system-specific links here; they are handled by the parent div.
+                if (page === 'admin-users' || page === 'activity-logs') {
+                    return;
+                }
+
+                // Map sub-pages to their main permission key
+                let requiredPerm = page;
+                if (page === 'add-order' || page === 'edit-orders') requiredPerm = 'orders';
+                if (page === 'pending-emails' || page === 'manage-emails') requiredPerm = 'emails';
+
+                if (window.hasPermission(requiredPerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // This remains the sole controller for the entire "System" section's visibility
+            const systemSection = document.getElementById('system-nav-section');
+            if (systemSection) {
+                systemSection.style.display = window.currentUserRole === 'super_admin' ? 'block' : 'none';
+            }
+        }
+
         async function checkAdminAccess() {
             if (!firebaseUser) return;
             
@@ -10254,6 +10389,8 @@
                     window.currentUserPermissions = [];
                 }
                 
+                // Apply UI changes based on the fetched role and permissions
+                applyUIPermissions();
                 // Show/Hide System Section based on role
                 const systemSection = document.getElementById('system-nav-section');
                 if (systemSection) {
@@ -10370,6 +10507,7 @@
                 await setDoc(doc(db, 'admins', email), {
                     email, name, role, permissions, updatedAt: new Date().toISOString()
                 }, { merge: true });
+                await logAdminActivity('admin_user_save', `Saved admin user ${email} with role ${role}`);
                 
                 showModal('Success', 'Admin user saved successfully.');
                 closeAdminUserModal();
@@ -10383,10 +10521,122 @@
             if (!confirm('Are you sure you want to remove this admin?')) return;
             try {
                 await deleteDoc(doc(db, 'admins', email));
+                await logAdminActivity('admin_user_delete', `Deleted admin user ${email}`);
                 loadAdminUsers();
             } catch (e) {
                 showModal('Error', 'Failed to delete admin.', true);
             }
+        };
+
+        // --- 📜 Admin Activity Logs ---
+        window.logAdminActivity = async function(action, details, explicitEmail = null) {
+            const email = explicitEmail || (firebaseUser ? firebaseUser.email : null);
+            if (!email) return;
+            try {
+                await addDoc(collection(db, 'admin_logs'), {
+                    adminEmail: email,
+                    action: action,
+                    details: details,
+                    timestamp: new Date().toISOString()
+                });
+            } catch (e) {
+                console.error("Failed to log activity", e);
+            }
+        };
+
+        window.loadActivityLogs = async function() {
+            const list = document.getElementById('activity-logs-list');
+            list.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>Loading logs...</p></div>';
+
+            try {
+                let q = query(collection(db, 'admin_logs'), orderBy('timestamp', 'desc'), limit(100));
+                
+                const dateFilter = document.getElementById('log-date-filter').value;
+                if (dateFilter) {
+                    const start = new Date(dateFilter).toISOString();
+                    const end = new Date(new Date(dateFilter).setHours(23,59,59,999)).toISOString();
+                    q = query(collection(db, 'admin_logs'), where('timestamp', '>=', start), where('timestamp', '<=', end), orderBy('timestamp', 'desc'));
+                }
+
+                const snapshot = await getDocs(q);
+                if (snapshot.empty) {
+                    list.innerHTML = '<div class="empty-state"><p>No activity logs found.</p></div>';
+                    return;
+                }
+
+                let tableHtml = `
+                    <div style="overflow-x:auto;">
+                        <table id="activity-logs-table" class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Admin Email</th>
+                                    <th>Action</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                snapshot.forEach(doc => {
+                    const log = doc.data();
+                    tableHtml += `
+                        <tr>
+                            <td style="white-space: nowrap;">${new Date(log.timestamp).toLocaleString()}</td>
+                            <td>${log.adminEmail}</td>
+                            <td><span class="status-badge" style="background:#e8f5e8; color:#2e7d32; font-size:11px;">${log.action.replace(/_/g, ' ')}</span></td>
+                            <td>${log.details}</td>
+                        </tr>
+                    `;
+                });
+                
+                tableHtml += '</tbody></table></div>';
+                list.innerHTML = tableHtml;
+            } catch (e) {
+                console.error(e);
+                list.innerHTML = '<p style="color:red; text-align:center;">Error loading logs. Ensure indexes are built.</p>';
+            }
+        };
+
+        window.downloadLogsPDF = function() {
+            if (!window.jspdf) {
+                showModal('Error', 'PDF library not loaded.', true);
+                return;
+            }
+            
+            const table = document.getElementById('activity-logs-table');
+            if (!table) {
+                showModal('Error', 'No logs available to download.', true);
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Header
+            doc.setFontSize(18);
+            doc.text("Admin Activity Logs", 14, 15);
+            
+            doc.setFontSize(10);
+            doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 22);
+            doc.text(`Generated by: ${firebaseUser ? firebaseUser.email : 'System'}`, 14, 27);
+
+            // Table
+            doc.autoTable({
+                html: '#activity-logs-table',
+                startY: 35,
+                theme: 'grid',
+                styles: { fontSize: 8, cellPadding: 3 },
+                headStyles: { fillColor: [76, 175, 80] }, // Primary color green
+                columnStyles: {
+                    0: { cellWidth: 40 }, // Timestamp
+                    1: { cellWidth: 50 }, // Email
+                    2: { cellWidth: 30 }, // Action
+                    3: { cellWidth: 'auto' } // Details
+                }
+            });
+
+            doc.save(`admin_activity_logs_${new Date().toISOString().split('T')[0]}.pdf`);
         };
 
 </script>
@@ -10462,6 +10712,7 @@
             try { updated.items = JSON.parse(itemsText); } catch (e) { adminMessage('Items must be valid JSON array.', true); return; }
 
             await updateDoc(doc(db, 'orders', docId), updated);
+            await logAdminActivity('order_edit_manual', `Manually edited order ${docId} via admin panel`);
 
             // Enqueue an email notifying customer of update
             try {
@@ -10541,6 +10792,9 @@
         try {
             const orderRef = doc(db, 'orders', docId);
             await updateDoc(orderRef, { status: 'Cancelled' });
+            if (window.logAdminActivity) {
+                await window.logAdminActivity('order_cancel', `Cancelled order ${docId} (via Admin Panel)`);
+            }
 
             const orderSnap = await getDoc(orderRef);
             const orderData = { id: orderSnap.id, ...orderSnap.data() };
@@ -10650,6 +10904,7 @@
 
             // Save order using setDoc so the Firestore document id equals the orderId (same flow as storefront)
             await setDoc(doc(db, 'orders', orderId), orderData);
+            await logAdminActivity('order_create', `Created order ${orderId} for ${customerEmail}`);
 
             // Enqueue confirmation email using the same structure as the storefront
             const emailData = {
