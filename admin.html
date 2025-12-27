@@ -2550,6 +2550,16 @@
             color: #0c5460;
         }
 
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .disabled-btn {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .order-summary {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -4066,6 +4076,16 @@
                 <input type="email" id="admin-email" placeholder="Your Email Address" required>
                 <input type="password" id="admin-password" placeholder="Your Password" required>
                 <button type="submit">Access Admin Panel</button>
+                
+                <div style="text-align: center; margin: 20px 0; position: relative;">
+                    <hr style="margin: 0; border-top: 1px solid #eee;">
+                    <span style="background: var(--white); padding: 0 10px; color: #666; font-size: 12px; position: relative; top: -13px;">OR</span>
+                </div>
+
+                <button type="button" id="google-login-btn" style="background: white; color: #444; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" style="width: 18px; height: 18px;">
+                    Sign in with Google
+                </button>
             </form>
         </div>
         </div>
@@ -4141,6 +4161,14 @@
                     <a href="#" class="nav-item" data-page="manage-emails">
                         <i class="fas fa-envelope-open-text"></i>
                         <span>Manage Emails</span></a>
+                </div>
+
+                <div class="nav-section" id="system-nav-section" style="display: none;">
+                    <div class="nav-section-title">System</div>
+                    <a href="#" class="nav-item" data-page="admin-users">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin Users</span>
+                    </a>
                 </div>
                 
                 <div class="nav-section">
@@ -4910,6 +4938,30 @@
                 </div>
             </div>
 
+            <!-- Admin User Management Section -->
+            <div id="admin-admin-users-section" class="admin-section admin-page">
+                <div class="section-header">
+                    <h2>Admin User Management</h2>
+                    <p>Manage system administrators and their permissions</p>
+                </div>
+
+                <div class="voucher-actions">
+                    <button onclick="openAdminUserModal()" class="new-voucher-button">
+                        <i class="fas fa-user-plus"></i> Add New Admin
+                    </button>
+                    <button onclick="loadAdminUsers()" class="action-btn refresh-btn">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+
+                <div id="admin-users-list" class="orders-container">
+                    <div class="loading-state">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading admin users...</p>
+                    </div>
+                </div>
+            </div>
+
                 <!-- Voucher Management Section -->
                 <div id="admin-vouchers-section" class="admin-section admin-page">
                     <div class="section-header">
@@ -5192,6 +5244,49 @@
         </div>
     </div>
 
+    <!-- Admin User Modal -->
+    <div id="admin-user-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeAdminUserModal()">&times;</span>
+            <h3 id="admin-modal-title">Add Admin User</h3>
+            <form id="admin-user-form" class="simple-voucher-form">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="admin-user-email" placeholder="admin@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="admin-user-name" placeholder="Admin Name" required>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="admin-user-role">
+                        <option value="admin">Admin</option>
+                        <option value="super_admin">Super Admin</option>
+                    </select>
+                </div>
+                <div class="form-group" id="permissions-group" style="display:none;">
+                    <label>Access Permissions</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: rgba(0,0,0,0.05); padding: 15px; border-radius: 8px;">
+                        <label style="font-weight: normal;"><input type="checkbox" class="perm-checkbox" value="dashboard"> Dashboard</label>
+                        <label style="font-weight: normal;"><input type="checkbox" class="perm-checkbox" value="products"> Products</label>
+                        <label style="font-weight: normal;"><input type="checkbox" class="perm-checkbox" value="orders"> Orders</label>
+                        <label style="font-weight: normal;"><input type="checkbox" class="perm-checkbox" value="customers"> Customers</label>
+                        <label style="font-weight: normal;"><input type="checkbox" class="perm-checkbox" value="referrals"> Referrals</label>
+                        <label style="font-weight: normal;"><input type="checkbox" class="perm-checkbox" value="vouchers"> Vouchers</label>
+                        <label style="font-weight: normal;"><input type="checkbox" class="perm-checkbox" value="contacts"> Messages</label>
+                        <label style="font-weight: normal;"><input type="checkbox" class="perm-checkbox" value="emails"> Emails</label>
+                    </div>
+                    <small>Select the areas this admin can access.</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" onclick="closeAdminUserModal()" class="cancel-btn">Cancel</button>
+                    <button type="submit" class="create-btn">Save Admin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2024 Prince Alex Store Admin. All Rights Reserved.</p>
     </footer>
@@ -5200,7 +5295,7 @@
         // Firebase SDK Imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
         import { getFirestore, collection, getDocs, query, orderBy, doc, setDoc, addDoc, updateDoc, deleteDoc, where, getDoc, limit } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
         // Firebase Configuration
         const firebaseConfig = {
@@ -5353,6 +5448,19 @@
 
         // --- Professional Admin Page Switching Logic ---
         function switchAdminPage(pageName) {
+            // Permission Check
+            if (window.currentUserRole !== 'super_admin') {
+                let requiredPerm = pageName;
+                // Map sub-pages to main permission keys
+                if (pageName === 'add-order' || pageName === 'edit-orders') requiredPerm = 'orders';
+                if (pageName === 'pending-emails' || pageName === 'manage-emails') requiredPerm = 'emails';
+                
+                if (!window.hasPermission(requiredPerm)) {
+                    showModal('Access Denied', 'You have no access to this section.', true);
+                    return;
+                }
+            }
+
             const adminPages = document.querySelectorAll('.admin-page');
             adminPages.forEach(page => page.classList.remove('active'));
 
@@ -5376,6 +5484,7 @@
                 'edit-orders': 'Edit Orders',
                 'vouchers': 'Voucher Management',
                 'contacts': 'Contact Messages',
+                'admin-users': 'Admin User Management',
             };
 
             // Add active class to current nav item
@@ -5403,6 +5512,8 @@
                 loadContactSubmissions();
             } else if (pageName === 'manage-emails') {
                 loadManageEmails();
+            } else if (pageName === 'admin-users') {
+                loadAdminUsers();
             }
 
             if (pageTitle && pageTitles[pageName]) {
@@ -5517,7 +5628,7 @@
         }
 
         // --- UI Update based on Admin Authentication State ---
-        function updateAdminUI() {
+        async function updateAdminUI() {
             
             const adminLoginSection = document.getElementById('admin-login-section');
             const adminDashboard = document.getElementById('admin-dashboard');
@@ -5531,6 +5642,9 @@
                 if (adminLoginSection) adminLoginSection.style.display = 'none'; // Hide login form
                 if (adminDashboard) adminDashboard.style.display = 'flex'; // Show admin dashboard
                 
+                // Check permissions
+                await checkAdminAccess();
+
                 // Update admin info
                 updateAdminInfo(firebaseUser);
                 
@@ -5613,6 +5727,37 @@
                     }
                 }
             });
+
+            // Google Login Handler
+            const googleBtn = document.getElementById('google-login-btn');
+            if (googleBtn) {
+                googleBtn.addEventListener('click', async () => {
+                    const provider = new GoogleAuthProvider();
+                    try {
+                        const result = await signInWithPopup(auth, provider);
+                        const user = result.user;
+                        
+                        // Check if user exists in admins collection
+                        const adminDocRef = doc(db, 'admins', user.email);
+                        const adminDoc = await getDoc(adminDocRef);
+                        
+                        // Hardcoded super admins fallback
+                        const SUPER_ADMINS = ['princealexdigital@gmail.com', 'noreply@princealex.pro'];
+                        
+                        if (adminDoc.exists() || SUPER_ADMINS.includes(user.email)) {
+                            showModal('Login Successful', `Welcome back, ${user.displayName || 'Admin'}!`);
+                            // onAuthStateChanged will handle the UI update
+                        } else {
+                            // Not an admin - sign out immediately
+                            await signOut(auth);
+                            showModal('Access Denied', 'Your email is not registered as an administrator.', true);
+                        }
+                    } catch (error) {
+                        console.error("Google login error:", error);
+                        showModal('Login Failed', error.message, true);
+                    }
+                });
+            }
         });
 
         document.getElementById('admin-logout-btn').addEventListener('click', async () => {
@@ -5686,6 +5831,11 @@
             const productCategory = document.getElementById('product-category').value;
             const productRating = parseFloat(document.getElementById('product-rating').value);
             const productTagsInput = document.getElementById('product-tags').value;
+
+            if (!window.hasPermission('products')) {
+                showModal('Permission Denied', 'You do not have permission to add products.', true);
+                return;
+            }
 
             if (!productName || !customProductId || !productImageUrl || !productDescription || isNaN(productPrice) || !productUnit || isNaN(productStock) || !productCategory) {
                 showModal('Error', 'Please fill in all required product details correctly.', true);
@@ -5915,6 +6065,11 @@
 
         // Save product edit
         window.saveProductEdit = async function(productId) {
+            if (!window.hasPermission('products')) {
+                showModal('Permission Denied', 'You do not have permission to edit products.', true);
+                return;
+            }
+
             try {
                 const productName = document.getElementById('edit-product-name').value;
                 const customProductId = document.getElementById('edit-custom-product-id').value;
@@ -5994,6 +6149,11 @@
         }
 
         async function confirmDeleteProduct(productId) {
+            if (!window.hasPermission('products')) {
+                showModal('Permission Denied', 'You do not have permission to delete products.', true);
+                return;
+            }
+
             closeModal(); // Close the confirmation modal
             try {
                 await deleteDoc(doc(db, "products", productId));
@@ -6090,7 +6250,9 @@
                 const itemsSummary = order.items ? order.items.slice(0, 2).map(item => `${item.name} (x${item.quantity})`).join(', ') : 'No items';
                 const moreItems = itemsCount > 2 ? ` +${itemsCount - 2} more` : '';
                 
-                const statusClass = order.status ? order.status.toLowerCase().replace(' ', '-') : 'pending';
+                const isCancelled = order.status === 'Cancelled';
+                const isRestricted = isCancelled && window.currentUserRole !== 'super_admin';
+                const statusClass = order.status ? order.status.toLowerCase().replace(/\s/g, '-') : 'pending';
                 
                 orderCard.innerHTML = `
                     <div class="order-header">
@@ -6143,7 +6305,7 @@
                         <button class="action-btn btn-view" onclick="viewOrderDetails('${order.id}')">
                             <i class="fas fa-eye"></i> View Details
                         </button>
-                        <button class="action-btn btn-status" onclick="openStatusUpdateModal('${order.id}')">
+                        <button class="action-btn btn-status ${isRestricted ? 'disabled-btn' : ''}" onclick="openStatusUpdateModal('${order.id}')" title="${isRestricted ? 'Order is cancelled' : 'Update Status'}">
                             <i class="fas fa-edit"></i> Update Status
                         </button>
                     </div>
@@ -6585,6 +6747,11 @@
         }
 
         window.cancelOrderById = async function(orderId) {
+            if (!window.hasPermission('orders')) {
+                showModal('Permission Denied', 'You do not have permission to cancel orders.', true);
+                return;
+            }
+
             try {
                 // ✅ FIX: Fetch the order directly from Firestore to ensure data is current.
                 // This avoids relying on the potentially stale 'allOrders' array.
@@ -6598,6 +6765,11 @@
 
                 const order = { id: orderSnap.id, ...orderSnap.data() };
                 
+                if (order.status === 'Cancelled') {
+                    showModal('Action Not Allowed', 'This order has already been cancelled.', true);
+                    return;
+                }
+
                 // Confirm cancellation
                 const confirmed = confirm(`Are you sure you want to cancel order ${orderId}? This action cannot be undone.`);
                 if (!confirmed) return;
@@ -6790,6 +6962,11 @@
                 return;
             }
 
+            if (order.status === 'Cancelled' && window.currentUserRole !== 'super_admin') {
+                showModal('Action Not Allowed', 'This order has been cancelled. Only Super Admins can update its status.', true);
+                return;
+            }
+
             // Clear previous selections
             document.querySelectorAll('.status-option').forEach(option => {
                 option.classList.remove('selected');
@@ -6814,6 +6991,11 @@
         }
 
         window.updateOrderStatus = async function() {
+            if (!window.hasPermission('orders')) {
+                showModal('Permission Denied', 'You do not have permission to update order status.', true);
+                return;
+            }
+
             if (!currentOrderId) {
                 showModal('Error', 'No order selected.', true);
                 return;
@@ -7544,6 +7726,11 @@
                 return;
             }
 
+            if (!window.hasPermission('orders')) {
+                showModal('Permission Denied', 'You do not have permission to edit orders.', true);
+                return;
+            }
+
             // 1️⃣ Validate items
             if (!Array.isArray(currentEditingOrder.items) || currentEditingOrder.items.length === 0) {
                 showModal('Error', 'An order must have at least one product.', true);
@@ -7905,6 +8092,11 @@
         }
 
         async function confirmDeleteContactSubmission(messageId) {
+            if (!window.hasPermission('contacts')) {
+                showModal('Permission Denied', 'You do not have permission to delete messages.', true);
+                return;
+            }
+
             closeModal(); // Close the confirmation modal
             try {
                 await deleteDoc(doc(db, "contactSubmissions", messageId));
@@ -8145,6 +8337,11 @@
 
         // Save customer profile
         window.saveCustomerProfile = async function() {
+            if (!window.hasPermission('customers')) {
+                showModal('Permission Denied', 'You do not have permission to edit customer profiles.', true);
+                return;
+            }
+
             if (!currentCustomer) {
                 showModal('Error', 'No customer selected.', true);
                 return;
@@ -8204,6 +8401,11 @@
 
         // Confirm password reset
         window.confirmPasswordReset = async function() {
+            if (!window.hasPermission('customers')) {
+                showModal('Permission Denied', 'You do not have permission to reset customer passwords.', true);
+                return;
+            }
+
             try {
                 // Note: In a real implementation, you would use Firebase Admin SDK
                 // For now, we'll simulate the password reset
@@ -8381,6 +8583,11 @@
 
         // Send message to customer
         window.sendMessageToCustomer = async function() {
+            if (!window.hasPermission('customers')) {
+                showModal('Permission Denied', 'You do not have permission to send messages to customers.', true);
+                return;
+            }
+
             if (!currentCustomer) {
                 showModal('Error', 'No customer selected.', true);
                 return;
@@ -8458,6 +8665,11 @@
 
         // Confirm toggle status
         window.confirmToggleStatus = async function(newStatus) {
+            if (!window.hasPermission('customers')) {
+                showModal('Permission Denied', 'You do not have permission to change customer status.', true);
+                return;
+            }
+
             try {
                 const customerRef = doc(db, "customers", currentCustomer.id);
                 await updateDoc(customerRef, {
@@ -9045,6 +9257,11 @@
 
         // Simple voucher creation function
         async function createVoucherSimple() {
+            if (!window.hasPermission('vouchers')) {
+                alert('Permission Denied: You do not have permission to create vouchers.');
+                return;
+            }
+
             try {
                 // Get form elements first
                 const voucherCodeEl = document.getElementById('voucher-code');
@@ -9212,6 +9429,11 @@
 
         // Toggle voucher status
         async function toggleVoucherStatus(voucherId, newStatus) {
+            if (!window.hasPermission('vouchers')) {
+                showModal('Permission Denied', 'You do not have permission to update vouchers.', true);
+                return;
+            }
+
             try {
                 const voucherRef = doc(db, 'vouchers', voucherId);
                 await updateDoc(voucherRef, {
@@ -9480,6 +9702,11 @@
         }
 
         async function sendPendingEmail(emailId) {
+            if (!window.hasPermission('emails')) {
+                showModal('Permission Denied', 'You do not have permission to send emails.', true);
+                return;
+            }
+
             try {
                 const emailRef = doc(db, 'mail', emailId);
                 const emailSnap = await getDoc(emailRef);
@@ -9541,6 +9768,11 @@
         }
 
         async function deletePendingEmail(emailId) {
+            if (!window.hasPermission('emails')) {
+                showModal('Permission Denied', 'You do not have permission to delete emails.', true);
+                return;
+            }
+
             try {
                 const confirmed = confirm('Are you sure you want to delete this pending email? This action cannot be undone.');
                 if (!confirmed) return;
@@ -9560,6 +9792,11 @@
         }
 
         async function sendAllPendingEmails() {
+            if (!window.hasPermission('emails')) {
+                showModal('Permission Denied', 'You do not have permission to send emails.', true);
+                return;
+            }
+
             try {
                 const confirmed = confirm('Are you sure you want to send all pending emails? This may take a moment.');
                 if (!confirmed) return;
@@ -9905,6 +10142,11 @@
     window.loadManageEmails = loadManageEmails;
     
      window.resendEmail = async function(emailId) {
+        if (!window.hasPermission('emails')) {
+            showModal('Permission Denied', 'You do not have permission to resend emails.', true);
+            return;
+        }
+
         try {
             if(!confirm('Are you sure you want to resend this email?')) return;
             const emailRef = doc(db, 'mail', emailId);
@@ -9923,6 +10165,11 @@
     };
 
     window.deleteEmail = async function(emailId) {
+        if (!window.hasPermission('emails')) {
+            showModal('Permission Denied', 'You do not have permission to delete emails.', true);
+            return;
+        }
+
         if(!confirm('Are you sure you want to delete this email record?')) return;
         await deleteDoc(doc(db, 'mail', emailId));
         showModal('Success', 'Email deleted.');
@@ -9955,6 +10202,183 @@
                 });
             }
         });
+
+        // --- 🔐 Admin Permissions & Management ---
+        window.currentUserRole = 'guest';
+        window.currentUserPermissions = [];
+
+        // Helper to check permissions
+        window.hasPermission = function(permission) {
+            if (window.currentUserRole === 'super_admin') return true;
+            if (window.currentUserPermissions && window.currentUserPermissions.includes('all')) return true;
+            return window.currentUserPermissions && window.currentUserPermissions.includes(permission);
+        };
+
+        async function checkAdminAccess() {
+            if (!firebaseUser) return;
+            
+            // Hardcoded super admin for bootstrap (replace with your email)
+            const SUPER_ADMINS = ['princealexdigital@gmail.com', 'noreply@princealex.pro']; 
+            
+            try {
+                const adminDocRef = doc(db, 'admins', firebaseUser.email);
+                const adminDoc = await getDoc(adminDocRef);
+                
+                if (adminDoc.exists()) {
+                    const data = adminDoc.data();
+                    window.currentUserRole = data.role;
+                    window.currentUserPermissions = data.permissions || [];
+                } else if (SUPER_ADMINS.includes(firebaseUser.email)) {
+                    // Auto-grant super admin if listed in hardcoded list
+                    window.currentUserRole = 'super_admin';
+                    // Optionally auto-create the doc
+                    await setDoc(adminDocRef, {
+                        email: firebaseUser.email,
+                        name: firebaseUser.displayName || 'Super Admin',
+                        role: 'super_admin',
+                        permissions: ['all'],
+                        createdAt: new Date().toISOString()
+                    });
+                } else {
+                    // Default to guest/no access if not in admins collection
+                    window.currentUserRole = 'guest';
+                    window.currentUserPermissions = [];
+                }
+                
+                // Show/Hide System Section based on role
+                const systemSection = document.getElementById('system-nav-section');
+                if (systemSection) {
+                    systemSection.style.display = window.currentUserRole === 'super_admin' ? 'block' : 'none';
+                }
+                
+            } catch (e) {
+                console.error("Error checking admin access", e);
+            }
+        }
+
+        window.loadAdminUsers = async function() {
+            const list = document.getElementById('admin-users-list');
+            list.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>Loading...</p></div>';
+            
+            try {
+                const snapshot = await getDocs(collection(db, 'admins'));
+                if (snapshot.empty) {
+                    list.innerHTML = '<div class="empty-state"><p>No admin users found.</p></div>';
+                    return;
+                }
+                
+                list.innerHTML = '';
+                snapshot.forEach(docSnap => {
+                    const admin = docSnap.data();
+                    const item = document.createElement('div');
+                    item.className = 'admin-list-item';
+                    item.innerHTML = `
+                        <div>
+                            <strong>${admin.name || 'Admin'}</strong> (${admin.email})<br>
+                            <span class="status-badge ${admin.role === 'super_admin' ? 'status-confirmed' : 'status-pending'}">${admin.role}</span>
+                        </div>
+                        <div>
+                            <button class="edit-btn" onclick="editAdminUser('${docSnap.id}')" style="margin-right: 5px;">Edit</button>
+                            ${admin.email !== firebaseUser.email ? `<button class="delete-btn" onclick="deleteAdminUser('${docSnap.id}')">Delete</button>` : ''}
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+            } catch (e) {
+                console.error(e);
+                list.innerHTML = '<p style="color:red; text-align:center;">Error loading admins.</p>';
+            }
+        };
+
+        window.openAdminUserModal = function() {
+            const form = document.getElementById('admin-user-form');
+            form.reset();
+            document.getElementById('admin-user-email').disabled = false; // Enable email for new user
+            document.getElementById('admin-modal-title').textContent = 'Add Admin User';
+            
+            // Reset permissions
+            document.querySelectorAll('.perm-checkbox').forEach(cb => cb.checked = false);
+            togglePermissionsGroup();
+            
+            document.getElementById('admin-user-modal').style.display = 'flex';
+        };
+
+        window.editAdminUser = async function(email) {
+            try {
+                const docRef = doc(db, 'admins', email);
+                const docSnap = await getDoc(docRef);
+                if (!docSnap.exists()) return;
+                
+                const data = docSnap.data();
+                document.getElementById('admin-user-email').value = data.email;
+                document.getElementById('admin-user-email').disabled = true; // Disable email editing
+                document.getElementById('admin-user-name').value = data.name || '';
+                document.getElementById('admin-user-role').value = data.role || 'admin';
+                
+                // Set permissions
+                const perms = data.permissions || [];
+                document.querySelectorAll('.perm-checkbox').forEach(cb => {
+                    cb.checked = perms.includes(cb.value);
+                });
+                
+                togglePermissionsGroup();
+                document.getElementById('admin-modal-title').textContent = 'Edit Admin User';
+                document.getElementById('admin-user-modal').style.display = 'flex';
+            } catch (e) {
+                console.error(e);
+                showModal('Error', 'Failed to load admin details.', true);
+            }
+        };
+
+        window.closeAdminUserModal = function() {
+            document.getElementById('admin-user-modal').style.display = 'none';
+        };
+        
+        // Toggle permissions visibility based on role
+        function togglePermissionsGroup() {
+            const role = document.getElementById('admin-user-role').value;
+            const group = document.getElementById('permissions-group');
+            group.style.display = role === 'admin' ? 'block' : 'none';
+        }
+        
+        document.getElementById('admin-user-role').addEventListener('change', togglePermissionsGroup);
+
+        document.getElementById('admin-user-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('admin-user-email').value.trim();
+            const name = document.getElementById('admin-user-name').value.trim();
+            const role = document.getElementById('admin-user-role').value;
+            
+            let permissions = [];
+            if (role === 'admin') {
+                document.querySelectorAll('.perm-checkbox:checked').forEach(cb => permissions.push(cb.value));
+            } else {
+                permissions = ['all']; // Super admin gets all
+            }
+
+            try {
+                // We use email as the document ID for uniqueness
+                await setDoc(doc(db, 'admins', email), {
+                    email, name, role, permissions, updatedAt: new Date().toISOString()
+                }, { merge: true });
+                
+                showModal('Success', 'Admin user saved successfully.');
+                closeAdminUserModal();
+                loadAdminUsers();
+            } catch (err) {
+                showModal('Error', 'Failed to save admin user: ' + err.message, true);
+            }
+        });
+
+        window.deleteAdminUser = async function(email) {
+            if (!confirm('Are you sure you want to remove this admin?')) return;
+            try {
+                await deleteDoc(doc(db, 'admins', email));
+                loadAdminUsers();
+            } catch (e) {
+                showModal('Error', 'Failed to delete admin.', true);
+            }
+        };
 
 </script>
 
@@ -10007,6 +10431,11 @@
 
     // Save changes to an existing order
     window.adminSaveOrder = async function adminSaveOrder() {
+        if (!window.hasPermission('orders')) {
+            adminMessage('Permission Denied: You cannot edit orders.', true);
+            return;
+        }
+
         try {
             const panel = document.getElementById('admin-order-result');
             const docId = panel && panel.getAttribute('data-docid');
@@ -10053,7 +10482,23 @@
 
     // Cancel order (set status to cancelled)
     window.adminCancelOrder = async function adminCancelOrder() {
+        if (!window.hasPermission('orders')) {
+            adminMessage('Permission Denied: You cannot cancel orders.', true);
+            return;
+        }
+
         try {
+            const panel = document.getElementById('admin-order-result');
+            const docId = panel && panel.getAttribute('data-docid');
+            if (!docId) { adminMessage('No loaded order to cancel.', true); return; }
+
+            const orderRef = doc(db, 'orders', docId);
+            const orderSnap = await getDoc(orderRef);
+            if (!orderSnap.exists() || orderSnap.data().status === 'Cancelled') {
+                adminMessage('Order is already cancelled or does not exist.', true);
+                return;
+            }
+
             const confirmHtml = `
                 <div style="text-align: center;">
                     <p>Are you sure you want to <strong>cancel</strong> this order?</p>
@@ -10074,6 +10519,11 @@
     };
 
     window.confirmAdminCancelOrder = async function() {
+        if (!window.hasPermission('orders')) {
+            adminMessage('Permission Denied: You cannot cancel orders.', true);
+            return;
+        }
+
         closeModal();
         const panel = document.getElementById('admin-order-result');
         const docId = panel && panel.getAttribute('data-docid');
@@ -10105,6 +10555,11 @@
 
     // Create a new order (admin-facing quick create)
     window.adminCreateOrder = async function adminCreateOrder() {
+        if (!window.hasPermission('orders')) {
+            adminMessage('Permission Denied: You cannot create orders.', true);
+            return;
+        }
+
         try {
             // Support both admin panel fields (admin-...) and the simple create form (create-...)
             const el = id => document.getElementById(id);
@@ -10370,9 +10825,8 @@
         const customerName = order.customer?.name || order.customer?.fullName || 'N/A';
         const customerPhone = order.customer?.phone || order.customer?.phoneNumber || 'N/A';
         // Correctly calculate total. Use order.total if it exists. 
-        // Otherwise, reduce the items array, summing up the 'totalPrice' for each item.
-        // Add a check for `order.items` to prevent errors if it's missing.
         const orderTotal = order.total || (Array.isArray(order.items) ? order.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0) : 0);
+        const isCancelled = order.status === 'Cancelled';
 
         editOrderResult.innerHTML = `
             <div class="order-card">
@@ -10381,10 +10835,10 @@
                 <p>Status: <span class="status-badge status-${order.status || 'pending'}">${order.status || 'Pending'}</span></p>
                 <p>Total: <strong>KES ${orderTotal.toFixed(2)}</strong></p>
                 <div class="order-actions">
-                    <button class="btn-view" onclick="window.openAdminOrderEditModal('${order.id}')">
+                    <button class="btn-view ${isCancelled ? 'disabled-btn' : ''}" onclick="window.openAdminOrderEditModal('${order.id}')" title="${isCancelled ? 'Cannot edit a cancelled order' : 'Edit This Order'}">
                         <i class="fas fa-edit"></i> Edit This Order
                     </button>
-                    <button class="action-btn cancel" onclick="window.cancelOrderById('${order.id}')">
+                    <button class="action-btn cancel ${isCancelled ? 'disabled-btn' : ''}" onclick="window.cancelOrderById('${order.id}')" title="${isCancelled ? 'Order is already cancelled' : 'Cancel Order'}">
                         <i class="fas fa-times-circle"></i> Cancel Order
                     </button>
                 </div>
@@ -10419,6 +10873,12 @@
             const orderSnap = await getDoc(orderRef);
             if (!orderSnap.exists()) {
                 showModal('Error', 'Order not found!', true);
+                return;
+            }
+
+            const orderData = orderSnap.data();
+            if (orderData.status === 'Cancelled' && window.currentUserRole !== 'super_admin') {
+                showModal('Action Not Allowed', 'A cancelled order cannot be edited. Only Super Admins can perform this action.', true);
                 return;
             }
 
