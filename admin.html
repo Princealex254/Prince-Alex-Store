@@ -5288,7 +5288,7 @@
     </div>
 
     <footer>
-        <p>&copy; 2024 Prince Alex Store Admin. All Rights Reserved.</p>
+        <p>&copy; 2025 Prince Alex Store Admin. All Rights Reserved.</p>
     </footer>
 
     <script type="module">
@@ -5448,17 +5448,16 @@
 
         // --- Professional Admin Page Switching Logic ---
         function switchAdminPage(pageName) {
-            // Permission Check
-            if (window.currentUserRole !== 'super_admin') {
-                let requiredPerm = pageName;
-                // Map sub-pages to main permission keys
-                if (pageName === 'add-order' || pageName === 'edit-orders') requiredPerm = 'orders';
-                if (pageName === 'pending-emails' || pageName === 'manage-emails') requiredPerm = 'emails';
-                
-                if (!window.hasPermission(requiredPerm)) {
-                    showModal('Access Denied', 'You have no access to this section.', true);
-                    return;
-                }
+            // Disable static buttons based on permissions
+            if (pageName === 'products') {
+                const btn = document.querySelector('#add-product-form button[type="submit"]');
+                if(btn) btn.disabled = !window.hasPermission('products');
+            } else if (pageName === 'vouchers') {
+                const btn = document.getElementById('new-voucher-btn');
+                if(btn) btn.disabled = !window.hasPermission('vouchers');
+            } else if (pageName === 'add-order') {
+                const btn = document.getElementById('admin-create-order-form-btn');
+                if(btn) btn.disabled = !window.hasPermission('orders');
             }
 
             const adminPages = document.querySelectorAll('.admin-page');
@@ -5938,6 +5937,7 @@
 
         async function loadProducts() {
             const productsList = document.getElementById('products-list');
+            const hasProductPerm = window.hasPermission('products');
             productsList.innerHTML = '<p style="text-align: center;">Loading products...</p>';
             try {
                 const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
@@ -5971,8 +5971,8 @@
                             </div>
                         </div>
                         <div style="display: flex; gap: 10px;">
-                            <button class="edit-btn" onclick="editProduct('${doc.id}')" style="background-color: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Edit</button>
-                            <button class="delete-btn" onclick="deleteProduct('${doc.id}')" style="background-color: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Delete</button>
+                            <button class="edit-btn" onclick="editProduct('${doc.id}')" style="background-color: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; ${!hasProductPerm ? 'opacity:0.5; cursor:not-allowed;' : ''}" ${!hasProductPerm ? 'disabled' : ''}>Edit</button>
+                            <button class="delete-btn" onclick="deleteProduct('${doc.id}')" style="background-color: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; ${!hasProductPerm ? 'opacity:0.5; cursor:not-allowed;' : ''}" ${!hasProductPerm ? 'disabled' : ''}>Delete</button>
                         </div>
                     `;
                     productsList.appendChild(productItem);
@@ -6252,6 +6252,7 @@
                 
                 const isCancelled = order.status === 'Cancelled';
                 const isRestricted = isCancelled && window.currentUserRole !== 'super_admin';
+                const hasOrderPerm = window.hasPermission('orders');
                 const statusClass = order.status ? order.status.toLowerCase().replace(/\s/g, '-') : 'pending';
                 
                 orderCard.innerHTML = `
@@ -6305,7 +6306,7 @@
                         <button class="action-btn btn-view" onclick="viewOrderDetails('${order.id}')">
                             <i class="fas fa-eye"></i> View Details
                         </button>
-                        <button class="action-btn btn-status ${isRestricted ? 'disabled-btn' : ''}" onclick="openStatusUpdateModal('${order.id}')" title="${isRestricted ? 'Order is cancelled' : 'Update Status'}">
+                        <button class="action-btn btn-status ${isRestricted || !hasOrderPerm ? 'disabled-btn' : ''}" onclick="openStatusUpdateModal('${order.id}')" title="${isRestricted ? 'Order is cancelled' : (!hasOrderPerm ? 'Permission denied' : 'Update Status')}">
                             <i class="fas fa-edit"></i> Update Status
                         </button>
                     </div>
@@ -8052,6 +8053,7 @@
         // --- 📩 4. Manage Contact Submissions ---
         async function loadContactSubmissions() {
             const messagesList = document.getElementById('contact-submissions-list');
+            const hasContactPerm = window.hasPermission('contacts');
             messagesList.innerHTML = '<p style="text-align: center;">Loading messages...</p>';
             try {
                 const q = query(collection(db, "contactSubmissions"), orderBy("createdAt", "desc"));
@@ -8075,7 +8077,7 @@
                             <br>
                             <small>Date: ${new Date(message.createdAt).toLocaleString()}</small>
                         </div>
-                        <button class="delete-btn" onclick="deleteContactSubmission('${msgDoc.id}')">Delete</button>
+                        <button class="delete-btn" onclick="deleteContactSubmission('${msgDoc.id}')" ${!hasContactPerm ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>Delete</button>
                     `;
                     messagesList.appendChild(messageItem);
                 });
@@ -8201,7 +8203,11 @@
             }
             
             if (actionsSection) {
-                actionsSection.style.display = 'block';
+                if (window.hasPermission('customers')) {
+                    actionsSection.style.display = 'block';
+                } else {
+                    actionsSection.style.display = 'none';
+                }
             } else {
                 console.error('Customer actions section not found');
             }
@@ -9125,6 +9131,7 @@
         // Display vouchers in the UI
         function displayVouchers() {
             const vouchersList = document.getElementById('vouchers-list');
+            const hasVoucherPerm = window.hasPermission('vouchers');
             
             if (filteredVouchers.length === 0) {
                 vouchersList.innerHTML = `
@@ -9179,13 +9186,13 @@
                         </div>
                         
                         <div class="voucher-actions-card">
-                            <button class="voucher-action-btn edit" onclick="editVoucher('${voucher.id}')">
+                            <button class="voucher-action-btn edit" onclick="editVoucher('${voucher.id}')" ${!hasVoucherPerm ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
                                 <i class="fas fa-edit"></i> Edit
                             </button>
-                            <button class="voucher-action-btn toggle" onclick="toggleVoucherStatus('${voucher.id}', ${!voucher.isActive})">
+                            <button class="voucher-action-btn toggle" onclick="toggleVoucherStatus('${voucher.id}', ${!voucher.isActive})" ${!hasVoucherPerm ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
                                 <i class="fas fa-power-off"></i> ${voucher.isActive ? 'Deactivate' : 'Activate'}
                             </button>
-                            <button class="voucher-action-btn delete" onclick="deleteVoucher('${voucher.id}')">
+                            <button class="voucher-action-btn delete" onclick="deleteVoucher('${voucher.id}')" ${!hasVoucherPerm ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
                                 <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>
@@ -9670,6 +9677,7 @@
 
         function createEmailItem(emailData) {
             const emailItem = document.createElement('div');
+            const hasEmailPerm = window.hasPermission('emails');
             emailItem.className = 'email-item';
             emailItem.innerHTML = `
                 <div class="email-header">
@@ -9679,10 +9687,10 @@
                         <span style="color: var(--text-color);">${new Date(emailData.createdAt).toLocaleString()}</span>
                     </div>
                     <div class="email-actions-item">
-                        <button class="email-action-btn send" onclick="sendPendingEmail('${emailData.id}')">
+                        <button class="email-action-btn send" onclick="sendPendingEmail('${emailData.id}')" ${!hasEmailPerm ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
                             <i class="fas fa-paper-plane"></i> Send
                         </button>
-                        <button class="email-action-btn delete" onclick="deletePendingEmail('${emailData.id}')">
+                        <button class="email-action-btn delete" onclick="deletePendingEmail('${emailData.id}')" ${!hasEmailPerm ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
                             <i class="fas fa-trash"></i> Delete
                         </button>
                     </div>
@@ -9979,6 +9987,7 @@
 
     function createManageEmailItem(emailData) {
         const emailItem = document.createElement('div');
+        const hasEmailPerm = window.hasPermission('emails');
         emailItem.className = 'email-item';
         
         const status = emailData.delivery ? emailData.delivery.state : (emailData.status || 'PENDING');
@@ -9998,10 +10007,10 @@
                     <span style="color: var(--text-color); margin-left: auto;">${emailData.createdAt ? new Date(emailData.createdAt).toLocaleString() : 'N/A'}</span>
                 </div>
                 <div class="email-actions-item">
-                    <button class="email-action-btn send" onclick="resendEmail('${emailData.id}')">
+                    <button class="email-action-btn send" onclick="resendEmail('${emailData.id}')" ${!hasEmailPerm ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
                         <i class="fas fa-paper-plane"></i> Resend
                     </button>
-                    <button class="email-action-btn delete" onclick="deleteEmail('${emailData.id}')">
+                    <button class="email-action-btn delete" onclick="deleteEmail('${emailData.id}')" ${!hasEmailPerm ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
