@@ -9,6 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
     <style>
         :root {
             --primary-color: #4CAF50; /* A fresh green */
@@ -290,7 +293,7 @@
         .admin-section {
             margin-top: 24px;
             background: var(--card-bg);
-            padding: 40px;
+            padding: 30px;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             border: 1px solid var(--border-color);
@@ -3155,7 +3158,7 @@
 
         /* Admin Dashboard Layout */
         #admin-dashboard {
-            display: flex;
+            display: block;
             min-height: 100vh;
             background: var(--light-bg);
         }
@@ -3367,9 +3370,9 @@
         /* Content Area */
         .admin-content {
             flex: 1;
-            padding: 24px;
+            padding: 20px;
             max-width: 1600px; /* Add a max-width for very large screens */
-            margin: 0 auto;    /* Center the content area */
+            margin: 0;         /* Align content to the left near sidebar */
             overflow-y: auto;
         }
 
@@ -4135,6 +4138,9 @@
                         <span>Pending Emails</span>
                         <span class="nav-badge" id="pending-emails-badge">0</span>
                     </a>
+                    <a href="#" class="nav-item" data-page="manage-emails">
+                        <i class="fas fa-envelope-open-text"></i>
+                        <span>Manage Emails</span></a>
                 </div>
                 
                 <div class="nav-section">
@@ -4870,6 +4876,40 @@
                     </div>
                 </div>
 
+            <!-- Manage Emails Section -->
+            <div id="admin-manage-emails-section" class="admin-section admin-page">
+                <div class="section-header">
+                    <h2>Manage Emails</h2>
+                    <p>View, resend, and delete emails from the mail collection</p>
+                </div>
+
+                <div class="email-actions" style="align-items: center;">
+                    <div style="display: flex; align-items: center; margin-right: 15px; background: var(--white); padding: 8px 12px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color);">
+                        <input type="checkbox" id="select-all-emails" style="width: 18px; height: 18px; cursor: pointer;">
+                        <label for="select-all-emails" style="margin-left: 8px; cursor: pointer; font-weight: 600; margin-bottom: 0; user-select: none;">Select All</label>
+                    </div>
+                    <button id="delete-selected-emails-btn" class="email-action-btn delete" style="margin-right: 15px; display: none; padding: 10px 16px; font-size: 14px;">
+                        <i class="fas fa-trash"></i> Delete Selected (<span id="selected-count">0</span>)
+                    </button>
+                    <select id="email-status-filter" class="filter-select" style="margin-right: 10px; max-width: 200px;">
+                        <option value="all">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="sent">Sent / Success</option>
+                        <option value="error">Error / Failed</option>
+                    </select>
+                    <button id="refresh-all-emails-btn" class="refresh-btn">
+                        <i class="fas fa-sync-alt"></i> Refresh Emails
+                    </button>
+                </div>
+
+                <div id="manage-emails-list" class="pending-emails-container">
+                    <div class="loading-state">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Loading emails...</p>
+                    </div>
+                </div>
+            </div>
+
                 <!-- Voucher Management Section -->
                 <div id="admin-vouchers-section" class="admin-section admin-page">
                     <div class="section-header">
@@ -5125,6 +5165,17 @@
                     <input type="datetime-local" id="voucher-expiry-date">
                     <small>When this voucher expires (optional)</small>
                 </div>
+
+                <div class="form-group">
+                    <label for="voucher-customer-email">Specific Customer Email (Optional)</label>
+                    <input type="email" id="voucher-customer-email" placeholder="e.g., customer@example.com">
+                    <small>If set, only this customer can redeem. Voucher will be emailed to them.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="voucher-terms">Terms & Conditions (Optional)</label>
+                    <textarea id="voucher-terms" rows="2" placeholder="e.g., Valid for vegetables only. One use per customer." style="width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: var(--border-radius-sm); font-size: 14px; font-family: inherit;"></textarea>
+                </div>
                 
                 <div class="form-group">
                     <label>
@@ -5350,6 +5401,8 @@
                 // No initial data load needed for edit-orders page
             } else if (pageName === 'contacts') {
                 loadContactSubmissions();
+            } else if (pageName === 'manage-emails') {
+                loadManageEmails();
             }
 
             if (pageTitle && pageTitles[pageName]) {
@@ -6808,6 +6861,113 @@
         }
 
         // --- Email Notification Functions ---
+        async function generateReceiptBase64(order) {
+            if (!window.jspdf) {
+                console.warn("jsPDF not loaded");
+                return null;
+            }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Branding colors
+            const primaryColor = [76, 175, 80]; // #4CAF50
+            
+            // Header
+            doc.setFillColor(...primaryColor);
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(22);
+            doc.setFont("helvetica", "bold");
+            doc.text("Prince Alex Store", 105, 20, { align: "center" });
+            doc.setFontSize(12);
+            doc.setFont("helvetica", "normal");
+            doc.text("Fresh Vegetables & Groceries", 105, 30, { align: "center" });
+            
+            // Receipt Info
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(16);
+            doc.setFont("helvetica", "bold");
+            doc.text("OFFICIAL RECEIPT", 105, 55, { align: "center" });
+            
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            
+            // Customer & Order Details
+            const leftX = 15;
+            const rightX = 110;
+            let y = 70;
+            
+            doc.text(`Order ID: ${order.id}`, leftX, y);
+            doc.text(`Date: ${new Date(order.date).toLocaleString()}`, rightX, y);
+            y += 7;
+            doc.text(`Customer: ${order.customer ? order.customer.fullName : 'Valued Customer'}`, leftX, y);
+            doc.text(`Phone: ${order.customer ? order.customer.phoneNumber : 'N/A'}`, rightX, y);
+            y += 7;
+            doc.text(`Payment Method: ${order.paymentMethod || 'N/A'}`, leftX, y);
+            doc.text(`Status: ${order.status || 'On Transit'}`, rightX, y);
+            
+            // Table
+            const tableColumn = ["Item", "Quantity", "Unit Price", "Total"];
+            const tableRows = [];
+            
+            const items = order.items || [];
+            items.forEach(item => {
+                const itemData = [
+                    item.name,
+                    `${item.quantity} ${item.unit || ''}`,
+                    `KES ${item.price.toFixed(2)}`,
+                    `KES ${(item.price * item.quantity).toFixed(2)}`
+                ];
+                tableRows.push(itemData);
+            });
+            
+            doc.autoTable({
+                head: [tableColumn],
+                body: tableRows,
+                startY: 95,
+                theme: 'grid',
+                headStyles: { fillColor: primaryColor, textColor: 255 },
+                styles: { fontSize: 10, cellPadding: 3 },
+                columnStyles: {
+                    0: { cellWidth: 80 },
+                    3: { halign: 'right' }
+                }
+            });
+            
+            let finalY = doc.lastAutoTable.finalY + 10;
+            
+            // Totals
+            const subtotal = order.subtotal || items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+            const deliveryFee = order.transportationFee || order.deliveryFee || 0;
+            const total = order.total || (subtotal + deliveryFee);
+            
+            doc.setFont("helvetica", "normal");
+            doc.text(`Subtotal:`, 140, finalY);
+            doc.text(`KES ${subtotal.toFixed(2)}`, 195, finalY, { align: "right" });
+            finalY += 7;
+            
+            doc.text(`Delivery Fee:`, 140, finalY);
+            doc.text(`KES ${deliveryFee.toFixed(2)}`, 195, finalY, { align: "right" });
+            finalY += 7;
+            
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(12);
+            doc.setTextColor(...primaryColor);
+            doc.text(`Total Amount:`, 140, finalY);
+            doc.text(`KES ${total.toFixed(2)}`, 195, finalY, { align: "right" });
+            
+            // Footer
+            doc.setTextColor(100, 100, 100);
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            const pageHeight = doc.internal.pageSize.height;
+            doc.text("Thank you for shopping with Prince Alex Store!", 105, pageHeight - 20, { align: "center" });
+            doc.text("For support, contact: info@princealex.pro", 105, pageHeight - 15, { align: "center" });
+            
+            return doc.output('datauristring').split(',')[1];
+        }
+
         async function sendStatusUpdateEmail(order, newStatus) {
             try {
                 const customerEmail = order.userEmail;
@@ -6823,10 +6983,50 @@
                 const voucherCode = 'TRANSIT' + Math.random().toString(36).substring(2, 8).toUpperCase();
                 const voucherValue = 50; // KES 50 voucher
 
+                let attachments = [];
+                try {
+                    const pdfBase64 = await generateReceiptBase64(order);
+                    if (pdfBase64) {
+                        attachments.push({
+                            filename: `Receipt_${order.id}.pdf`,
+                            content: pdfBase64,
+                            encoding: 'base64'
+                        });
+                    }
+                } catch (pdfErr) {
+                    console.error("Error generating PDF receipt:", pdfErr);
+                }
+
+                const now = new Date();
+                const voucherData = {
+                    id: voucherCode,
+                    description: `KES ${voucherValue} off next order for being on transit`,
+                    discountType: 'fixed',
+                    discountAmount: voucherValue,
+                    minOrderAmount: 100,
+                    usageLimit: 1,
+                    usageCount: 0,
+                    expiryDate: new Date(now.setDate(now.getDate() + 7)).toISOString(), // Expires in 7 days
+                    isActive: true,
+                    allowedEmail: customerEmail,
+                    terms: 'One-time use. Minimum order of KES 100.',
+                    createdAt: new Date().toISOString(),
+                    createdBy: firebaseUser ? firebaseUser.uid : 'admin'
+                };
+
+                // Save voucher to Firestore
+                const voucherRef = doc(db, 'vouchers', voucherCode);
+                await setDoc(voucherRef, voucherData);
+
+                // Log activity
+                console.log(`Generated voucher ${voucherCode} for ${customerEmail}`);
+
+
                 const emailData = {
                     to: customerEmail,
                     message: {
                         subject: `🚚 Your Order ${order.id} is On Transit!`,
+                        attachments: attachments,
                         html: `
                             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                                 <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); padding: 30px; text-align: center; color: white;">
@@ -6850,7 +7050,7 @@
                                     </div>
 
                                     <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
-                                        <h3 style="color: #856404; margin: 0 0 15px 0;">🎁 Special Voucher!</h3>
+                                        <h3 style="color: #856404; margin: 0 0 15px 0;">🎁 On-The-Way Gift!</h3>
                                         <p style="margin: 5px 0; color: #856404;">As a thank you for your patience, here's a special voucher for your next order:</p>
                                         <div style="background: #FF6B35; color: white; padding: 15px; border-radius: 8px; margin: 15px 0;">
                                             <div style="font-size: 24px; font-weight: 700;">${voucherCode}</div>
@@ -6882,14 +7082,14 @@
                             </div>
                         `
                     },
-                    emailType: 'status_update',
+                    emailType: 'order_transit',
                     orderId: order.id,
                     customerEmail: customerEmail,
                     customerName: customerName,
                     adminEmail: firebaseUser.email,
                     status: newStatus,
                     voucherCode: voucherCode,
-                    voucherValue: voucherValue,
+                    voucherDiscount: voucherValue,
                     createdAt: new Date().toISOString(),
                     emailStatus: 'pending',
                     priority: 'high'
@@ -6897,6 +7097,7 @@
 
                 // Save email to mail collection
                 await addDoc(collection(db, "mail"), emailData);
+
                 console.log(`✅ Status update email queued for ${customerEmail}`);
 
             } catch (error) {
@@ -6916,8 +7117,8 @@
         }
 
         // --- Order Editing Functions ---
-        let currentEditingOrder = null;
-        let originalOrderData = null; // Declare globally
+        // Global state for the order currently being edited in a modal
+        window.currentEditingOrder = null;
         window.toggleOrderEditMode = function() {
             let orderToEdit;
 
@@ -7107,8 +7308,8 @@
 
         window.closeOrderEditModal = function() {
             document.getElementById('order-edit-modal').style.display = 'none';
-            currentEditingOrder = null;
-            originalOrderData = null;
+            window.currentEditingOrder = null;
+            window.originalOrderSnapshot = null; // Also clear the snapshot
             document.getElementById('modification-notes').value = '';
         }
 
@@ -8026,8 +8227,21 @@
 
             try {
                 const ordersCol = collection(db, "orders");
-                const q = query(ordersCol, where("userId", "==", currentCustomer.id), orderBy("date", "desc"));
-                const querySnapshot = await getDocs(q);
+                let q = query(ordersCol, where("userId", "==", currentCustomer.id), orderBy("date", "desc"));
+                let querySnapshot;
+
+                try {
+                    querySnapshot = await getDocs(q);
+                } catch (err) {
+                    // Fallback if index is missing
+                    if (err.code === 'failed-precondition' || err.message.includes('index')) {
+                        console.warn("Index missing for orders query, falling back to client-side sorting.");
+                        q = query(ordersCol, where("userId", "==", currentCustomer.id));
+                        querySnapshot = await getDocs(q);
+                    } else {
+                        throw err;
+                    }
+                }
 
                 let ordersHtml = `
                     <div style="text-align: left; max-width: 600px;">
@@ -8037,19 +8251,23 @@
                 if (querySnapshot.empty) {
                     ordersHtml += '<p style="text-align: center; color: #666;">No orders found for this customer.</p>';
                 } else {
-                    querySnapshot.forEach(doc => {
-                        const order = doc.data();
-                        const itemsSummary = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
+                    // Convert to array and sort client-side to handle fallback case
+                    const orders = [];
+                    querySnapshot.forEach(doc => orders.push({ id: doc.id, ...doc.data() }));
+                    orders.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                    orders.forEach(order => {
+                        const itemsSummary = (order.items || []).map(item => `${item.name} (x${item.quantity})`).join(', ');
                         
                         ordersHtml += `
-                            <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                            <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin: 16px 0;">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                    <strong>Order #${doc.id}</strong>
-                                    <span class="status-${order.status.toLowerCase()}">${order.status}</span>
+                                    <strong>Order #${order.id}</strong>
+                                    <span class="status-${(order.status || 'pending').toLowerCase()}">${order.status || 'Pending'}</span>
                                 </div>
                                 <p><strong>Date:</strong> ${new Date(order.date).toLocaleString()}</p>
-                                <p><strong>Total:</strong> KES ${order.total.toFixed(2)}</p>
-                                <p><strong>Payment:</strong> ${order.paymentMethod}</p>
+                                <p><strong>Total:</strong> KES ${(order.total || 0).toFixed(2)}</p>
+                                <p><strong>Payment:</strong> ${order.paymentMethod || 'N/A'}</p>
                                 <p><strong>Items:</strong> ${itemsSummary}</p>
                             </div>
                         `;
@@ -8074,8 +8292,21 @@
 
             try {
                 const referralsCol = collection(db, "referrals");
-                const q = query(referralsCol, where("referrerEmail", "==", currentCustomer.email), orderBy("date", "desc"));
-                const querySnapshot = await getDocs(q);
+                let q = query(referralsCol, where("referrerEmail", "==", currentCustomer.email), orderBy("date", "desc"));
+                let querySnapshot;
+
+                try {
+                    querySnapshot = await getDocs(q);
+                } catch (err) {
+                    // Fallback if index is missing
+                    if (err.code === 'failed-precondition' || err.message.includes('index')) {
+                        console.warn("Index missing for referrals query, falling back to client-side sorting.");
+                        q = query(referralsCol, where("referrerEmail", "==", currentCustomer.email));
+                        querySnapshot = await getDocs(q);
+                    } else {
+                        throw err;
+                    }
+                }
 
                 let referralsHtml = `
                     <div style="text-align: left; max-width: 600px;">
@@ -8085,15 +8316,19 @@
                 if (querySnapshot.empty) {
                     referralsHtml += '<p style="text-align: center; color: #666;">No referrals found for this customer.</p>';
                 } else {
-                    querySnapshot.forEach(doc => {
-                        const referral = doc.data();
+                    // Convert to array and sort client-side
+                    const referrals = [];
+                    querySnapshot.forEach(doc => referrals.push({ id: doc.id, ...doc.data() }));
+                    referrals.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                    referrals.forEach(referral => {
                         const statusClass = referral.status === 'pending' ? 'status-pending' : 
                                           referral.status === 'accepted' ? 'status-accepted' : 'status-completed';
                         
                         referralsHtml += `
                             <div style="background: #f8f9fa; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                                    <strong>Referral #${doc.id}</strong>
+                                    <strong>Referral #${referral.id}</strong>
                                     <span class="status-badge ${statusClass}">${referral.status}</span>
                                 </div>
                                 <p><strong>Referred:</strong> ${referral.refereeEmail}</p>
@@ -8610,6 +8845,7 @@
             try {
                 console.log('Loading vouchers...');
                 const vouchersRef = collection(db, 'vouchers');
+                const querySnapshot = await getDocs(vouchersRef);
                 
                 allVouchers = [];
                 querySnapshot.forEach((doc) => {
@@ -8780,6 +9016,8 @@
             document.getElementById('voucher-min-order').value = '';
             document.getElementById('voucher-usage-limit').value = '';
             document.getElementById('voucher-expiry-date').value = '';
+            document.getElementById('voucher-customer-email').value = '';
+            document.getElementById('voucher-terms').value = '';
             document.getElementById('voucher-is-active').checked = true;
             
             // Reset button
@@ -8816,6 +9054,8 @@
                 const minOrderEl = document.getElementById('voucher-min-order');
                 const usageLimitEl = document.getElementById('voucher-usage-limit');
                 const expiryDateEl = document.getElementById('voucher-expiry-date');
+                const customerEmailEl = document.getElementById('voucher-customer-email');
+                const termsEl = document.getElementById('voucher-terms');
                 const isActiveEl = document.getElementById('voucher-is-active');
                 
                 // Get form values
@@ -8826,6 +9066,8 @@
                 const minOrderAmount = minOrderEl && minOrderEl.value ? parseFloat(minOrderEl.value) : null;
                 const usageLimit = usageLimitEl && usageLimitEl.value ? parseInt(usageLimitEl.value) : null;
                 const expiryDate = expiryDateEl ? expiryDateEl.value : '';
+                const customerEmail = customerEmailEl ? customerEmailEl.value.trim() : '';
+                const terms = termsEl ? termsEl.value.trim() : '';
                 const isActive = isActiveEl ? isActiveEl.checked : true;
                 
                 // Basic validation
@@ -8873,6 +9115,8 @@
                     usageCount: 0,
                     expiryDate: expiryDate || null,
                     isActive: isActive,
+                    allowedEmail: customerEmail || null,
+                    terms: terms || null,
                     createdAt: new Date().toISOString(),
                     createdBy: firebaseUser ? firebaseUser.uid : 'admin'
                 };
@@ -8886,6 +9130,59 @@
                 const voucherRef = doc(db, 'vouchers', voucherCode);
                 await setDoc(voucherRef, voucherData);
                 
+                // Send email if customer email is provided
+                if (customerEmail) {
+                    try {
+                        const discountText = discountType === 'percentage' ? `${discountAmount}%` : `KES ${discountAmount}`;
+                        const expiryText = expiryDate ? new Date(expiryDate).toLocaleDateString() : 'No expiry';
+                        
+                        await addDoc(collection(db, 'mail'), {
+                            to: customerEmail,
+                            message: {
+                                subject: `🎁 You've received a voucher! - ${discountText} OFF`,
+                                html: `
+                                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                                        <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); padding: 30px; text-align: center; color: white;">
+                                            <h1 style="margin: 0; font-size: 28px;">🎁 Special Voucher For You!</h1>
+                                            <p style="margin: 10px 0 0 0; font-size: 16px;">A gift from Prince Alex Store</p>
+                                        </div>
+                                        <div style="padding: 30px; background: white; border: 1px solid #eee;">
+                                            <p>Hello,</p>
+                                            <p>We've created a special voucher just for you!</p>
+                                            
+                                            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; border: 2px dashed #4CAF50;">
+                                                <p style="margin: 0; color: #666; font-size: 14px;">YOUR CODE</p>
+                                                <h2 style="margin: 10px 0; color: #333; letter-spacing: 2px;">${voucherCode}</h2>
+                                                <p style="margin: 0; color: #4CAF50; font-weight: bold; font-size: 18px;">${discountText} OFF</p>
+                                            </div>
+                                            
+                                            <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; font-size: 14px;">
+                                                <p style="margin: 5px 0;"><strong>Description:</strong> ${description}</p>
+                                                <p style="margin: 5px 0;"><strong>Expires:</strong> ${expiryText}</p>
+                                                ${minOrderAmount ? `<p style="margin: 5px 0;"><strong>Min Order:</strong> KES ${minOrderAmount}</p>` : ''}
+                                                ${terms ? `<p style="margin: 5px 0;"><strong>Terms:</strong> ${terms}</p>` : ''}
+                                                <p style="margin: 5px 0; color: #d32f2f;"><em>Note: This voucher is linked to your email address (${customerEmail}) and can only be used by you.</em></p>
+                                            </div>
+                                            
+                                            <div style="text-align: center; margin-top: 30px;">
+                                                <a href="https://store.princealex.pro" style="background: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold;">Shop Now</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `
+                            },
+                            emailType: 'voucher_gift',
+                            voucherCode: voucherCode,
+                            customerEmail: customerEmail,
+                            createdAt: new Date().toISOString(),
+                            status: 'pending'
+                        });
+                    } catch (emailErr) {
+                        console.error('Failed to queue voucher email', emailErr);
+                        alert('Voucher created, but failed to send email notification.');
+                    }
+                }
+
                 // Refresh vouchers list
                 await loadVouchers();
                 
@@ -8903,6 +9200,7 @@
                 createBtn.textContent = 'Create Voucher';
             }
         }
+
 
         // Legacy function for compatibility
         async function createVoucher(event) {
@@ -9331,6 +9629,158 @@
             }
         }
 
+    // --- Manage Emails Functions ---
+    function updateDeleteSelectedButton() {
+        const checkboxes = document.querySelectorAll('.email-select-checkbox:checked');
+        const deleteBtn = document.getElementById('delete-selected-emails-btn');
+        const countSpan = document.getElementById('selected-count');
+        
+        if (deleteBtn) {
+            if (checkboxes.length > 0) {
+                deleteBtn.style.display = 'inline-flex';
+                if(countSpan) countSpan.textContent = checkboxes.length;
+            } else {
+                deleteBtn.style.display = 'none';
+            }
+        }
+        
+        const allCheckboxes = document.querySelectorAll('.email-select-checkbox');
+        const selectAllCheckbox = document.getElementById('select-all-emails');
+        if (selectAllCheckbox && allCheckboxes.length > 0) {
+            selectAllCheckbox.checked = checkboxes.length === allCheckboxes.length;
+            selectAllCheckbox.indeterminate = checkboxes.length > 0 && checkboxes.length < allCheckboxes.length;
+        }
+    }
+
+    async function loadManageEmails() {
+        try {
+            const emailsList = document.getElementById('manage-emails-list');
+            if (!emailsList) return;
+
+            emailsList.innerHTML = `
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading emails...</p>
+                </div>
+            `;
+
+            const emailsCol = collection(db, 'mail');
+            const querySnapshot = await getDocs(query(emailsCol, orderBy('createdAt', 'desc'), limit(100)));
+
+            if (querySnapshot.empty) {
+                emailsList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-color);">
+                        <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                        <h3>No Emails Found</h3>
+                        <p>The mail collection is empty.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            emailsList.innerHTML = '';
+            const filterValue = document.getElementById('email-status-filter')?.value || 'all';
+            let hasVisibleEmails = false;
+
+            querySnapshot.forEach(doc => {
+                const emailData = { id: doc.id, ...doc.data() };
+                
+                // Filter logic
+                const status = emailData.delivery ? emailData.delivery.state : (emailData.status || 'PENDING');
+                const normalizedStatus = String(status).toLowerCase();
+                
+                let isVisible = false;
+                if (filterValue === 'all') isVisible = true;
+                else if (filterValue === 'pending' && (normalizedStatus === 'pending')) isVisible = true;
+                else if (filterValue === 'sent' && (normalizedStatus === 'success' || normalizedStatus === 'sent')) isVisible = true;
+                else if (filterValue === 'error' && (normalizedStatus === 'error' || normalizedStatus === 'failed')) isVisible = true;
+
+                if (isVisible) {
+                const emailItem = createManageEmailItem(emailData);
+                emailsList.appendChild(emailItem);
+                    hasVisibleEmails = true;
+                }
+            });
+            
+            // Reset select all checkbox and update button state
+            const selectAllCheckbox = document.getElementById('select-all-emails');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+            }
+            updateDeleteSelectedButton();
+            
+            // Attach listeners to new checkboxes
+            document.querySelectorAll('.email-select-checkbox').forEach(cb => {
+                cb.addEventListener('change', updateDeleteSelectedButton);
+            });
+
+            if (!hasVisibleEmails) {
+                emailsList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-color);">
+                        <i class="fas fa-filter" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                        <h3>No Emails Found</h3>
+                        <p>No emails match the selected filter.</p>
+                    </div>
+                `;
+            }
+
+        } catch (error) {
+            console.error('Error loading emails:', error);
+            const emailsList = document.getElementById('manage-emails-list');
+            if (emailsList) {
+                emailsList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--error-color);">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 16px;"></i>
+                        <h3>Error Loading Emails</h3>
+                        <p>Failed to load emails: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    function createManageEmailItem(emailData) {
+        const emailItem = document.createElement('div');
+        emailItem.className = 'email-item';
+        
+        const status = emailData.delivery ? emailData.delivery.state : (emailData.status || 'PENDING');
+        let statusColor = '#666';
+        if (status === 'SUCCESS' || status === 'sent') statusColor = 'var(--success-color)';
+        else if (status === 'ERROR' || status === 'failed') statusColor = 'var(--error-color)';
+
+        emailItem.innerHTML = `
+            <div class="email-header">
+                <div style="display: flex; align-items: center; margin-right: 12px;">
+                    <input type="checkbox" class="email-select-checkbox" value="${emailData.id}" style="width: 18px; height: 18px; cursor: pointer;">
+                </div>
+                <div class="email-meta">
+                    <span class="email-priority priority-${emailData.priority || 'medium'}">${emailData.priority || 'medium'}</span>
+                    <span style="font-weight: 600; margin-right: 10px;">To: ${Array.isArray(emailData.to) ? emailData.to.join(', ') : emailData.to}</span>
+                    <span style="font-size: 0.85em; padding: 2px 6px; border-radius: 4px; background-color: #eee; color: ${statusColor}">${status}</span>
+                    <span style="color: var(--text-color); margin-left: auto;">${emailData.createdAt ? new Date(emailData.createdAt).toLocaleString() : 'N/A'}</span>
+                </div>
+                <div class="email-actions-item">
+                    <button class="email-action-btn send" onclick="resendEmail('${emailData.id}')">
+                        <i class="fas fa-paper-plane"></i> Resend
+                    </button>
+                    <button class="email-action-btn delete" onclick="deleteEmail('${emailData.id}')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+            <div class="email-content">
+                <div class="email-subject">${emailData.message?.subject || 'No Subject'}</div>
+                <div class="email-details">
+                    <div style="max-height: 100px; overflow-y: auto; font-size: 0.9em; color: #666;">
+                        ${emailData.message?.html || 'No Content'}
+                    </div>
+                </div>
+            </div>
+        `;
+        return emailItem;
+    }
+
         function updatePendingEmailsBadge(count) {
             const badge = document.getElementById('pending-emails-badge');
             if (badge) {
@@ -9343,6 +9793,60 @@
         document.addEventListener('DOMContentLoaded', function() {
             const refreshEmailsBtn = document.getElementById('refresh-emails-btn');
             const sendAllEmailsBtn = document.getElementById('send-all-emails-btn');
+
+        const refreshManageEmailsBtn = document.getElementById('refresh-all-emails-btn');
+        if (refreshManageEmailsBtn) {
+            refreshManageEmailsBtn.addEventListener('click', loadManageEmails);
+        }
+        
+        const emailStatusFilter = document.getElementById('email-status-filter');
+        if (emailStatusFilter) {
+            emailStatusFilter.addEventListener('change', loadManageEmails);
+        }
+        
+        const selectAllEmailsCheckbox = document.getElementById('select-all-emails');
+        if (selectAllEmailsCheckbox) {
+            selectAllEmailsCheckbox.addEventListener('change', function() {
+                const isChecked = this.checked;
+                document.querySelectorAll('.email-select-checkbox').forEach(cb => {
+                    cb.checked = isChecked;
+                });
+                updateDeleteSelectedButton();
+            });
+        }
+
+        const deleteSelectedEmailsBtn = document.getElementById('delete-selected-emails-btn');
+        if (deleteSelectedEmailsBtn) {
+            deleteSelectedEmailsBtn.addEventListener('click', async function() {
+                const selectedCheckboxes = document.querySelectorAll('.email-select-checkbox:checked');
+                const idsToDelete = Array.from(selectedCheckboxes).map(cb => cb.value);
+                
+                if (idsToDelete.length === 0) return;
+                
+                if (!confirm(`Are you sure you want to delete ${idsToDelete.length} selected emails?`)) return;
+                
+                try {
+                    const originalBtnText = this.innerHTML;
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+                    
+                    const deletePromises = idsToDelete.map(id => deleteDoc(doc(db, 'mail', id)));
+                    await Promise.all(deletePromises);
+                    
+                    showModal('Success', `${idsToDelete.length} emails deleted successfully.`);
+                    await loadManageEmails();
+                    
+                    this.disabled = false;
+                    this.innerHTML = originalBtnText;
+                    
+                } catch (error) {
+                    console.error('Error deleting emails:', error);
+                    showModal('Error', `Failed to delete emails: ${error.message}`, true);
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-trash"></i> Delete Selected (<span id="selected-count">' + idsToDelete.length + '</span>)';
+                }
+            });
+        }
 
             if (refreshEmailsBtn) {
                 refreshEmailsBtn.addEventListener('click', loadPendingEmails);
@@ -9386,6 +9890,7 @@
                 });
             }
         });
+
         window.createVoucher = createVoucher;
         window.createVoucherSimple = createVoucherSimple;
         window.updateDiscountInput = updateDiscountInput;
@@ -9396,6 +9901,33 @@
         window.deleteVoucher = deleteVoucher;
         window.sendPendingEmail = sendPendingEmail;
         window.deletePendingEmail = deletePendingEmail;
+        window.closeCreateVoucherModal = closeCreateVoucherModal;
+    window.loadManageEmails = loadManageEmails;
+    
+     window.resendEmail = async function(emailId) {
+        try {
+            if(!confirm('Are you sure you want to resend this email?')) return;
+            const emailRef = doc(db, 'mail', emailId);
+            await updateDoc(emailRef, {
+                delivery: null,
+                status: 'pending',
+                attempts: 0,
+                updatedAt: new Date().toISOString()
+            });
+            showModal('Success', 'Email queued for resending.');
+            loadManageEmails();
+        } catch (e) {
+            console.error(e);
+            showModal('Error', 'Failed to resend: ' + e.message, true);
+        }
+    };
+
+    window.deleteEmail = async function(emailId) {
+        if(!confirm('Are you sure you want to delete this email record?')) return;
+        await deleteDoc(doc(db, 'mail', emailId));
+        showModal('Success', 'Email deleted.');
+        loadManageEmails();
+    };
 
         // Initial load of UI when the DOM is ready
         document.addEventListener('DOMContentLoaded', () => {
@@ -9659,10 +10191,9 @@
             const emailData = {
                 orderId: orderId,
                 customerName: customerName,
-                customerEmail: customerEmail,
+            customerEmail: customerEmail, attachments: attachments,
                 customerPhone: customerPhone,
                 items: items.map(i => ({ 
-                    name: i.name || i.title || 'Item', 
                     quantity: i.quantity || i.qty || 1, 
                     price: Number(i.price || i.totalPrice || 0), 
                     unit: i.unit || '' 
@@ -9782,8 +10313,6 @@
 // If any calls were queued while the handler wasn't ready, process them now
     // Moved from the first module script to be in the same scope as the functions that call it.
     // Expose functions to the global window object for inline event handlers
-    window.searchOrderForEdit = searchOrderForEdit;
-
     try {
         if (window.__adminCreateOrderQueue && window.__adminCreateOrderQueue.length) {
             const queued = window.__adminCreateOrderQueue.slice();
