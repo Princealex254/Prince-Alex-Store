@@ -312,7 +312,8 @@
             background-position: center;
             background-attachment: fixed;
             overflow: hidden;
-            height: 500px;
+            height: 85vh;
+            min-height: 600px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -346,11 +347,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(to bottom, rgba(76,175,80,0.6), rgba(139,195,74,0.6)); /* Green gradient */
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%); /* Modern dark overlay */
             z-index: 2;
         }
         body.dark-mode .hero-overlay {
-            background: linear-gradient(to bottom, rgba(102,187,106,0.6), rgba(156,204,101,0.6));
+            background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.8) 100%);
         }
 
         .hero-content {
@@ -359,18 +360,22 @@
         }
 
         .hero h1 {
-            font-size: 64px;
+            font-size: 4.5rem;
+            line-height: 1.1;
             color: var(--white);
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
-            font-weight: 700;
+            font-weight: 800;
             animation: slideInUp 1s ease-out 0.3s both;
         }
 
         .hero p {
-            font-size: 24px;
-            color: var(--white);
-            margin-bottom: 48px;
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
             text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
             animation: slideInUp 1s ease-out 0.6s both;
         }
@@ -393,7 +398,6 @@
             display: inline-block;
             position: relative;
             overflow: hidden;
-            animation: slideInUp 1s ease-out 0.9s both;
         }
 
         .cta-button::before {
@@ -414,6 +418,40 @@
 
         .cta-button:hover::before {
             left: 100%;
+        }
+
+        .hero-subtitle {
+            display: inline-block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent-color-yellow);
+            margin-bottom: 16px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            animation: slideInUp 1s ease-out 0.1s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            animation: slideInUp 1s ease-out 0.9s both;
+        }
+
+        .cta-button.secondary-cta {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border: 2px solid var(--white);
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .cta-button.secondary-cta:hover {
+            background: var(--white);
+            color: var(--primary-color);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
         }
 
         .section-title {
@@ -4366,14 +4404,24 @@
             }
             
             .hero {
-                padding: 60px 20px;
-                height: 350px;
+                height: 600px;
+                padding: 80px 20px;
             }
             .hero h1 {
-                font-size: 38px;
+                font-size: 2.8rem;
             }
             .hero p {
-                font-size: 18px;
+                font-size: 1.1rem;
+            }
+            .hero-buttons {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+                max-width: 300px;
+            }
+            .cta-button {
+                width: 100%;
+                text-align: center;
             }
             .section-title {
                 font-size: 32px;
@@ -4758,14 +4806,18 @@
         <!-- Home Page -->
         <section id="home-page" class="active">
             <div class="hero">
-                <img src="vegetable1.jpg" alt="Fresh Vegetables 1" class="hero-background-image active">
-                <img src="vegetable2.jpg" alt="Fresh Vegetables 2" class="hero-background-image">
-                <img src="vegetable3.jpg" alt="Fresh Vegetables 3" class="hero-background-image">
+                <img src="https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?q=80&w=1920&auto=format&fit=crop" alt="Fresh Vegetables" class="hero-background-image active">
+                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=1920&auto=format&fit=crop" alt="Market Fresh" class="hero-background-image">
+                <img src="https://images.unsplash.com/photo-1610348725531-843dff563e2c?q=80&w=1920&auto=format&fit=crop" alt="Leafy Greens" class="hero-background-image">
                 <div class="hero-overlay"></div>
                 <div class="hero-content">
-                    <h1>Farm Fresh Vegetables, Delivered to Your Door!</h1>
-                    <p>Order fresh veggies today and taste the difference.</p>
-                    <a href="#" class="cta-button page-link" data-page="shop">Shop Now</a>
+                    <span class="hero-subtitle">100% Organic & Locally Sourced</span>
+                    <h1>Farm Fresh Vegetables,<br>Delivered to Your Door!</h1>
+                    <p>Experience the taste of nature with our premium selection of hand-picked vegetables, delivered straight from the farm to your kitchen.</p>
+                    <div class="hero-buttons">
+                        <a href="#" class="cta-button page-link" data-page="shop">Shop Now</a>
+                        <a href="#" class="cta-button secondary-cta page-link" data-page="about">Our Story</a>
+                    </div>
                 </div>
             </div>
 
@@ -4928,7 +4980,6 @@
                     <input type="text" id="order-id-input" placeholder="Enter your Order ID" required>
                     <button type="submit">Track Order</button>
                 </form>
-                <div id="order-status"></div>
             </div>
         </section>
 
@@ -5140,6 +5191,18 @@
         <a href="https://wa.me/254717384875" target="_blank" title="Chat on WhatsApp">
             <i class="fab fa-whatsapp"></i>
         </a>
+    </div>
+
+    <!-- Order Tracking Result Modal -->
+    <div id="order-tracking-modal" class="modal">
+        <div class="modal-content" style="max-width: 600px; text-align: left;">
+            <span class="close-button" onclick="closeOrderTrackingModal()">&times;</span>
+            <h3 style="text-align: center; color: var(--primary-color); margin-bottom: 20px;">Order Status</h3>
+            <div id="tracking-result-content"></div>
+            <div style="text-align: center; margin-top: 25px;">
+                <button onclick="closeOrderTrackingModal()" class="cta-button">Close</button>
+            </div>
+        </div>
     </div>
 
     <!-- Custom Message Modal -->
@@ -5565,6 +5628,10 @@
 
         function closeModal() {
             messageModal.style.display = 'none';
+        }
+
+        function closeOrderTrackingModal() {
+            document.getElementById('order-tracking-modal').style.display = 'none';
         }
 
         // --- Newsletter Popup Functions ---
@@ -8388,13 +8455,18 @@
         async function trackOrder(event) {
             if (event) event.preventDefault();
             const orderIdInput = document.getElementById('order-id-input').value.trim();
-            const statusDiv = document.getElementById('order-status');
             const idToTrack = orderIdInput;
 
             if (!idToTrack) {
-                statusDiv.innerHTML = '<p style="color: red;">Please enter a valid Order ID.</p>';
+                showModal('Error', 'Please enter a valid Order ID.');
                 return;
             }
+
+            // Show loading state on button
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Tracking...';
+            submitBtn.disabled = true;
 
             try {
                 const orderDocRef = window.doc(window.db, "orders", idToTrack);
@@ -8402,26 +8474,75 @@
 
                 if (orderDocSnap.exists()) {
                     const order = orderDocSnap.data();
-                    let itemsHtml = order.items.map(item => `${item.name} (x${item.quantity})`).join(', ');
-                    statusDiv.innerHTML = `
-                        <p>Order ID: <strong>${orderDocSnap.id}</strong></p>
-                        <p>Status: <strong>${order.status}</strong></p>
-                        <p>Date Placed: ${new Date(order.date).toLocaleString()}</p>
-                        <p>Subtotal: KES ${order.subtotal.toFixed(2)}</p>
-                        <p>Transportation Fee: KES ${order.transportationFee.toFixed(2)}</p>
-                        <p>Grand Total: KES ${order.total.toFixed(2)}</p>
-                        <p>Payment Method: ${order.paymentMethod}</p>
-                        <p>Delivery to: ${order.customer.fullName}, ${order.customer.deliveryLocation}, ${order.customer.houseName || 'N/A'}</p>
-                        <h4>Items:</h4>
-                        <ul>${itemsHtml}</ul>
-                        <p>Your order is currently being processed and will be shipped soon. Thank you for your patience!</p>
+                    
+                    // Format items list
+                    let itemsHtml = '';
+                    if (order.items && order.items.length > 0) {
+                        itemsHtml = order.items.map(item => `
+                            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
+                                <span>${item.name} <small style="color: #666;">(x${item.quantity})</small></span>
+                                <span>KES ${(item.price * item.quantity).toFixed(2)}</span>
+                            </div>
+                        `).join('');
+                    }
+
+                    // Determine status color
+                    let statusColor = '#666';
+                    let statusIcon = 'fa-info-circle';
+                    if (order.status === 'Delivered') { statusColor = '#4CAF50'; statusIcon = 'fa-check-circle'; }
+                    else if (order.status === 'Cancelled') { statusColor = '#f44336'; statusIcon = 'fa-times-circle'; }
+                    else if (order.status === 'Processing') { statusColor = '#2196F3'; statusIcon = 'fa-cog'; }
+                    else if (order.status === 'On Transit') { statusColor = '#FF9800'; statusIcon = 'fa-truck'; }
+
+                    const trackingHtml = `
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; text-align: center; border-top: 4px solid ${statusColor};">
+                            <i class="fas ${statusIcon}" style="font-size: 40px; color: ${statusColor}; margin-bottom: 10px;"></i>
+                            <h4 style="color: ${statusColor}; margin: 0; font-size: 22px;">${order.status}</h4>
+                            <p style="color: #666; margin: 5px 0 0 0;">Order ID: <strong>${orderDocSnap.id}</strong></p>
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <h5 style="color: var(--dark-text); border-bottom: 2px solid var(--light-bg); padding-bottom: 10px; margin-bottom: 15px;">Order Details</h5>
+                            <p style="margin: 5px 0; display: flex; justify-content: space-between;"><span>Date:</span> <strong>${new Date(order.date).toLocaleString()}</strong></p>
+                            <p style="margin: 5px 0; display: flex; justify-content: space-between;"><span>Payment:</span> <strong>${order.paymentMethod}</strong></p>
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <h5 style="color: var(--dark-text); border-bottom: 2px solid var(--light-bg); padding-bottom: 10px; margin-bottom: 15px;">Items</h5>
+                            ${itemsHtml}
+                        </div>
+
+                        <div style="background: var(--light-bg); padding: 15px; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span>Subtotal:</span>
+                                <span>KES ${(order.subtotal || 0).toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                <span>Delivery Fee:</span>
+                                <span>KES ${(order.transportationFee || 0).toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd; font-weight: bold; font-size: 18px; color: var(--primary-color);">
+                                <span>Total:</span>
+                                <span>KES ${(order.total || 0).toFixed(2)}</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 20px; font-size: 14px; color: #666; text-align: center;">
+                            <p><i class="fas fa-map-marker-alt"></i> Delivery to: ${order.customer.fullName}, ${order.customer.deliveryLocation}</p>
+                        </div>
                     `;
+
+                    document.getElementById('tracking-result-content').innerHTML = trackingHtml;
+                    document.getElementById('order-tracking-modal').style.display = 'flex';
                 } else {
-                    statusDiv.innerHTML = '<p style="color: red;">Order not found. Please check your Order ID.</p>';
+                    showModal('Not Found', 'Order not found. Please check your Order ID and try again.');
                 }
             } catch (error) {
                 console.error("Error tracking order:", error);
-                statusDiv.innerHTML = '<p style="color: red;">Error tracking order. Please try again.</p>';
+                showModal('Error', 'An error occurred while tracking your order. Please try again.');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
             }
         }
         
