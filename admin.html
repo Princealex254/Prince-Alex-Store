@@ -716,6 +716,35 @@
             box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
         }
 
+        /* Rider Profile Modal Tabs */
+        .modal-tabs {
+            overflow: hidden;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        .modal-tab-link {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        .modal-tab-link:hover {
+            background-color: var(--light-bg);
+        }
+        .modal-tab-link.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+        .modal-tab-content {
+            display: none;
+        }
+
         .create-btn {
             background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             color: white;
@@ -4155,6 +4184,10 @@
                         <i class="fas fa-edit"></i>
                         <span>Edit Orders</span>
                     </a>
+                    <a href="#" class="nav-item" data-page="manage-riders">
+                        <i class="fas fa-users-cog"></i>
+                        <span>Manage Riders</span>
+                    </a>
                 </div>
                 
                 <div class="nav-section">
@@ -4728,6 +4761,7 @@
                                 <option value="Pending">Pending</option>
                                 <option value="Confirmed">Confirmed</option>
                                 <option value="Processing">Processing</option>
+                                <option value="Ready for Pickup">Ready for Pickup</option>
                                 <option value="On Transit">On Transit</option>
                                 <option value="Delivered">Delivered</option>
                             </select>
@@ -4753,6 +4787,10 @@
                     <div class="stat-card">
                         <div class="stat-number" id="pending-orders">0</div>
                         <div class="stat-label">Pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="dashboard-ready-for-pickup">0</div>
+                        <div class="stat-label">Ready for Pickup</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" id="processing-orders">0</div>
@@ -5012,6 +5050,20 @@
                         <p>Loading logs...</p>
                     </div>
                 </div>
+            </div>
+
+            <!-- Manage Riders Section -->
+            <div id="admin-manage-riders-section" class="admin-section admin-page">
+                <div class="section-header">
+                    <h2>Manage Riders</h2>
+                    <p>Approve new rider applications and manage active riders</p>
+                </div>
+
+                <h3>Pending Applications</h3>
+                <div id="pending-riders-list" class="orders-container" style="margin-bottom: 30px;"></div>
+
+                <h3>Active Riders</h3>
+                <div id="active-riders-list" class="orders-container"></div>
             </div>
 
                 <!-- Voucher Management Section -->
@@ -5339,6 +5391,63 @@
         </div>
     </div>
 
+    <!-- Rider Profile Modal -->
+    <div id="rider-profile-modal" class="modal">
+        <div class="modal-content" style="max-width: 800px; text-align: left;">
+            <span class="close-button" onclick="closeRiderProfileModal()">&times;</span>
+            <h3 id="rider-profile-modal-title">Rider Details</h3>
+
+            <div class="modal-tabs">
+                <button class="modal-tab-link active" onclick="openRiderTab(event, 'Profile')">Profile & Status</button>
+                <button class="modal-tab-link" onclick="openRiderTab(event, 'History')">Order History & Earnings</button>
+            </div>
+
+            <div id="Profile" class="modal-tab-content" style="display: block;">
+                <form id="rider-profile-form" class="simple-voucher-form">
+                    <input type="hidden" id="rider-profile-email">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" id="rider-profile-name" readonly style="background: #f5f5f5;">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="text" id="rider-profile-phone" readonly style="background: #f5f5f5;">
+                    </div>
+                    <div class="form-group">
+                        <label>Vehicle Details</label>
+                        <input type="text" id="rider-profile-vehicle" readonly style="background: #f5f5f5;">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="rider-profile-status">
+                            <option value="approved">Approved (Pending Setup)</option>
+                            <option value="active">Active</option>
+                            <option value="suspended">Suspended</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" onclick="closeRiderProfileModal()" class="cancel-btn">Close</button>
+                        <button type="submit" class="create-btn">Update Status</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="History" class="modal-tab-content">
+                <div class="orders-stats" style="margin-bottom: 20px;">
+                    <div class="stat-card">
+                        <div class="stat-number" id="rider-modal-total-earnings">KES 0</div>
+                        <div class="stat-label">Total Earnings (Completed)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="rider-modal-total-orders">0</div>
+                        <div class="stat-label">Total Deliveries</div>
+                    </div>
+                </div>
+                <div id="rider-modal-order-history" class="orders-container" style="max-height: 40vh; overflow-y: auto;"></div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2025 Prince Alex Store Admin. All Rights Reserved.</p>
     </footer>
@@ -5542,6 +5651,7 @@
                 'contacts': 'Contact Messages',
                 'admin-users': 'Admin User Management',
                 'activity-logs': 'Admin Activity Logs',
+                'manage-riders': 'Manage Riders',
             };
 
             // Add active class to current nav item
@@ -5573,6 +5683,8 @@
                 loadAdminUsers();
             } else if (pageName === 'activity-logs') {
                 loadActivityLogs();
+            } else if (pageName === 'manage-riders') {
+                loadManageRiders();
             }
 
             if (pageTitle && pageTitles[pageName]) {
@@ -5885,6 +5997,7 @@
 
         // --- 🛒 2. Manage Products ---
         document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
             const productName = document.getElementById('product-name').value;
             const customProductId = document.getElementById('product-id').value;
             const productImageUrl = document.getElementById('product-image-url').value;
@@ -6321,7 +6434,34 @@
                 const isCancelled = order.status === 'Cancelled';
                 const isRestricted = isCancelled && window.currentUserRole !== 'super_admin';
                 const hasOrderPerm = window.hasPermission('orders');
-                const statusClass = order.status ? order.status.toLowerCase().replace(/\s/g, '-') : 'pending';
+                const statusClass = order.status ? order.status.toLowerCase().replace(/\s/g, '-') : 'pending';                
+                
+                let actionButtonHtml = '';
+                if (order.status === 'Processing') {
+                    actionButtonHtml = `
+                        <button class="action-btn accept" onclick="requestRide('${order.id}')" ${!hasOrderPerm ? 'disabled' : ''} style="background: var(--accent-color);">
+                            <i class="fas fa-motorcycle"></i> Request Ride
+                        </button>
+                    `;
+                } else if (order.status === 'Ready for Pickup') {
+                    actionButtonHtml = `
+                        <button class="action-btn" style="background: var(--warning-color); color: white;" disabled>
+                            <i class="fas fa-spinner fa-spin"></i> Awaiting Rider
+                        </button>
+                    `;
+                } else if (order.status === 'On Transit') {
+                    actionButtonHtml = `
+                        <button class="action-btn" style="background: #17a2b8; color: white;" disabled>
+                            <i class="fas fa-route"></i> On Transit
+                        </button>
+                    `;
+                } else {
+                    actionButtonHtml = `
+                        <button class="action-btn btn-status ${isRestricted || !hasOrderPerm ? 'disabled-btn' : ''}" onclick="openStatusUpdateModal('${order.id}')" title="${isRestricted ? 'Order is cancelled' : (!hasOrderPerm ? 'Permission denied' : 'Update Status')}">
+                            <i class="fas fa-edit"></i> Update Status
+                        </button>
+                    `;
+                }
                 
                 orderCard.innerHTML = `
                     <div class="order-header">
@@ -6373,10 +6513,7 @@
                         <div class="order-actions">
                         <button class="action-btn btn-view" onclick="viewOrderDetails('${order.id}')">
                             <i class="fas fa-eye"></i> View Details
-                        </button>
-                        <button class="action-btn btn-status ${isRestricted || !hasOrderPerm ? 'disabled-btn' : ''}" onclick="openStatusUpdateModal('${order.id}')" title="${isRestricted ? 'Order is cancelled' : (!hasOrderPerm ? 'Permission denied' : 'Update Status')}">
-                            <i class="fas fa-edit"></i> Update Status
-                        </button>
+                        </button>${actionButtonHtml}
                     </div>
                 `;
                 
@@ -6387,6 +6524,7 @@
         function updateOrderStats(orders) {
             const totalOrders = orders.length;
             const pendingOrders = orders.filter(order => order.status === 'Pending').length;
+            const readyForPickupOrders = orders.filter(order => order.status === 'Ready for Pickup').length;
             const processingOrders = orders.filter(order => order.status === 'Processing' || order.status === 'Confirmed').length;
             const deliveredOrders = orders.filter(order => order.status === 'Delivered').length;
 
@@ -6394,6 +6532,7 @@
             document.getElementById('pending-orders').textContent = pendingOrders;
             document.getElementById('processing-orders').textContent = processingOrders;
             document.getElementById('delivered-orders').textContent = deliveredOrders;
+            document.getElementById('dashboard-ready-for-pickup').textContent = readyForPickupOrders;
         }
 
         function setupOrderEventListeners() {
@@ -6532,6 +6671,281 @@
                 showModal('Error', `Failed to cancel order: ${error.message}`, true);
             }
         };
+
+        // Request a ride for an order
+        window.requestRide = async function(orderId) {
+            if (!window.hasPermission('orders')) {
+                showModal('Permission Denied', 'You do not have permission to request rides.', true);
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to request a ride for order ${orderId}? This will make it available to all online riders.`)) {
+                return;
+            }
+
+            try {
+                const orderRef = doc(db, "orders", orderId);
+                const orderSnap = await getDoc(orderRef);
+                const orderData = orderSnap.exists() ? orderSnap.data() : {};
+                const riderFee = orderData.transportationFee || orderData.deliveryFee || 0;
+
+                await updateDoc(orderRef, {
+                    status: 'Ready for Pickup',
+                    rideRequestedAt: new Date().toISOString(),
+                    riderFee: riderFee,
+                    lastUpdated: new Date().toISOString()
+                });
+                await logAdminActivity('ride_request', `Requested ride for order ${orderId}`);
+
+                showModal('Success', 'Ride requested successfully. The order is now available for riders to accept.');
+                loadOrders(); // Refresh the list to show the new status
+            } catch (error) {
+                console.error("Error requesting ride:", error);
+                showModal('Error', `Failed to request ride: ${error.message}`, true);
+            }
+        }
+
+        // --- Manage Riders Functions ---
+        window.loadManageRiders = async function() {
+            const pendingList = document.getElementById('pending-riders-list');
+            const activeList = document.getElementById('active-riders-list');
+            
+            pendingList.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>Loading...</p></div>';
+            activeList.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>Loading...</p></div>';
+
+            try {
+                const ridersSnap = await getDocs(collection(db, 'riders'));
+                let pendingHtml = '';
+                let activeHtml = '';
+
+                ridersSnap.forEach(doc => {
+                    const rider = doc.data();
+                    const email = doc.id;
+                    
+                    if (rider.status === 'pending') {
+                        pendingHtml += `
+                            <div class="admin-list-item">
+                                <div>
+                                    <strong>${rider.name}</strong> (${email})<br>
+                                    <small>Applied: ${new Date(rider.createdAt).toLocaleDateString()}</small>
+                                </div>
+                                <div>
+                                    <button class="action-btn" onclick="approveRider('${email}')" style="background:var(--success-color); color:white;">Approve</button>
+                                    <button class="action-btn" onclick="rejectRider('${email}')" style="background:var(--error-color); color:white;">Reject</button>
+                                </div>
+                            </div>
+                        `;
+                    } else if (['approved', 'active', 'suspended'].includes(rider.status)) {
+                        const statusColors = {
+                            'approved': 'status-pending', // Amber
+                            'active': 'status-delivered', // Green
+                            'suspended': 'status-cancelled' // Red
+                        };
+                        const badgeClass = statusColors[rider.status] || 'status-pending';
+                        activeHtml += `
+                            <div class="admin-list-item">
+                                <div>
+                                    <strong>${rider.name}</strong> (${email})<br>
+                                    <small>Status: <span class="status-badge ${badgeClass}">${rider.status}</span></small>
+                                    ${rider.phone ? `<br><small><i class="fas fa-phone"></i> ${rider.phone}</small>` : ''}
+                                </div>
+                                <button class="action-btn" onclick="viewRiderProfile('${email}')" style="background:var(--primary-color); color:white;">Manage</button>
+                            </div>
+                        `;
+                    }
+                });
+
+                pendingList.innerHTML = pendingHtml || '<div class="empty-state"><p>No pending applications.</p></div>';
+                activeList.innerHTML = activeHtml || '<div class="empty-state"><p>No active riders.</p></div>';
+            } catch (e) {
+                console.error(e);
+                pendingList.innerHTML = '<p style="color:red">Error loading riders</p>';
+            }
+        }
+
+        window.openRiderTab = function(evt, tabName) {
+            let i, tabcontent, tablinks;
+            const modal = document.getElementById('rider-profile-modal');
+            tabcontent = modal.getElementsByClassName("modal-tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = modal.getElementsByClassName("modal-tab-link");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        window.viewRiderProfile = async function(email) {
+            try {
+                const docRef = doc(db, 'riders', email);
+                const docSnap = await getDoc(docRef);
+                if (!docSnap.exists()) {
+                    showModal('Error', 'Rider not found', true);
+                    return;
+                }
+                const data = docSnap.data();
+                
+                document.getElementById('rider-profile-modal-title').textContent = `Rider: ${data.name}`;
+                document.getElementById('rider-profile-email').value = email;
+                document.getElementById('rider-profile-name').value = data.name || '';
+                document.getElementById('rider-profile-phone').value = data.phone || 'N/A';
+                
+                const vehicleInfo = data.vehicle ? `${data.vehicle.model || ''} - ${data.vehicle.plate || ''}` : 'N/A';
+                document.getElementById('rider-profile-vehicle').value = vehicleInfo;
+                
+                document.getElementById('rider-profile-status').value = data.status || 'approved';
+                
+                document.getElementById('rider-profile-modal').style.display = 'flex';
+
+                // Reset to the first tab and load history
+                document.getElementById('Profile').style.display = 'block';
+                document.getElementById('History').style.display = 'none';
+                document.querySelector('#rider-profile-modal .modal-tab-link[onclick*="Profile"]').classList.add('active');
+                document.querySelector('#rider-profile-modal .modal-tab-link[onclick*="History"]').classList.remove('active');
+
+                const historyContainer = document.getElementById('rider-modal-order-history');
+                historyContainer.innerHTML = '<div class="loading-state"><i class="fas fa-spinner fa-spin"></i><p>Loading history...</p></div>';
+
+                // Remove orderBy to avoid missing index issues. Sort client-side instead.
+                const ordersQuery = query(collection(db, "orders"), where("riderId", "==", email));
+                
+                let ordersSnap;
+                try {
+                    ordersSnap = await getDocs(ordersQuery);
+                } catch (queryErr) {
+                    console.error("Error fetching rider history:", queryErr);
+                    historyContainer.innerHTML = '<div class="empty-state"><p style="color:red">Error loading history. Check console.</p></div>';
+                    return;
+                }
+
+                let totalEarnings = 0;
+                let totalOrders = 0;
+                let historyHtml = '';
+
+                if (ordersSnap.empty) {
+                    historyContainer.innerHTML = '<div class="empty-state"><p>No order history for this rider.</p></div>';
+                } else {
+                    // Convert to array and sort client-side
+                    const orders = [];
+                    ordersSnap.forEach(doc => orders.push({ id: doc.id, ...doc.data() }));
+                    
+                    orders.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+                    orders.forEach(order => {
+                        const fee = Number(order.riderFee || 0);
+                        
+                        if (order.status === 'Delivered') {
+                            totalEarnings += fee;
+                        }
+                        totalOrders++;
+
+                        historyHtml += `
+                            <div class="admin-list-item">
+                                <div>
+                                    <strong>${order.id}</strong><br>
+                                    <small>${new Date(order.date).toLocaleDateString()}</small>
+                                </div>
+                                <div>
+                                    <span class="status-badge status-${(order.status || 'pending').toLowerCase().replace(/\s/g, '-')}">${order.status}</span>
+                                </div>
+                                <div style="text-align: right;">
+                                    <strong>Fee: KES ${fee.toFixed(2)}</strong>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    historyContainer.innerHTML = historyHtml;
+                }
+
+                document.getElementById('rider-modal-total-earnings').textContent = `KES ${totalEarnings.toFixed(2)}`;
+                document.getElementById('rider-modal-total-orders').textContent = totalOrders;
+
+            } catch (e) {
+                console.error(e);
+                showModal('Error', 'Failed to load rider profile', true);
+            }
+        };
+
+        window.closeRiderProfileModal = function() {
+            document.getElementById('rider-profile-modal').style.display = 'none';
+        };
+
+        window.approveRider = async function(email) {
+            if(!confirm(`Approve ${email}?`)) return;
+            await updateDoc(doc(db, 'riders', email), { status: 'approved' });
+            
+            // Send approval email
+            await addDoc(collection(db, 'mail'), {
+                to: email,
+                message: {
+                    subject: '🎉 Application Approved - Prince Alex Store',
+                    html: `<div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid #e0e0e0;">
+    <div style="background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); padding: 40px 20px; text-align: center; color: white;">
+        <h1 style="margin: 0; font-size: 28px; font-weight: 700; letter-spacing: 1px;">Welcome to the Team! 🏍️</h1>
+        <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Your Rider Application is Approved</p>
+    </div>
+    <div style="padding: 40px 30px;">
+        <p style="font-size: 16px; color: #333; line-height: 1.6; margin-bottom: 20px;">Hello,</p>
+        <p style="font-size: 16px; color: #555; line-height: 1.6; margin-bottom: 30px;">
+            Congratulations! Your application has been approved. The final step is to complete your profile.
+        </p>
+        <div style="background-color: #f8f9fa; border-left: 4px solid #4CAF50; padding: 20px; border-radius: 4px; margin-bottom: 30px;">
+            <h3 style="color: #2E7D32; margin: 0 0 15px 0; font-size: 18px;">🚀 Final Step:</h3>
+            <p style="margin: 0; padding-left: 20px; color: #555; line-height: 1.6;">
+                <strong>Log In:</strong> Visit the <a href="https://store.princealex.pro/rider.html" style="color: #4CAF50; text-decoration: none; font-weight: bold;">Rider Dashboard</a> and you will be prompted to complete your profile with your phone and vehicle details. Once submitted, you can start working immediately.
+            </p>
+        </div>
+        <div style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
+            <a href="https://store.princealex.pro/rider.html" style="background-color: #4CAF50; color: white; padding: 14px 28px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 6px rgba(76, 175, 80, 0.3); transition: background-color 0.3s;">Complete Your Profile</a>
+        </div>
+    </div>
+</div>`
+                },
+                emailType: 'rider_approval',
+                riderEmail: email,
+                createdAt: new Date().toISOString(),
+                status: 'pending',
+                priority: 'high'
+            });
+            
+            showModal('Success', 'Rider approved and notified.');
+            loadManageRiders();
+        }
+
+        // Initialize Rider Profile Form Listener
+        document.addEventListener('DOMContentLoaded', () => {
+            const riderProfileForm = document.getElementById('rider-profile-form');
+            if (riderProfileForm) {
+                riderProfileForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('rider-profile-email').value;
+                    const newStatus = document.getElementById('rider-profile-status').value;
+                    
+                    try {
+                        await updateDoc(doc(db, 'riders', email), {
+                            status: newStatus,
+                            lastUpdated: new Date().toISOString()
+                        });
+                        
+                        showModal('Success', 'Rider status updated.');
+                        closeRiderProfileModal();
+                        loadManageRiders();
+                    } catch (err) {
+                        showModal('Error', 'Failed to update rider: ' + err.message, true);
+                    }
+                });
+            }
+        });
+
+        window.rejectRider = async function(email) {
+            if(!confirm(`Suspend/Reject ${email}?`)) return;
+            await updateDoc(doc(db, 'riders', email), { status: 'suspended' });
+            showModal('Success', 'Rider status updated to suspended.');
+            loadManageRiders();
+        }
 
         // Enhanced Order Action Functions with Professional Email Integration
         window.editOrderById = async function(orderId) {
