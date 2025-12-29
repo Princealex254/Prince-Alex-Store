@@ -739,11 +739,59 @@
                 });
             }
 
-            const handleGoogleAuth = async () => {
+            const handleGoogleAuth = async (event) => {
+                const isSignup = event.currentTarget.id === 'google-signup-btn';
                 const provider = new GoogleAuthProvider();
                 try {
-                    await signInWithPopup(auth, provider);
-                    // onAuthStateChanged will handle the rest
+                    const result = await signInWithPopup(auth, provider);
+                    const user = result.user;
+
+                    // Check if rider exists
+                    const riderRef = doc(db, 'riders', user.email);
+                    const riderSnap = await getDoc(riderRef);
+
+                    if (isSignup && !riderSnap.exists()) {
+                        // Create new rider doc
+                        await setDoc(riderRef, {
+                            name: user.displayName,
+                            email: user.email,
+                            photoURL: user.photoURL,
+                            status: 'pending',
+                            createdAt: new Date().toISOString(),
+                            phone: user.phoneNumber || ''
+                        });
+
+                        // Send email
+                        await addDoc(collection(db, 'mail'), {
+                            to: user.email,
+                            message: {
+                                subject: 'Application Received - Prince Alex Store Rider',
+                                html: `
+                                    <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+                                        <div style="background-color: #4CAF50; padding: 20px; text-align: center; color: white;">
+                                            <h2 style="margin: 0;">Application Received</h2>
+                                        </div>
+                                        <div style="padding: 30px;">
+                                            <p style="font-size: 16px; color: #333;">Hi ${user.displayName},</p>
+                                            <p style="font-size: 16px; color: #555; line-height: 1.6;">Thank you for applying to join Prince Alex Store as a rider partner.</p>
+                                            <p style="font-size: 16px; color: #555; line-height: 1.6;">Your application has been received and is currently <strong>pending approval</strong>. Our team will review your details shortly.</p>
+                                            <p style="font-size: 16px; color: #555; line-height: 1.6;">You will receive another email notification once your account status is updated.</p>
+                                        </div>
+                                    </div>
+                                `
+                            },
+                            emailType: 'rider_application',
+                            createdAt: new Date().toISOString(),
+                            status: 'pending',
+                            priority: 'high'
+                        });
+                    } else if (!isSignup && !riderSnap.exists()) {
+                        // Login attempted but no account
+                        await signOut(auth);
+                        const msgEl = document.getElementById('login-message');
+                        if(msgEl) msgEl.innerHTML = `<span style="color:red; font-weight:bold;">Account not found. Please Apply first.</span>`;
+                        return;
+                    }
                 } catch (error) {
                     console.error("Login failed", error);
                     const msgEl = document.getElementById('login-message');
@@ -776,42 +824,7 @@
                     // Real-time listener for rider status
                     riderDocUnsubscribe = onSnapshot(riderRef, async (riderSnap) => {
                         if (!riderSnap.exists()) {
-                            // New Rider Application
-                            await setDoc(riderRef, {
-                                name: user.displayName,
-                                email: user.email,
-                                photoURL: user.photoURL,
-                                status: 'pending',
-                                createdAt: new Date().toISOString(),
-                                phone: user.phoneNumber || ''
-                            });
-                            
-                            // Send email to rider
-                            await addDoc(collection(db, 'mail'), {
-                                to: user.email,
-                                message: {
-                                    subject: 'Application Received - Prince Alex Store Rider',
-                                    html: `
-                                        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
-                                            <div style="background-color: #4CAF50; padding: 20px; text-align: center; color: white;">
-                                                <h2 style="margin: 0;">Application Received</h2>
-                                            </div>
-                                            <div style="padding: 30px;">
-                                                <p style="font-size: 16px; color: #333;">Hi ${user.displayName},</p>
-                                                <p style="font-size: 16px; color: #555; line-height: 1.6;">Thank you for applying to join Prince Alex Store as a rider partner.</p>
-                                                <p style="font-size: 16px; color: #555; line-height: 1.6;">Your application has been received and is currently <strong>pending approval</strong>. Our team will review your details shortly.</p>
-                                                <p style="font-size: 16px; color: #555; line-height: 1.6;">You will receive another email notification once your account status is updated.</p>
-                                            </div>
-                                        </div>
-                                    `
-                                },
-                                emailType: 'rider_application',
-                                createdAt: new Date().toISOString(),
-                                status: 'pending',
-                                priority: 'high'
-                            });
-
-                            if(msgEl) msgEl.innerHTML = `<span style="color:orange; font-weight:bold;">Application Submitted. Account Pending Approval.</span>`;
+                            if(msgEl) msgEl.innerHTML = `<span style="color:red; font-weight:bold;">Account not found. Please use 'Apply with Google' if you are new.</span>`;
                         } else {
                             const data = riderSnap.data();
                             currentRider = { id: user.email, ...data };
@@ -933,7 +946,7 @@
                 myOrders = allOrders.filter(order => order.status === 'On Transit' && order.riderId === currentRider.id);
 
                 // Check for new available orders to notify
-                if (!isFirstLoad) {
+                if (!isFirstLoad && riderStatus === 'online') {
                     const newOrders = availableOrders.filter(o => !previousAvailableOrderIds.has(o.id));
                     newOrders.forEach(order => notifyRider(order));
                 }
@@ -1028,7 +1041,7 @@
             
             // Filter orders
             if (status === 'available') {
-                filteredOrders = availableOrders;
+                filteredOrders = (riderStatus === 'online') ? availableOrders : [];
             } else if (status === 'mine') {
                 filteredOrders = myOrders;
             } else if (status === 'history') {
@@ -1150,7 +1163,8 @@
             }
             
             // Refresh orders to update action buttons
-            displayOrders();
+            const currentFilter = getCurrentFilter();
+            filterOrders(currentFilter);
         }
 
         // Accept order
