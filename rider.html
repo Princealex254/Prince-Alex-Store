@@ -747,7 +747,13 @@
                 } catch (error) {
                     console.error("Login failed", error);
                     const msgEl = document.getElementById('login-message');
-                    if (msgEl) msgEl.innerHTML = `<span style="color:red">${error.message}</span>`;
+                    if (msgEl) {
+                        let userMsg = "Unable to sign in. Please try again.";
+                        if (error.code === 'auth/popup-closed-by-user') userMsg = "Sign-in was cancelled.";
+                        else if (error.code === 'auth/network-request-failed') userMsg = "Network error. Please check your connection.";
+                        
+                        msgEl.innerHTML = `<span style="color:red">${userMsg}</span>`;
+                    }
                 }
             };
 
@@ -784,9 +790,25 @@
                             await addDoc(collection(db, 'mail'), {
                                 to: user.email,
                                 message: {
-                                    subject: 'Rider Application Received',
-                                    html: `<p>Hi ${user.displayName},</p><p>Thanks for applying. Your account is <strong>pending approval</strong>. We will notify you once an admin reviews it.</p>`
-                                }
+                                    subject: 'Application Received - Prince Alex Store Rider',
+                                    html: `
+                                        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+                                            <div style="background-color: #4CAF50; padding: 20px; text-align: center; color: white;">
+                                                <h2 style="margin: 0;">Application Received</h2>
+                                            </div>
+                                            <div style="padding: 30px;">
+                                                <p style="font-size: 16px; color: #333;">Hi ${user.displayName},</p>
+                                                <p style="font-size: 16px; color: #555; line-height: 1.6;">Thank you for applying to join Prince Alex Store as a rider partner.</p>
+                                                <p style="font-size: 16px; color: #555; line-height: 1.6;">Your application has been received and is currently <strong>pending approval</strong>. Our team will review your details shortly.</p>
+                                                <p style="font-size: 16px; color: #555; line-height: 1.6;">You will receive another email notification once your account status is updated.</p>
+                                            </div>
+                                        </div>
+                                    `
+                                },
+                                emailType: 'rider_application',
+                                createdAt: new Date().toISOString(),
+                                status: 'pending',
+                                priority: 'high'
                             });
 
                             if(msgEl) msgEl.innerHTML = `<span style="color:orange; font-weight:bold;">Application Submitted. Account Pending Approval.</span>`;
