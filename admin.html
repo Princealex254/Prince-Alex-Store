@@ -6689,7 +6689,7 @@
             try {
                 const orderRef = doc(db, "orders", orderId);
                 const orderSnap = await getDoc(orderRef);
-                const orderData = orderSnap.exists() ? orderSnap.data() : {};
+                const orderData = orderSnap.exists() ? { id: orderSnap.id, ...orderSnap.data() } : {};
                 const riderFee = orderData.transportationFee || orderData.deliveryFee || 0;
 
                 await updateDoc(orderRef, {
@@ -6699,6 +6699,90 @@
                     lastUpdated: new Date().toISOString()
                 });
                 await logAdminActivity('ride_request', `Requested ride for order ${orderId}`);
+
+                // Send email notification to customer with PDF receipt
+                try {
+                    const customerEmail = orderData.userEmail || (orderData.customer ? orderData.customer.email : null);
+                    
+                    if (customerEmail) {
+                        // Generate PDF Receipt
+                        let attachments = [];
+                        try {
+                            const pdfBase64 = await generateReceiptBase64(orderData);
+                            if (pdfBase64) {
+                                attachments.push({
+                                    filename: `Receipt_${orderId}.pdf`,
+                                    content: pdfBase64,
+                                    encoding: 'base64'
+                                });
+                            }
+                        } catch (pdfErr) {
+                            console.error("Error generating PDF for ride request email:", pdfErr);
+                        }
+
+                        const totalAmount = orderData.total || 0;
+                        const paymentMethod = orderData.paymentMethod || 'Cash on Delivery';
+                        
+                        let paymentMessage = '';
+                        if (paymentMethod.toLowerCase().includes('cash')) {
+                            paymentMessage = `Please have <strong>KES ${totalAmount.toFixed(2)}</strong> ready for payment upon delivery.`;
+                        } else {
+                            paymentMessage = `Total amount to be paid: <strong>KES ${totalAmount.toFixed(2)}</strong> via ${paymentMethod}.`;
+                        }
+
+                        const emailHtml = `
+                            <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+                                <div style="background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); padding: 30px; text-align: center; color: white;">
+                                    <h1 style="margin: 0; font-size: 24px; font-weight: 700;">Rider Requested! 🛵</h1>
+                                    <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Your order is being assigned a delivery rider.</p>
+                                </div>
+                                <div style="padding: 30px;">
+                                    <p style="font-size: 16px; color: #333; line-height: 1.6;">Hello <strong>${orderData.customer ? orderData.customer.fullName : 'Valued Customer'}</strong>,</p>
+                                    <p style="font-size: 16px; color: #333; line-height: 1.6;">
+                                        Good news! We have requested a rider for your order <strong>#${orderId}</strong>. They will be picking up your items shortly and heading your way.
+                                    </p>
+                                    
+                                    <div style="background-color: #f8f9fa; border-left: 4px solid #4CAF50; padding: 20px; margin: 25px 0; border-radius: 4px;">
+                                        <h3 style="color: #2E7D32; margin: 0 0 15px 0; font-size: 18px;">💳 Payment Details</h3>
+                                        <p style="margin: 0; color: #555; font-size: 15px;">
+                                            ${paymentMessage}
+                                        </p>
+                                    </div>
+
+                                    <p style="font-size: 15px; color: #666; line-height: 1.6;">
+                                        Attached to this email is your official order receipt. Please keep it for your records.
+                                    </p>
+
+                                    <div style="text-align: center; margin-top: 30px;">
+                                        <a href="https://store.princealex.pro/orders" style="background-color: #4CAF50; color: white; padding: 12px 25px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px;">Track Your Order</a>
+                                    </div>
+                                </div>
+                                <div style="background-color: #f1f1f1; padding: 15px; text-align: center; font-size: 12px; color: #888;">
+                                    <p style="margin: 0;">Prince Alex Store &bull; Fresh Vegetables & Groceries</p>
+                                </div>
+                            </div>
+                        `;
+
+                        await addDoc(collection(db, "mail"), {
+                            to: customerEmail,
+                            message: {
+                                subject: `Rider Requested - Order #${orderId}`,
+                                html: emailHtml,
+                                attachments: attachments
+                            },
+                            emailType: 'ride_requested',
+                            orderId: orderId,
+                            customerEmail: customerEmail,
+                            createdAt: new Date().toISOString(),
+                            status: 'pending',
+                            priority: 'high'
+                        });
+                        
+                        console.log(`Ride request email queued for ${customerEmail}`);
+                    }
+                } catch (emailError) {
+                    console.error("Failed to queue ride request email:", emailError);
+                }
 
                 showModal('Success', 'Ride requested successfully. The order is now available for riders to accept.');
                 loadOrders(); // Refresh the list to show the new status
