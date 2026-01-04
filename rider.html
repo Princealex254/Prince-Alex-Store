@@ -521,6 +521,11 @@
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
+
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -657,6 +662,23 @@
             </div>
         </div>
     </main>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 300; justify-content: center; align-items: center; backdrop-filter: blur(5px); padding: 20px;">
+        <div class="login-box" style="animation: slideInUp 0.3s ease; max-width: 450px;">
+            <h2 id="confirmation-title" style="margin-bottom: 15px; color: var(--dark-text);">Confirm Delivery</h2>
+            <p id="confirmation-message" style="margin-bottom: 25px; color: var(--text-color); font-size: 16px; line-height: 1.5;">
+                Are you sure you have delivered this order and received the correct payment?
+            </p>
+            <div id="confirmation-details" style="background: var(--light-bg); padding: 15px; border-radius: 8px; margin-bottom: 25px; text-align: left; border: 1px solid var(--border-color);">
+                <!-- Details will be injected here -->
+            </div>
+            <div style="display: flex; gap: 15px; justify-content: center;">
+                <button id="confirm-yes-btn" class="status-toggle" style="background: var(--primary-color); flex: 1;">Yes, Complete</button>
+                <button id="confirm-no-btn" class="status-toggle" style="background: #6c757d; flex: 1;">Cancel</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Firebase SDK -->
     <script type="module">
@@ -1167,6 +1189,122 @@
             filterOrders(currentFilter);
         }
 
+        async function sendDeliveryConfirmationWithVoucher(order) {
+            try {
+                const customerEmail = order.userEmail || (order.customer ? order.customer.email : null);
+                if (!customerEmail) {
+                    console.log('No customer email found, skipping delivery confirmation email');
+                    return;
+                }
+
+                const customerName = order.customer ? order.customer.fullName : 'Valued Customer';
+                
+                // Generate random voucher code
+                const voucherCode = 'THANKYOU' + Math.random().toString(36).substring(2, 7).toUpperCase();
+                const voucherValue = 50; // KES 50
+                
+                // Create voucher in Firestore
+                const now = new Date();
+                const expiryDate = new Date();
+                expiryDate.setDate(now.getDate() + 30); // 30 days expiry
+                
+                const voucherData = {
+                    id: voucherCode,
+                    code: voucherCode,
+                    description: 'Thank you gift for your delivered order',
+                    discountType: 'fixed',
+                    discountAmount: voucherValue,
+                    minOrderAmount: 200,
+                    usageLimit: 1,
+                    usageCount: 0,
+                    expiryDate: expiryDate.toISOString(),
+                    isActive: true,
+                    allowedEmail: customerEmail,
+                    terms: 'One-time use. Valid for 30 days.',
+                    createdAt: new Date().toISOString(),
+                    createdBy: 'system_delivery_rider'
+                };
+                
+                await setDoc(doc(db, 'vouchers', voucherCode), voucherData);
+                console.log(`Generated thank you voucher ${voucherCode} for ${customerEmail}`);
+
+                // Send Email
+                await addDoc(collection(db, 'mail'), {
+                    to: customerEmail,
+                    message: {
+                        subject: `Order Delivered! 📦 Plus a Gift for You 🎁`,
+                        html: `
+                            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                                <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); padding: 30px; text-align: center; color: white;">
+                                    <h1 style="margin: 0; font-size: 28px;">Order Delivered! ✅</h1>
+                                    <p style="margin: 10px 0 0 0; font-size: 16px;">Your fresh vegetables have arrived.</p>
+                                </div>
+                                <div style="padding: 30px; background: white;">
+                                    <p style="font-size: 16px; color: #333;">Hello ${customerName},</p>
+                                    <p style="font-size: 16px; color: #333;">We are pleased to inform you that your order <strong>#${order.id}</strong> has been successfully delivered by our rider.</p>
+                                    <p style="font-size: 16px; color: #333;">We hope you enjoy your fresh produce! If you have any issues with your order or if anything is missing, please don't hesitate to reach out to us.</p>
+                                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2196F3;">
+                                        <h4 style="color: #2196F3; margin: 0 0 10px 0;">📞 Support Contact</h4>
+                                        <p style="margin: 5px 0;"><strong>Phone:</strong> 0717384875</p>
+                                        <p style="margin: 5px 0;"><strong>Email:</strong> info@princealex.pro</p>
+                                    </div>
+                                    <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; border: 1px solid #ffeeba;">
+                                        <h3 style="color: #856404; margin: 0 0 15px 0;">🎁 A Thank You Gift!</h3>
+                                        <p style="margin: 5px 0; color: #856404;">As a token of our appreciation, please enjoy this voucher on your next order:</p>
+                                        <div style="background: #FF6B35; color: white; padding: 15px; border-radius: 8px; margin: 15px 0; display: inline-block; min-width: 200px;">
+                                            <div style="font-size: 24px; font-weight: 700; letter-spacing: 1px;">${voucherCode}</div>
+                                            <div style="font-size: 14px; margin-top: 5px;">KES ${voucherValue} OFF</div>
+                                        </div>
+                                        <p style="margin: 5px 0; color: #856404; font-size: 12px;">Valid for 30 days • Min order KES 200</p>
+                                    </div>
+                                    <div style="text-align: center; margin-top: 30px;">
+                                        <a href="https://store.princealex.pro" style="display: inline-block; background: #4CAF50; color: white; padding: 12px 25px; text-decoration: none; border-radius: 50px; font-weight: bold;">Shop Again</a>
+                                    </div>
+                                    <p style="font-size: 14px; color: #666; margin-top: 30px; text-align: center;">Thank you for choosing Prince Alex Store!</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    emailType: 'order_delivered',
+                    orderId: order.id,
+                    customerEmail: customerEmail,
+                    customerName: customerName,
+                    voucherCode: voucherCode,
+                    createdAt: new Date().toISOString(),
+                    status: 'pending',
+                    priority: 'high'
+                });
+                console.log(`Delivery confirmation email queued for ${customerEmail}`);
+            } catch (error) {
+                console.error("Error sending delivery confirmation:", error);
+                // Don't show an error to the rider, just log it.
+            }
+        }
+
+        // --- Confirmation Modal ---
+        function showConfirmationModal(title, message, detailsHtml, onConfirm) {
+            document.getElementById('confirmation-title').textContent = title;
+            document.getElementById('confirmation-message').innerHTML = message;
+            document.getElementById('confirmation-details').innerHTML = detailsHtml;
+
+            const modal = document.getElementById('confirmation-modal');
+            modal.style.display = 'flex';
+
+            const yesBtn = document.getElementById('confirm-yes-btn');
+            const noBtn = document.getElementById('confirm-no-btn');
+
+            // Clone and replace to remove old event listeners, this is a robust way
+            const newYesBtn = yesBtn.cloneNode(true);
+            yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
+            
+            newYesBtn.addEventListener('click', () => {
+                onConfirm();
+                hideConfirmationModal();
+            });
+
+            noBtn.onclick = hideConfirmationModal;
+        }
+
         // Accept order
         window.acceptOrder = async function(orderId) {
             if (!currentRider) {
@@ -1257,26 +1395,61 @@
             }
         }
 
+        function hideConfirmationModal() {
+            const modal = document.getElementById('confirmation-modal');
+            modal.style.display = 'none';
+        }
+
         // Complete order
         window.completeOrder = async function(orderId) {
-            if (!confirm('Are you sure you have delivered this order and received payment?')) {
+            const order = allOrders.find(o => o.id === orderId);
+            if (!order) {
+                showError("Order details not found.");
                 return;
             }
 
-            try {
-                const orderRef = doc(db, 'orders', orderId);
-                await updateDoc(orderRef, {
-                    status: 'Delivered',
-                    deliveredAt: new Date().toISOString(),
-                    lastUpdated: new Date().toISOString()
-                });
-                
-                showSuccess('Order marked as delivered!');
-                // The onSnapshot listener will automatically refresh the UI.
-            } catch (error) {
-                console.error('Error completing order:', error);
-                showError('Failed to complete order');
-            }
+            const paymentMethod = order.paymentMethod || 'Cash on Delivery';
+            const totalAmount = order.total ? order.total.toFixed(2) : '0.00';
+
+            const title = 'Confirm Delivery';
+            const message = `Please confirm you have delivered order <strong>#${orderId}</strong> and received the correct payment.`;
+            const detailsHtml = `
+                <div style="font-size: 14px;">
+                    <p style="display:flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>Order ID:</span> 
+                        <strong style="font-family: monospace;">${orderId}</strong>
+                    </p>
+                    <p style="display:flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span>Payment Method:</span> 
+                        <strong>${paymentMethod}</strong>
+                    </p>
+                    <p style="display:flex; justify-content: space-between; font-size: 18px; color: var(--primary-color); border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
+                        <span>Amount to Collect:</span> 
+                        <strong>KES ${totalAmount}</strong>
+                    </p>
+                </div>
+            `;
+
+            const onConfirm = async () => {
+                try {
+                    const orderRef = doc(db, 'orders', orderId);
+                    const orderSnap = await getDoc(orderRef);
+                    if (!orderSnap.exists()) {
+                        showError('Order could not be found.');
+                        return;
+                    }
+                    const orderData = { id: orderSnap.id, ...orderSnap.data() };
+
+                    await updateDoc(orderRef, { status: 'Delivered', deliveredAt: new Date().toISOString(), lastUpdated: new Date().toISOString() });
+                    await sendDeliveryConfirmationWithVoucher(orderData);
+                    showSuccess('Order marked as delivered!');
+                } catch (error) {
+                    console.error('Error completing order:', error);
+                    showError('Failed to complete order');
+                }
+            };
+
+            showConfirmationModal(title, message, detailsHtml, onConfirm);
         }
 
         // Update order status
