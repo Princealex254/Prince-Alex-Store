@@ -5957,8 +5957,31 @@
 
         // Firebase Auth State Listener: Crucial for updating UI on login/logout
         onAuthStateChanged(auth, (user) => {
-            firebaseUser = user; // Update the global user object
-            updateAdminUI(); // Call the UI update function
+            // Clear any existing session check interval
+            if (window.tokenRefreshInterval) {
+                clearInterval(window.tokenRefreshInterval);
+                window.tokenRefreshInterval = null;
+            }
+
+            firebaseUser = user;
+
+            if (user) {
+                // If a user is logged in, start a periodic check to ensure their session is still valid.
+                // This proactively logs out a user if their account is disabled or session is revoked.
+                window.tokenRefreshInterval = setInterval(async () => {
+                    if (auth.currentUser) {
+                        try {
+                            await auth.currentUser.getIdToken(true); // Force a token refresh
+                            console.log('Session check: Token is valid.');
+                        } catch (error) {
+                            console.error('Session check failed. User is no longer valid. Signing out.', error);
+                            await signOut(auth); // This will trigger onAuthStateChanged again to update the UI.
+                        }
+                    }
+                }, 5 * 60 * 1000); // Check every 5 minutes
+            }
+
+            updateAdminUI();
         });
 
         // --- Professional Navigation Event Listeners ---
