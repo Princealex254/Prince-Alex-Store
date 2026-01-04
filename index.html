@@ -7449,16 +7449,28 @@
             locationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Getting Location...';
             showLocationStatus('loading', 'Getting your precise location...');
 
-            const options = {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 300000 // 5 minutes
+            // Helper to get position
+            const getPosition = (opts) => {
+                return new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, opts);
+                });
             };
 
             try {
-                const position = await new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(resolve, reject, options);
-                });
+                let position;
+                try {
+                    // Attempt 1: High Accuracy (10s timeout)
+                    position = await getPosition({ enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+                } catch (err) {
+                    if (err.code === 3) { // Timeout
+                        console.warn("High accuracy location timed out, retrying with lower accuracy...");
+                        showLocationStatus('loading', 'High accuracy timed out. Trying standard location...');
+                        // Attempt 2: Lower Accuracy (20s timeout)
+                        position = await getPosition({ enableHighAccuracy: false, timeout: 20000, maximumAge: 300000 });
+                    } else {
+                        throw err; // Re-throw other errors (permission denied, etc.)
+                    }
+                }
 
                 const { latitude, longitude, accuracy } = position.coords;
                 
