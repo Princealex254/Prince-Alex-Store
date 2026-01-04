@@ -5860,18 +5860,26 @@
                 }
                 
                 try {
-                    await signInWithEmailAndPassword(auth, email, password);
-                    await logAdminActivity('admin_login', `Admin logged in: ${email}`, email);
-                    
-                    // Try modal first, fallback to alert
-                    try {
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
+
+                    // Check if user is an admin
+                    const adminDocRef = doc(db, 'admins', user.email);
+                    const adminDoc = await getDoc(adminDocRef);
+
+                    // Hardcoded super admins fallback
+                    const SUPER_ADMINS = ['princealexdigital@gmail.com', 'noreply@princealex.pro'];
+
+                    if (adminDoc.exists() || SUPER_ADMINS.includes(user.email)) {
+                        // User is an admin, proceed
+                        await logAdminActivity('admin_login', `Admin logged in: ${email}`, email);
                         showModal('Login Successful', `Welcome to the admin panel! You are now logged in as: ${email}`);
-                    } catch (modalError) {
-                        console.error('Modal failed, using alert:', modalError);
-                        alert(`Login Successful!\nWelcome to the admin panel!\nYou are now logged in as: ${email}`);
+                        // UI update will be handled by onAuthStateChanged
+                    } else {
+                        // Not an admin, sign out and show error
+                        await signOut(auth);
+                        showModal('Access Denied', 'Your email is not registered as an administrator.', true);
                     }
-                    
-                    // UI update handled by onAuthStateChanged listener
                 } catch (error) {
                     console.error("Admin login error:", error);
                     let errorMessage = 'Login failed. Please check your credentials.';
