@@ -7590,6 +7590,98 @@
             });
         }
 
+        async function sendDeliveryConfirmationWithVoucher(order) {
+            try {
+                const customerEmail = order.userEmail || (order.customer ? order.customer.email : null);
+                if (!customerEmail) {
+                    console.log('No customer email found, skipping delivery confirmation email');
+                    return;
+                }
+
+                const customerName = order.customer ? order.customer.fullName : 'Valued Customer';
+                
+                // Generate random voucher code
+                const voucherCode = 'THANKYOU' + Math.random().toString(36).substring(2, 7).toUpperCase();
+                const voucherValue = 50; // KES 50
+                
+                // Create voucher in Firestore
+                const now = new Date();
+                const expiryDate = new Date();
+                expiryDate.setDate(now.getDate() + 30); // 30 days expiry
+                
+                const voucherData = {
+                    id: voucherCode,
+                    code: voucherCode,
+                    status: 'active',
+                    description: 'Thank you gift for your delivered order',
+                    discountType: 'fixed',
+                    discountAmount: voucherValue,
+                    minOrderAmount: 200,
+                    usageLimit: 1,
+                    usageCount: 0,
+                    expiryDate: expiryDate.toISOString(),
+                    isActive: true,
+                    allowedEmail: customerEmail,
+                    terms: 'One-time use. Valid for 30 days.',
+                    createdAt: new Date().toISOString(),
+                    createdBy: 'system_delivery'
+                };
+                
+                await setDoc(doc(db, 'vouchers', voucherCode), voucherData);
+                console.log(`Generated thank you voucher ${voucherCode} for ${customerEmail}`);
+
+                // Send Email
+                await addDoc(collection(db, 'mail'), {
+                    to: customerEmail,
+                    message: {
+                        subject: `Order Delivered! 📦 Plus a Gift for You 🎁`,
+                        html: `
+                            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                                <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); padding: 30px; text-align: center; color: white;">
+                                    <h1 style="margin: 0; font-size: 28px;">Order Delivered! ✅</h1>
+                                    <p style="margin: 10px 0 0 0; font-size: 16px;">Your fresh vegetables have arrived.</p>
+                                </div>
+                                <div style="padding: 30px; background: white;">
+                                    <p style="font-size: 16px; color: #333;">Hello ${customerName},</p>
+                                    <p style="font-size: 16px; color: #333;">We are pleased to inform you that your order <strong>#${order.id}</strong> has been successfully delivered.</p>
+                                    <p style="font-size: 16px; color: #333;">We hope you enjoy your fresh produce! If you have any issues with your order or if anything is missing, please don't hesitate to reach out to us.</p>
+                                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2196F3;">
+                                        <h4 style="color: #2196F3; margin: 0 0 10px 0;">📞 Support Contact</h4>
+                                        <p style="margin: 5px 0;"><strong>Phone:</strong> 0717384875</p>
+                                        <p style="margin: 5px 0;"><strong>Email:</strong> info@princealex.pro</p>
+                                    </div>
+                                    <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; border: 1px solid #ffeeba;">
+                                        <h3 style="color: #856404; margin: 0 0 15px 0;">🎁 A Thank You Gift!</h3>
+                                        <p style="margin: 5px 0; color: #856404;">As a token of our appreciation, please enjoy this voucher on your next order:</p>
+                                        <div style="background: #FF6B35; color: white; padding: 15px; border-radius: 8px; margin: 15px 0; display: inline-block; min-width: 200px;">
+                                            <div style="font-size: 24px; font-weight: 700; letter-spacing: 1px;">${voucherCode}</div>
+                                            <div style="font-size: 14px; margin-top: 5px;">KES ${voucherValue} OFF</div>
+                                        </div>
+                                        <p style="margin: 5px 0; color: #856404; font-size: 12px;">Valid for 30 days • Min order KES 200</p>
+                                    </div>
+                                    <div style="text-align: center; margin-top: 30px;">
+                                        <a href="https://store.princealex.pro" style="display: inline-block; background: #4CAF50; color: white; padding: 12px 25px; text-decoration: none; border-radius: 50px; font-weight: bold;">Shop Again</a>
+                                    </div>
+                                    <p style="font-size: 14px; color: #666; margin-top: 30px; text-align: center;">Thank you for choosing Prince Alex Store!</p>
+                                </div>
+                            </div>
+                        `
+                    },
+                    emailType: 'order_delivered',
+                    orderId: order.id,
+                    customerEmail: customerEmail,
+                    customerName: customerName,
+                    voucherCode: voucherCode,
+                    createdAt: new Date().toISOString(),
+                    status: 'pending',
+                    priority: 'high'
+                });
+                console.log(`Delivery confirmation email queued for ${customerEmail}`);
+            } catch (error) {
+                console.error("Error sending delivery confirmation:", error);
+            }
+        }
+
         window.updateOrderStatus = async function() {
             if (!window.hasPermission('orders')) {
                 showModal('Permission Denied', 'You do not have permission to update order status.', true);
@@ -7630,6 +7722,11 @@
                 // Send email notification if status is "On Transit"
                 if (newStatus === 'On Transit') {
                     await sendStatusUpdateEmail(order, newStatus);
+                }
+                
+                // Send delivery confirmation and voucher if status is "Delivered"
+                if (newStatus === 'Delivered') {
+                    await sendDeliveryConfirmationWithVoucher(order);
                 }
 
                 showModal('Success', `Order status updated to ${newStatus} successfully!`);
@@ -7783,6 +7880,8 @@
                 const now = new Date();
                 const voucherData = {
                     id: voucherCode,
+                    code: voucherCode,
+                    status: 'active',
                     description: `KES ${voucherValue} off next order for being on transit`,
                     discountType: 'fixed',
                     discountAmount: voucherValue,
@@ -8568,6 +8667,14 @@
                 const orderRef = doc(db, "orders", orderId);
                 await updateDoc(orderRef, { status: "Delivered" });
                 await logAdminActivity('order_status_update', `Marked order ${orderId} as Delivered`);
+                
+                // Fetch order details to send email
+                const orderSnap = await getDoc(orderRef);
+                if (orderSnap.exists()) {
+                    const orderData = { id: orderSnap.id, ...orderSnap.data() };
+                    await sendDeliveryConfirmationWithVoucher(orderData);
+                }
+                
                 showModal('Success', 'Order status updated to Delivered!');
                 loadOrders(); // Reload the order list
             } catch (error) {
@@ -9966,6 +10073,8 @@
                 // Create voucher data
                 const voucherData = {
                     id: voucherCode,
+                    code: voucherCode,
+                    status: isActive ? 'active' : 'inactive',
                     description: description,
                     discountType: discountType,
                     discountAmount: discountAmount,
