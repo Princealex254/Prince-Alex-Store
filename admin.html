@@ -4981,6 +4981,9 @@
                     <button id="delete-selected-emails-btn" class="email-action-btn delete" style="margin-right: 15px; display: none; padding: 10px 16px; font-size: 14px;">
                         <i class="fas fa-trash"></i> Delete Selected (<span id="selected-count">0</span>)
                     </button>
+                    <button id="resend-failed-emails-btn" class="email-action-btn send" style="margin-right: 15px; padding: 10px 16px; font-size: 14px; background: var(--warning-color);">
+                        <i class="fas fa-redo"></i> Retry Failed
+                    </button>
                     <select id="email-status-filter" class="filter-select" style="margin-right: 10px; max-width: 200px;">
                         <option value="all">All Statuses</option>
                         <option value="pending">Pending</option>
@@ -5492,6 +5495,7 @@
 
         // Global variable to store current Firebase user
         let firebaseUser = null;
+        let retryInterval = null;
 
         // 1. Add a guaranteed alert helper (simple & safe)
         function showAlert(title, message, isError = false) {
@@ -5821,10 +5825,12 @@
                 
                 // Load initial data
                 loadDashboardData();
+                startAutoRetrySystem();
                 
                 // Default to dashboard page on login
                 switchAdminPage('dashboard');
             } else {
+                stopAutoRetrySystem();
                 if (adminLoginSection) adminLoginSection.style.display = 'block'; // Show login form
                 if (adminDashboard) adminDashboard.style.display = 'none'; // Hide admin dashboard
             }
@@ -10783,6 +10789,63 @@
         }
     }
 
+    // --- Automatic Email Retry System (Every 2 Minutes) ---
+    function startAutoRetrySystem() {
+        if (retryInterval) clearInterval(retryInterval);
+        console.log("Starting auto-retry system (2 min interval)...");
+        // Run once immediately after a short delay
+        setTimeout(autoRetryFailedEmails, 5000);
+        // Then every 2 minutes
+        retryInterval = setInterval(autoRetryFailedEmails, 2 * 60 * 1000);
+    }
+
+    function stopAutoRetrySystem() {
+        if (retryInterval) {
+            clearInterval(retryInterval);
+            retryInterval = null;
+            console.log("Stopped auto-retry system.");
+        }
+    }
+
+    async function autoRetryFailedEmails() {
+        if (!firebaseUser) return;
+        
+        try {
+            const mailCol = collection(db, 'mail');
+            // Query recent emails to check for failures
+            const q = query(mailCol, orderBy('createdAt', 'desc'), limit(100));
+            const snapshot = await getDocs(q);
+            
+            const updates = [];
+            snapshot.forEach(docSnap => {
+                const data = docSnap.data();
+                const status = data.delivery ? data.delivery.state : (data.status || 'PENDING');
+                const normalizedStatus = String(status).toLowerCase();
+                
+                if (normalizedStatus === 'error' || normalizedStatus === 'failed') {
+                    console.log(`Auto-retrying email ${docSnap.id}`);
+                    updates.push(updateDoc(doc(db, 'mail', docSnap.id), {
+                        delivery: null,
+                        status: 'pending',
+                        updatedAt: new Date().toISOString(),
+                        retryReason: 'auto_retry_2min'
+                    }));
+                }
+            });
+            
+            if (updates.length > 0) {
+                await Promise.all(updates);
+                console.log(`Auto-retry: Rescheduled ${updates.length} failed emails.`);
+                // Refresh list if user is viewing emails
+                if (document.getElementById('admin-manage-emails-section').classList.contains('active')) {
+                    loadManageEmails();
+                }
+            }
+        } catch (error) {
+            console.error("Auto-retry system error:", error);
+        }
+    }
+
     function createManageEmailItem(emailData) {
         const emailItem = document.createElement('div');
         const hasEmailPerm = window.hasPermission('emails');
@@ -10894,6 +10957,67 @@
                     showModal('Error', `Failed to delete emails: ${error.message}`, true);
                     this.disabled = false;
                     this.innerHTML = '<i class="fas fa-trash"></i> Delete Selected (<span id="selected-count">' + idsToDelete.length + '</span>)';
+                }
+            });
+        }
+
+        const resendFailedBtn = document.getElementById('resend-failed-emails-btn');
+        if (resendFailedBtn) {
+            resendFailedBtn.addEventListener('click', async function() {
+                if (!window.hasPermission('emails')) {
+                    showModal('Permission Denied', 'You do not have permission to resend emails.', true);
+                    return;
+                }
+
+                if (!confirm('Are you sure you want to retry sending all failed emails?')) return;
+
+                const originalText = this.innerHTML;
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+                try {
+                    const mailCol = collection(db, 'mail');
+                    // Fetch a larger batch to catch recent failures
+                    const q = query(mailCol, orderBy('createdAt', 'desc'), limit(200)); 
+                    const snapshot = await getDocs(q);
+                    
+                    let count = 0;
+                    const batchPromises = [];
+
+                    snapshot.forEach(docSnap => {
+                        const data = docSnap.data();
+                        const status = data.delivery ? data.delivery.state : (data.status || 'PENDING');
+                        const normalizedStatus = String(status).toLowerCase();
+                        
+                        if (normalizedStatus === 'error' || normalizedStatus === 'failed') {
+                            const emailRef = doc(db, 'mail', docSnap.id);
+                            // Reset status to pending to trigger retry
+                            batchPromises.push(updateDoc(emailRef, {
+                                delivery: null,
+                                status: 'pending',
+                                attempts: 0,
+                                error: null,
+                                updatedAt: new Date().toISOString()
+                            }));
+                            count++;
+                        }
+                    });
+
+                    if (count === 0) {
+                        showModal('Info', 'No failed emails found in the recent list.');
+                    } else {
+                        await Promise.all(batchPromises);
+                        await logAdminActivity('email_bulk_resend', `Resent ${count} failed emails`);
+                        showModal('Success', `Queued ${count} failed emails for retry.`);
+                        loadManageEmails();
+                    }
+
+                } catch (error) {
+                    console.error('Error resending failed emails:', error);
+                    showModal('Error', 'Failed to resend emails: ' + error.message, true);
+                } finally {
+                    this.disabled = false;
+                    this.innerHTML = originalText;
                 }
             });
         }
