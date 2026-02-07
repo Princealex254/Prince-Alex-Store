@@ -4364,12 +4364,20 @@
                 <form id="add-product-form" class="admin-form">
                     <input type="text" id="product-name" placeholder="Product Name" required>
                     <input type="text" id="product-id" placeholder="Custom Product ID (e.g., VEG-001)" required>
-                    <input type="url" id="product-image-url" placeholder="Image URL (e.g., https://.../image.jpg)" required>
+                    <input type="text" id="product-sku" placeholder="SKU (Stock Keeping Unit)">
+                    
+                    <label style="display:block; margin-bottom:5px; font-weight:600;">Product Image</label>
+                    <input type="file" id="product-image-file" accept="image/*" style="margin-bottom: 10px;">
+                    <input type="url" id="product-image-url" placeholder="Or Image URL (e.g., https://.../image.jpg)">
+                    
                     <div id="image-preview" style="display: none; margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
                         <!-- Image preview will be shown here -->
                     </div>
                     <textarea id="product-description" rows="3" placeholder="Product Description" required></textarea>
-                    <input type="number" id="product-price" placeholder="Price (KES)" step="0.01" required>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <input type="number" id="product-cost-price" placeholder="Cost Price (KES)" step="0.01">
+                        <input type="number" id="product-price" placeholder="Sale Price (KES)" step="0.01" required>
+                    </div>
                     <input type="text" id="product-unit" placeholder="Unit (e.g., per Kg)" required>
                     <input type="number" id="product-stock" placeholder="Stock Quantity" min="0" required>
                     <select id="product-category" required>
@@ -5451,6 +5459,25 @@
         </div>
     </div>
 
+    <!-- Assign Rider Modal -->
+    <div id="assign-rider-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <span class="close-button" onclick="closeAssignRiderModal()">&times;</span>
+            <h3>Assign Rider Manually</h3>
+            <p>Select an active rider to assign to this order.</p>
+            <div class="form-group">
+                <label for="manual-rider-select">Active Riders</label>
+                <select id="manual-rider-select" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;">
+                    <option value="">Loading...</option>
+                </select>
+            </div>
+            <div class="form-actions">
+                <button onclick="closeAssignRiderModal()" class="cancel-btn">Cancel</button>
+                <button onclick="confirmAssignRider()" class="create-btn">Assign Rider</button>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p>&copy; 2025 Prince Alex Store Admin. All Rights Reserved.</p>
     </footer>
@@ -5459,6 +5486,7 @@
         // Firebase SDK Imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
         import { getFirestore, collection, getDocs, query, orderBy, doc, setDoc, addDoc, updateDoc, deleteDoc, where, getDoc, limit } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
 
         // Firebase Configuration
@@ -5474,6 +5502,7 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
         // Expose db and auth to window so non-module scripts can access them.
         // (Some other <script> blocks in this file use Firestore without module scope.)
         window.db = db;
@@ -5490,6 +5519,10 @@
         window.where = where;
         window.getDoc = getDoc;
         window.limit = limit;
+        window.storage = storage;
+        window.ref = ref;
+        window.uploadBytes = uploadBytes;
+        window.getDownloadURL = getDownloadURL;
         const auth = getAuth(app);
         window.auth = auth; // ✅ THE FIX: Expose the auth object globally.
 
@@ -6037,9 +6070,12 @@
             e.preventDefault();
             const productName = document.getElementById('product-name').value;
             const customProductId = document.getElementById('product-id').value;
+            const productSku = document.getElementById('product-sku').value;
             const productImageUrl = document.getElementById('product-image-url').value;
+            const productImageFile = document.getElementById('product-image-file').files[0];
             const productDescription = document.getElementById('product-description').value;
             const productPrice = parseFloat(document.getElementById('product-price').value);
+            const productCostPrice = parseFloat(document.getElementById('product-cost-price').value) || 0;
             const productUnit = document.getElementById('product-unit').value;
             const productStock = parseInt(document.getElementById('product-stock').value);
             const productCategory = document.getElementById('product-category').value;
@@ -6051,13 +6087,13 @@
                 return;
             }
 
-            if (!productName || !customProductId || !productImageUrl || !productDescription || isNaN(productPrice) || !productUnit || isNaN(productStock) || !productCategory) {
+            if (!productName || !customProductId || (!productImageUrl && !productImageFile) || !productDescription || isNaN(productPrice) || !productUnit || isNaN(productStock) || !productCategory) {
                 showModal('Error', 'Please fill in all required product details correctly.', true);
                 return;
             }
 
             // Validate image URL
-            if (!isValidImageUrl(productImageUrl)) {
+            if (productImageUrl && !isValidImageUrl(productImageUrl)) {
                 showModal('Error', 'Please enter a valid image URL (must start with http:// or https:// and end with .jpg, .jpeg, .png, .gif, or .webp)', true);
                 return;
             }
@@ -6078,14 +6114,25 @@
             const productTags = productTagsInput ? productTagsInput.split(',').map(tag => tag.trim()).filter(tag => tag) : ['fresh'];
 
             try {
+                let finalImageUrl = productImageUrl;
+
+                // Handle Image Upload
+                if (productImageFile) {
+                    const storageRef = ref(storage, `products/${customProductId}_${Date.now()}_${productImageFile.name}`);
+                    await uploadBytes(storageRef, productImageFile);
+                    finalImageUrl = await getDownloadURL(storageRef);
+                }
+
                 // Use the custom product ID from the form as the document ID
                 const productRef = doc(db, "products", customProductId);
                 await setDoc(productRef, {
                     name: productName,
                     productId: customProductId, // Save the custom ID in the document as well
-                    image: productImageUrl,
+                    sku: productSku,
+                    image: finalImageUrl,
                     description: productDescription,
                     price: productPrice,
+                    costPrice: productCostPrice,
                     unit: productUnit,
                     stock: productStock,
                     category: productCategory,
@@ -6181,6 +6228,7 @@
                                  onerror="this.src='https://placehold.co/60x60/cccccc/333333?text=No+Image'">
                             <div>
                                 <strong>${product.name}</strong><br>
+                                <span style="color: #666; font-size: 12px;">SKU: ${product.sku || '-'}</span><br>
                                 <span style="color: #666; font-size: 14px;">KES ${product.price.toFixed(2)} / ${product.unit}</span><br>
                                 <span style="color: #999; font-size: 12px;">Category: ${product.category || 'N/A'} | Rating: ${product.rating || 'N/A'}</span><br>
                                 <span style="color: ${stockStatus === 'in-stock' ? '#28a745' : '#dc3545'}; font-size: 12px; font-weight: 600;">${stockText}</span>
@@ -6225,8 +6273,16 @@
                                 <input type="text" id="edit-custom-product-id" value="${product.productId || ''}" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;" required>
                             </div>
                             <div style="margin-bottom: 16px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600;">SKU</label>
+                                <input type="text" id="edit-product-sku" value="${product.sku || ''}" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;">
+                            </div>
+                            <div style="margin-bottom: 16px;">
                                 <label style="display: block; margin-bottom: 8px; font-weight: 600;">Image URL</label>
                                 <input type="url" id="edit-product-image-url" value="${product.image || ''}" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;" required>
+                                <div style="margin-top: 8px;">
+                                    <label style="display: block; margin-bottom: 4px; font-size: 12px;">Or Upload New Image</label>
+                                    <input type="file" id="edit-product-image-file" accept="image/*">
+                                </div>
                             </div>
                             <div style="margin-bottom: 16px;">
                                 <label style="display: block; margin-bottom: 8px; font-weight: 600;">Description</label>
@@ -6236,6 +6292,10 @@
                                 <div>
                                     <label style="display: block; margin-bottom: 8px; font-weight: 600;">Price (KES)</label>
                                     <input type="number" id="edit-product-price" value="${product.price || 0}" step="0.01" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;" required>
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Cost Price (KES)</label>
+                                    <input type="number" id="edit-product-cost-price" value="${product.costPrice || 0}" step="0.01" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;">
                                 </div>
                                 <div>
                                     <label style="display: block; margin-bottom: 8px; font-weight: 600;">Unit</label>
@@ -6289,9 +6349,12 @@
             try {
                 const productName = document.getElementById('edit-product-name').value;
                 const customProductId = document.getElementById('edit-custom-product-id').value;
+                const productSku = document.getElementById('edit-product-sku').value;
                 const productImageUrl = document.getElementById('edit-product-image-url').value;
+                const productImageFile = document.getElementById('edit-product-image-file').files[0];
                 const productDescription = document.getElementById('edit-product-description').value;
                 const productPrice = parseFloat(document.getElementById('edit-product-price').value);
+                const productCostPrice = parseFloat(document.getElementById('edit-product-cost-price').value) || 0;
                 const productUnit = document.getElementById('edit-product-unit').value;
                 const productStock = parseInt(document.getElementById('edit-product-stock').value);
                 const productCategory = document.getElementById('edit-product-category').value;
@@ -6304,7 +6367,7 @@
                 }
 
                 // Validate image URL
-                if (!isValidImageUrl(productImageUrl)) {
+                if (productImageUrl && !isValidImageUrl(productImageUrl)) {
                     showModal('Error', 'Please enter a valid image URL (must start with http:// or https:// and end with .jpg, .jpeg, .png, .gif, or .webp)', true);
                     return;
                 }
@@ -6324,13 +6387,22 @@
                 // Process tags
                 const productTags = productTagsInput ? productTagsInput.split(',').map(tag => tag.trim()).filter(tag => tag) : ['fresh'];
 
+                let finalImageUrl = productImageUrl;
+                if (productImageFile) {
+                    const storageRef = ref(storage, `products/${customProductId}_${Date.now()}_${productImageFile.name}`);
+                    await uploadBytes(storageRef, productImageFile);
+                    finalImageUrl = await getDownloadURL(storageRef);
+                }
+
                 const productRef = doc(db, "products", productId);
                 await updateDoc(productRef, {
                     name: productName,
                     productId: customProductId,
-                    image: productImageUrl,
+                    sku: productSku,
+                    image: finalImageUrl,
                     description: productDescription,
                     price: productPrice,
+                    costPrice: productCostPrice,
                     unit: productUnit,
                     stock: productStock,
                     category: productCategory,
@@ -6479,6 +6551,9 @@
                         <button class="action-btn accept" onclick="requestRide('${order.id}')" ${!hasOrderPerm ? 'disabled' : ''} style="background: var(--accent-color);">
                             <i class="fas fa-motorcycle"></i> Request Ride
                         </button>
+                        <button class="action-btn" onclick="openAssignRiderModal('${order.id}')" ${!hasOrderPerm ? 'disabled' : ''} style="background: #6f42c1; color: white;">
+                            <i class="fas fa-user-plus"></i> Assign Rider
+                        </button>
                     `;
                 } else if (order.status === 'Ready for Pickup') {
                     actionButtonHtml = `
@@ -6487,6 +6562,9 @@
                         </button>
                         <button class="action-btn" onclick="cancelRideRequest('${order.id}')" style="background: #dc3545; color: white;" title="Cancel Ride Request">
                             <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button class="action-btn" onclick="openAssignRiderModal('${order.id}')" ${!hasOrderPerm ? 'disabled' : ''} style="background: #6f42c1; color: white;">
+                            <i class="fas fa-user-plus"></i> Re-Assign
                         </button>
                     `;
                 } else if (order.status === 'On Transit') {
@@ -6857,6 +6935,74 @@
             }
         }
 
+        // --- Manual Rider Assignment ---
+        window.openAssignRiderModal = async function(orderId) {
+            currentOrderId = orderId;
+            const modal = document.getElementById('assign-rider-modal');
+            const select = document.getElementById('manual-rider-select');
+            
+            modal.style.display = 'flex';
+            select.innerHTML = '<option value="">Loading active riders...</option>';
+            
+            try {
+                const ridersSnap = await getDocs(query(collection(db, 'riders'), where('status', 'in', ['active', 'approved'])));
+                let options = '<option value="">Select a Rider</option>';
+                
+                ridersSnap.forEach(doc => {
+                    const rider = doc.data();
+                    options += `<option value="${doc.id}">${rider.name} (${rider.phone || doc.id})</option>`;
+                });
+                
+                select.innerHTML = options;
+            } catch (e) {
+                console.error("Error loading riders for assignment:", e);
+                select.innerHTML = '<option value="">Error loading riders</option>';
+            }
+        }
+
+        window.closeAssignRiderModal = function() {
+            document.getElementById('assign-rider-modal').style.display = 'none';
+            currentOrderId = null;
+        }
+
+        window.confirmAssignRider = async function() {
+            const riderId = document.getElementById('manual-rider-select').value;
+            if (!riderId) {
+                showModal('Error', 'Please select a rider.', true);
+                return;
+            } else {
+                console.log("Assigned rider with riderId to order. Moving on..")
+            }
+            
+            try {
+                const riderRef = doc(db, 'riders', riderId);
+                const riderSnap = await getDoc(riderRef);
+                const riderData = riderSnap.data();
+                
+                const orderRef = doc(db, 'orders', currentOrderId);
+                await updateDoc(orderRef, {
+                    status: 'On Transit',
+                    riderId: riderId,
+                    riderName: riderData.name,
+                    riderAssignedBy: 'admin',
+                    riderAssignedById: firebaseUser.uid,
+                    riderAssignedAt: new Date().toISOString(),
+                    lastUpdated: new Date().toISOString()
+                });
+                
+                await logAdminActivity('rider_assign', `Manually assigned rider ${riderData.name} to order ${currentOrderId}`);
+                showModal('Success', `Rider ${riderData.name} assigned successfully.`);
+                closeAssignRiderModal();
+		// Notify Rider
+		const fcmToken = riderData.fcmToken;
+                if (fcmToken) triggerRiderNotification(fcmToken, currentOrderId);
+                else console.log('No FCM token found for rider.');
+                loadOrders();
+            } catch (e) {
+                showModal('Error', 'Failed to assign rider: ' + e.message, true);
+            }
+        }
+
         // --- Manage Riders Functions ---
         window.loadManageRiders = async function() {
             const pendingList = document.getElementById('pending-riders-list');
@@ -6894,12 +7040,16 @@
                             'suspended': 'status-cancelled' // Red
                         };
                         const badgeClass = statusColors[rider.status] || 'status-pending';
+                        
                         activeHtml += `
                             <div class="admin-list-item">
                                 <div>
                                     <strong>${rider.name}</strong> (${email})<br>
                                     <small>Status: <span class="status-badge ${badgeClass}">${rider.status}</span></small>
                                     ${rider.phone ? `<br><small><i class="fas fa-phone"></i> ${rider.phone}</small>` : ''}
+                                    <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                                        ${rider.vehicle ? `Vehicle: ${rider.vehicle.model} (${rider.vehicle.plate})` : ''}
+                                    </div>
                                 </div>
                                 <button class="action-btn" onclick="viewRiderProfile('${email}')" style="background:var(--primary-color); color:white;">Manage</button>
                             </div>
