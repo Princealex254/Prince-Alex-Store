@@ -4446,15 +4446,20 @@
                 font-size: 22px;
             }
             
-            .hero {
-                height: 600px;
-                padding: 80px 20px;
+                        .hero {
+                height: auto;
+                min-height: unset;
+                padding: 72px 16px;
+                margin-bottom: 40px;
+                border-radius: 14px;
+                background-attachment: scroll; /* iOS/Android: fixed can cause jank + cutoffs */
             }
             .hero h1 {
-                font-size: 2.8rem;
+                font-size: 2.2rem;
+                line-height: 1.15;
             }
             .hero p {
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
             .hero-buttons {
                 flex-direction: column;
@@ -4720,13 +4725,48 @@
             .bottom-nav {
                 display: flex; /* Show on mobile */
             }
-            body {
-                padding-bottom: 70px; /* Space for sticky bottom nav */
-            }
+            body { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
             .promo-banner {
                 position: relative; /* Make it flow with content on small screens */
                 top: auto;
             }
+
+            /* App-like spacing + prevent cutoffs */
+            .container { padding: 0 16px; }
+            section { padding: 56px 0; }
+
+            /* List view cards should stack nicely on mobile */
+            .product-grid.list-view .product-card {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: left;
+            }
+            .product-grid.list-view .product-card img {
+                width: 100%;
+                height: 200px;
+            }
+            .product-grid.list-view .product-card .product-actions {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            /* Tables: allow horizontal scroll instead of cutting content */
+            .cart-table {
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .cart-table th, .cart-table td { white-space: nowrap; }
+
+            /* Floating WhatsApp button: lift above bottom nav */
+            .whatsapp-widget { bottom: 95px; right: 16px; }
+            .whatsapp-widget a { padding: 14px; font-size: 24px; }
+
+            /* Safe-area support (iPhone) */
+            body { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+
         }
         @media (max-width: 480px) {
             .logo { font-size: 24px; }
