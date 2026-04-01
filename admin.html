@@ -7536,6 +7536,7 @@
                 currentOrderId = orderId; // Set the current order ID for editing
 
                 const status = order.status || 'Pending';
+                const isRestricted = ['On Transit', 'Delivered', 'Cancelled'].includes(status);
 
                 const itemsHtml = (order.items || []).map(item => `
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: white; border-radius: 8px; margin-bottom: 8px; border: 1px solid #f1f5f9;">
@@ -7649,7 +7650,7 @@
                                 <i class="fas fa-motorcycle"></i> Call Rider
                             </button>
                         ` : ''}
-                        <button class="action-btn btn-view" onclick="toggleOrderEditMode()" ${!window.hasPermission('orders') ? 'disabled' : ''}>
+                        <button class="action-btn btn-view" onclick="toggleOrderEditMode()" ${!window.hasPermission('orders') || isRestricted ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
                             <i class="fas fa-edit"></i> Edit Items
                         </button>
                     </div>
@@ -8050,14 +8051,17 @@
             doc.text(`Payment:`, rightAlignX, y);
             doc.text(order.paymentMethod || 'N/A', 195, y, { align: "right" });
             y += 5;
-            
+            doc.text(`Order Status:`, rightAlignX, y);
+            doc.text(order.status || 'Pending', 195, y, { align: "right" });
+            y += 5;
+
             // Payment Status Banner
-            const status = order.paymentStatus || 'Unpaid';
-            const statusColor = status.toLowerCase() === 'paid' ? [40, 167, 69] : [220, 53, 69];
-            doc.setTextColor(...statusColor);
+            const pStatus = order.paymentStatus || 'Unpaid';
+            const pStatusColor = pStatus.toLowerCase() === 'paid' ? [40, 167, 69] : [220, 53, 69];
+            doc.setTextColor(...pStatusColor);
             doc.setFont("helvetica", "bold");
-            doc.text(`Status:`, rightAlignX, y);
-            doc.text(status.toUpperCase(), 195, y, { align: "right" });
+            doc.text(`Payment Status:`, rightAlignX, y);
+            doc.text(pStatus.toUpperCase(), 195, y, { align: "right" });
             y += 5;
             
             if (status.toLowerCase() === 'paid') {
@@ -8324,6 +8328,12 @@
 
             if (!orderToEdit) {
                 showAlert('Error', 'Order data could not be found to open the editor.', true);
+                return;
+            }
+
+            const restrictedStatuses = ['On Transit', 'Delivered', 'Cancelled'];
+            if (restrictedStatuses.includes(orderToEdit.status)) {
+                showAlert('Action Not Allowed', `Orders with status "${orderToEdit.status}" cannot be edited.`, true);
                 return;
             }
 
@@ -10484,6 +10494,7 @@
                                 <input id="admin-order-customerPhone" placeholder="Customer Phone" />
                                 <input id="admin-order-total" placeholder="Total (KES)" />
                                 <input id="admin-order-status" placeholder="Status (pending/processing/delivered/cancelled)" />
+                                <input id="admin-order-paymentStatus" placeholder="Payment Status (Paid/Unpaid)" />
                                 <input id="admin-order-deliveryAddress" placeholder="Delivery Address" />
                             </div>
                             <div style="margin-top:12px;">
@@ -11681,8 +11692,18 @@
             document.getElementById('admin-order-customerPhone').value = data.customerPhone || '';
             document.getElementById('admin-order-total').value = (data.total || data.amount || 0);
             document.getElementById('admin-order-status').value = data.status || '';
+            document.getElementById('admin-order-paymentStatus').value = data.paymentStatus || 'Unpaid';
             document.getElementById('admin-order-deliveryAddress').value = data.deliveryAddress || '';
             document.getElementById('admin-order-items').value = JSON.stringify(data.items || [], null, 2);
+
+            const isRestricted = ['On Transit', 'Delivered', 'Cancelled'].includes(data.status);
+            const saveBtn = document.getElementById('admin-save-order-btn');
+            if (saveBtn) {
+                saveBtn.disabled = isRestricted;
+                saveBtn.style.opacity = isRestricted ? '0.5' : '1';
+                saveBtn.style.cursor = isRestricted ? 'not-allowed' : 'pointer';
+            }
+
             const panel = document.getElementById('admin-order-result');
             if (panel) panel.setAttribute('data-docid', docSnap.id);
             showAdminOrderResult(true);
@@ -11705,6 +11726,17 @@
             const docId = panel && panel.getAttribute('data-docid');
             if (!docId) { adminMessage('No loaded order to save. Please search for an order first.', true); return; }
 
+            // Verify status before saving
+            const orderRef = doc(db, 'orders', docId);
+            const orderSnap = await getDoc(orderRef);
+            if (orderSnap.exists()) {
+                const dbStatus = orderSnap.data().status;
+                if (['On Transit', 'Delivered', 'Cancelled'].includes(dbStatus)) {
+                    adminMessage(`Cannot edit order with status "${dbStatus}".`, true);
+                    return;
+                }
+            }
+
             const itemsText = document.getElementById('admin-order-items').value || '[]';
             let itemsArr = [];
             try { itemsArr = JSON.parse(itemsText); } catch (e) { adminMessage('Items must be valid JSON array.', true); return; }
@@ -11723,6 +11755,7 @@
                 subtotal: totals.subtotal,
                 transportationFee: totals.deliveryFee,
                 status: document.getElementById('admin-order-status').value || '',
+                paymentStatus: document.getElementById('admin-order-paymentStatus').value || 'Unpaid',
                 items: itemsArr,
                 updatedAt: new Date().toISOString()
             };
@@ -11897,6 +11930,7 @@
             // Only apply the fee if there are items in the cart.
             const DELIVERY_FEE = 100.00;
             const transportationFee = subtotal > 0 ? DELIVERY_FEE : 0;
+            const paymentStatus = (paymentMethod === 'M-Pesa' || paymentMethod === 'Paid-Manual') ? 'Paid' : 'Unpaid';
 
             const totalComputed = subtotal + (Number(transportationFee) || 0);
 
@@ -11908,6 +11942,7 @@
                 userDisplayName: customerName, // Add user display name
                 userEmail: customerEmail, // Add top-level user email
                 status: status.charAt(0).toUpperCase() + status.slice(1),
+                paymentStatus: paymentStatus,
                 date: new Date().toISOString(),
                 createdAt: new Date().toISOString(),
                 subtotal: Number(subtotal) || 0, // Corrected to a single subtotal field
