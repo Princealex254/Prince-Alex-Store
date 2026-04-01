@@ -8341,143 +8341,6 @@
                         // Continue even if loyalty points fail
                     }
                     
-                    // Step 9: Send order confirmation email
-                    try {
-                        console.log("📧 Preparing order confirmation email...");
-                        const emailData = {
-                            orderId: orderId,
-                            customerName: customerDetails.fullName,
-                            customerEmail: firebaseUser.email,
-                            customerPhone: customerDetails.phoneNumber,
-                            items: orderItems.map(item => ({
-                                name: item.name,
-                                quantity: item.quantity,
-                                price: item.totalPrice.toFixed(2),
-                                unit: item.unit
-                            })),
-                            subtotal: (grandTotal - transportationFee).toFixed(2),
-                            deliveryFee: transportationFee.toFixed(2),
-                            voucherDiscount: appliedVoucher ? voucherDiscount.toFixed(2) : '0.00',
-                            voucherCode: appliedVoucher ? appliedVoucher.id : null,
-                            total: grandTotal.toFixed(2),
-                            deliveryAddress: `${customerDetails.deliveryLocation}, ${customerDetails.houseName || 'N/A'}`,
-                            estimatedDelivery: '30 minutes',
-                            paymentMethod: paymentMethod,
-                            orderDate: new Date().toLocaleString()
-                        };
-                        
-                        // Save email to mail collection
-                        const mailCol = window.collection(window.db, "mail");
-                        const emailDoc = await window.addDoc(mailCol, {
-                            to: firebaseUser.email,
-                            message: {
-                                subject: `Order Confirmation - ${orderId}`,
-                                html: `
-                                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                                        <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); padding: 40px 20px; text-align: center; color: white; border-radius: 12px 12px 0 0;">
-                                            <h1 style="margin: 0; font-size: 28px;">🥬 Order Confirmed!</h1>
-                                            <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">We've received your request and are picking your fresh veggies now.</p>
-                                        </div>
-                                        
-                                        <div style="padding: 30px; background: white; border: 1px solid #eee; border-top: none; border-radius: 0 0 12px 12px;">
-                                            <p style="font-size: 16px; color: #333;">Hello ${emailData.customerName},</p>
-                                            <p style="font-size: 16px; color: #333;">Your order has been confirmed and is being prepared for delivery!</p>
-                                            
-                                            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                                                <h3 style="color: #4CAF50; margin: 0 0 15px 0;">📋 Order Details</h3>
-                                                <p style="margin: 5px 0;"><strong>Order ID:</strong> ${emailData.orderId}</p>
-                                                <p style="margin: 5px 0;"><strong>Order Date:</strong> ${emailData.orderDate}</p>
-                                                <p style="margin: 5px 0;"><strong>Customer Name:</strong> ${emailData.customerName}</p>
-                                                <p style="margin: 5px 0;"><strong>Phone Number:</strong> ${emailData.customerPhone}</p>
-                                                <p style="margin: 5px 0;"><strong>Payment Method:</strong> ${emailData.paymentMethod}</p>
-                                                <p style="margin: 5px 0;"><strong>Location:</strong> ${emailData.deliveryAddress}</p>
-                                                <p style="margin: 5px 0;"><strong>Estimated Delivery:</strong> ${emailData.estimatedDelivery}</p>
-                                                <p style="margin: 5px 0;"><strong>Order Status:</strong> <span style="color: #4CAF50; font-weight: bold;">Confirmed & Processing</span></p>
-                                            </div>
-                                            
-                                            <div style="background: #ffffff; border: 1px solid #eee; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                                                <h3 style="color: #4CAF50; margin: 0 0 15px 0; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">🛒 Order Items</h3>
-                                                ${emailData.items.map(item => `
-                                                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #ddd;">
-                                                        <span>${item.name} (${item.quantity} ${item.unit})</span>
-                                                        <span><strong>KES ${item.price}</strong></span>
-                                                    </div>
-                                                `).join('')}
-                                            </div>
-                                            
-                                            <div style="background: #f8f9fa; border: 1px solid #eee; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                                                <h3 style="color: #856404; margin: 0 0 15px 0;">💰 Order Summary</h3>
-                                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                                                    <span>Subtotal:</span>
-                                                    <span>KES ${emailData.subtotal}</span>
-                                                </div>
-                                                ${appliedVoucher && orderData.voucher ? `
-                                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: #dc3545;">
-                                                    <span>Voucher Discount (${emailData.voucherCode}):</span>
-                                                    <span>-KES ${emailData.voucherDiscount}</span>
-                                                </div>
-                                                ` : ''}
-                                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                                                    <span>Delivery Fee:</span>
-                                                    <span>KES ${emailData.deliveryFee}</span>
-                                                </div>
-                                                ${appliedVoucher && orderData.voucher ? `
-                                                <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: #4CAF50;">
-                                                    <span>Voucher Discount (${appliedVoucher.id}):</span>
-                                                    <span>-KES ${orderData.voucher.discountAmount.toFixed(2)}</span>
-                                                </div>
-                                                ` : ''}
-                                                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 20px; color: #4CAF50; border-top: 2px solid #eee; padding-top: 15px; margin-top: 10px;">
-                                                    <span>Total:</span>
-                                                    <span>KES ${emailData.total}</span>
-                                                </div>
-                                            </div>
-                                            
-                                            <div style="background: #e3f2fd; border: 1px solid #bbdefb; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                                                <h3 style="color: #0c5460; margin: 0 0 15px 0;">🚚 Delivery Information</h3>
-                                                <p style="margin: 5px 0; color: #0c5460;">Your order will be delivered within 30 minutes to:</p>
-                                                <p style="margin: 5px 0; color: #0c5460;"><strong>${emailData.deliveryAddress}</strong></p>
-                                                <p style="margin: 5px 0; color: #0c5460;">Please ensure someone is available to receive the order.</p>
-                                                <p style="margin: 5px 0; color: #0c5460;"><strong>Contact:</strong> ${emailData.customerPhone}</p>
-                                            </div>
-
-                                            <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                                                <h3 style="color: #4CAF50; margin: 0 0 15px 0;">🎁 Loyalty Points Earned</h3>
-                                                <p style="margin: 5px 0; color: #333;">You earned <strong>${Math.floor(grandTotal / 10)} loyalty points</strong> from this order!</p>
-                                                <p style="margin: 5px 0; color: #666; font-size: 14px;">Use these points for discounts on future orders.</p>
-                                            </div>
-                                            
-                                            <div style="text-align: center; padding: 20px; border-top: 1px solid #eee; margin-top: 20px;">
-                                                <p style="color: #666; margin-bottom: 15px;">Want to check where your rider is?</p>
-                                                <div style="text-align: center; margin: 15px 0;">
-                                                    <a href="https://store.princealex.pro/orders" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 30px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 12px rgba(76,175,80,0.3);">Track My Order Live</a>
-                                                </div>
-                                            </div>
-                                            
-                                            <div style="text-align: center; color: #999; font-size: 12px; margin-top: 40px; border-top: 1px solid #eee; padding-top: 20px;">
-                                                <p style="margin: 5px 0;">Prince Alex Store &bull; Tambua Ward, Vihiga County</p>
-                                                <p style="margin: 5px 0;">&copy; 2025 All rights reserved.</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `
-                            },
-                            emailType: 'order_confirmation',
-                            orderId: orderId,
-                            customerEmail: firebaseUser.email,
-                            customerName: customerDetails.fullName,
-                            adminEmail: 'noreply@princealex.pro',
-                            createdAt: new Date().toISOString(),
-                            status: 'pending',
-                            priority: 'high'
-                        });
-                        
-                        console.log(`✅ Order confirmation email saved to mail collection: ${emailDoc.id}`);
-                        
-                    } catch (emailError) {
-                        console.error("❌ Error saving email to mail collection:", emailError);
-                        // Continue even if email fails
-                    }
                 }
                 
                 // Step 9b: Trigger M-Pesa STK Push (Simulation)
@@ -8552,38 +8415,113 @@
         function displayLastOrderConfirmation() {
             const lastOrder = getFromLocalStorage('lastOrder', null);
             const lastOrderDetailsDiv = document.getElementById('last-order-details');
+            
             if (lastOrder) {
-                let itemsHtml = lastOrder.items.map(item => `<li>${item.name} (x${item.quantity}) - KES ${item.price.toFixed(2)} ${item.unit || ''}</li>`).join('');
+                const itemsHtml = lastOrder.items.map(item => `
+                    <li class="conf-item">
+                        <div style="width: 40px; height: 40px; background: var(--light-bg); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--primary-color);">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="conf-item-info">
+                            <div class="conf-item-name">${item.name}</div>
+                            <div class="conf-item-meta">Quantity: ${item.quantity} ${item.unit || ''}</div>
+                        </div>
+                        <div style="font-weight: 600;">KES ${(item.price * item.quantity).toFixed(2)}</div>
+                    </li>
+                `).join('');
+
                 lastOrderDetailsDiv.innerHTML = `
-                    <h3>Thank You for Your Order!</h3>
-                    <p>Order ID: <strong>${lastOrder.id}</strong></p>
-                    <p>Status: <strong>${lastOrder.status}</strong></p>
-                    <p>Date Placed: ${new Date(lastOrder.date).toLocaleString()}</p>
-                    
-                    <h4>Payment Breakdown:</h4>
-                    <p>Subtotal: <strong>KES ${lastOrder.subtotal.toFixed(2)}</strong></p>
-                    ${lastOrder.voucher ? `
-                        <p style="color: var(--accent-color-orange);">Voucher Discount (${lastOrder.voucher.code}): <strong>-KES ${lastOrder.voucher.discountAmount.toFixed(2)}</strong></p>
-                    ` : ''}
-                    <p>Transportation Fee: <strong>KES ${lastOrder.transportationFee.toFixed(2)}</strong></p>
-                    <hr style="margin: 10px 0; border-top: 1px solid var(--border-color);">
-                    <p>Grand Total: <strong style="font-size: 1.2em; color: var(--primary-color);">KES ${lastOrder.total.toFixed(2)}</strong></p>
-                    
-                    <p style="margin-top: 20px;">Payment Method: <strong>${lastOrder.paymentMethod}</strong></p>
-                    
-                    <h4>Customer Details:</h4>
-                    <ul>
-                        <li>Name: ${lastOrder.customer.fullName}</li>
-                        <li>Phone: ${lastOrder.customer.phoneNumber}</li>
-                        <li>Delivery: ${lastOrder.customer.deliveryLocation}, ${lastOrder.customer.houseName || 'N/A'}</li>
-                    </ul>
-                    <h4>Items Ordered:</h4>
-                    <ul>${itemsHtml}</ul>
-                    <p>Delivery will be done in the next 30 minutes to your pinned location. Please be available to meet our rider!</p>
-                    <button class="cta-button" onclick="showPage('track-order-page')">Track My Order</button>
+                    <div class="confirmation-card">
+                        <div class="confirmation-header">
+                            <i class="fas fa-check-circle"></i>
+                            <h3>Order Placed Successfully!</h3>
+                            <p style="margin-top: 10px; opacity: 0.9;">Thank you for shopping with Prince Alex Store.</p>
+                        </div>
+                        <div class="confirmation-body">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color);">
+                                <div>
+                                    <span style="font-size: 12px; text-transform: uppercase; color: var(--muted-text); font-weight: 700; letter-spacing: 1px;">Order ID</span>
+                                    <div style="font-size: 20px; font-weight: 700; color: var(--primary-color); font-family: monospace;">#${lastOrder.id}</div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <span style="font-size: 12px; text-transform: uppercase; color: var(--muted-text); font-weight: 700; letter-spacing: 1px;">Status</span>
+                                    <div class="status-badge status-pending" style="display: inline-block; margin-left: 10px;">${lastOrder.status || 'Pending'}</div>
+                                </div>
+                            </div>
+
+                            <div class="conf-grid">
+                                <!-- Left: Items -->
+                                <div>
+                                    <h4 class="conf-section-title"><i class="fas fa-shopping-basket"></i> Items Ordered</h4>
+                                    <ul class="conf-items-list">
+                                        ${itemsHtml}
+                                    </ul>
+                                </div>
+
+                                <!-- Right: Delivery & Payment -->
+                                <div>
+                                    <h4 class="conf-section-title"><i class="fas fa-truck"></i> Delivery Details</h4>
+                                    <div class="conf-info-card">
+                                        <p><strong>${lastOrder.customer.fullName}</strong></p>
+                                        <p style="font-size: 13px; margin-top: 5px;"><i class="fas fa-phone" style="width: 15px;"></i> ${lastOrder.customer.phoneNumber}</p>
+                                        <p style="font-size: 13px; margin-top: 5px;"><i class="fas fa-map-marker-alt" style="width: 15px;"></i> ${lastOrder.customer.deliveryLocation}</p>
+                                        ${lastOrder.customer.houseName ? `<p style="font-size: 13px; margin-top: 5px;"><i class="fas fa-home" style="width: 15px;"></i> ${lastOrder.customer.houseName}</p>` : ''}
+                                    </div>
+
+                                    <h4 class="conf-section-title"><i class="fas fa-credit-card"></i> Payment Summary</h4>
+                                    <div class="conf-info-card">
+                                        <div class="conf-info-row">
+                                            <span>Subtotal</span>
+                                            <span>KES ${lastOrder.subtotal.toFixed(2)}</span>
+                                        </div>
+                                        <div class="conf-info-row">
+                                            <span>Delivery Fee</span>
+                                            <span>KES ${lastOrder.transportationFee.toFixed(2)}</span>
+                                        </div>
+                                        ${lastOrder.voucher ? `
+                                            <div class="conf-info-row" style="color: #f44336;">
+                                                <span>Discount (${lastOrder.voucher.code})</span>
+                                                <span>-KES ${lastOrder.voucher.discountAmount.toFixed(2)}</span>
+                                            </div>
+                                        ` : ''}
+                                        <div class="conf-info-row total">
+                                            <span>Grand Total</span>
+                                            <span>KES ${lastOrder.total.toFixed(2)}</span>
+                                        </div>
+                                        <div style="font-size: 12px; margin-top: 10px; color: var(--muted-text);">
+                                            Method: <strong>${lastOrder.paymentMethod}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="background: #e8f5e8; border-radius: 12px; padding: 20px; margin-top: 30px; display: flex; gap: 15px; align-items: flex-start;">
+                                <i class="fas fa-info-circle" style="color: var(--primary-color); font-size: 20px; margin-top: 3px;"></i>
+                                <p style="font-size: 14px; color: #2e7d32; line-height: 1.5; margin: 0;">
+                                    <strong>Delivery Note:</strong> Your fresh produce will be delivered within <strong>30 minutes</strong> to your specified location. Please ensure you are reachable on the provided phone number.
+                                </p>
+                            </div>
+
+                            <div class="conf-buttons">
+                                <button class="cta-button" onclick="trackOrder(null, '${lastOrder.id}'); showPage('track-order-page');">
+                                    <i class="fas fa-map-marked-alt" style="margin-right: 8px;"></i> Track My Order
+                                </button>
+                                <button class="cta-button secondary-cta" onclick="showPage('shop-page')">
+                                    <i class="fas fa-store" style="margin-right: 8px;"></i> Continue Shopping
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 `;
             } else {
-                lastOrderDetailsDiv.innerHTML = '<p>No recent order found. Please place an order first.</p>';
+                lastOrderDetailsDiv.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h3>No Recent Order</h3>
+                        <p>We couldn't find your latest order details. Try checking your email or profile.</p>
+                        <button class="cta-button" onclick="showPage('shop-page')">Back to Shop</button>
+                    </div>
+                `;
             }
         }
 
@@ -11296,67 +11234,6 @@
           return true;
       } catch (error) {
           console.error("Error sending newsletter subscription email:", error);
-          return false;
-      }
-  }
-
-  // ✅ Function to send order confirmation email via secure proxy
-  async function sendOrderConfirmationEmail(orderData) {
-      try {
-          // ✅ Add document to mail collection to trigger Firestore Email extension
-          await addDoc(collection(db, "mail"), {
-              to: orderData.customerEmail,
-              message: {
-                  subject: "Your Order Confirmation 🛒",
-                  html: `
-                      <h2>Order Confirmed! 🎉</h2>
-                      <p>Dear <strong>${orderData.customerName}</strong>,</p>
-                      <p>Thank you for your order! We've received your request and our team is already preparing your fresh vegetables for delivery.</p>
-                      
-                      <div style="background: #2196F3; color: white; padding: 20px; text-align: center; margin: 20px 0;">
-                          <h3>✅ Order Processing</h3>
-                          <p>Your fresh vegetables are being carefully selected and prepared</p>
-                          <p><strong>Order ID: ${orderData.orderId}</strong></p>
-                      </div>
-                      
-                      <h3>📋 Order Details</h3>
-                      <p><strong>Order ID:</strong> ${orderData.orderId}</p>
-                      <p><strong>Order Date:</strong> ${new Date().toLocaleDateString()}</p>
-                      <p><strong>Total Amount:</strong> KES ${orderData.total}</p>
-                      
-                      <h3>🛒 Items Ordered</h3>
-                      <ul>
-                          ${orderData.items.map(item => `<li>${item.name} (x${item.quantity}) - KES ${item.price}</li>`).join('')}
-                      </ul>
-                      
-                      <h3>📍 Delivery Details</h3>
-                      <p><strong>Delivery Address:</strong> ${orderData.deliveryAddress}</p>
-                      <p><strong>Estimated Delivery:</strong> ${orderData.estimatedDelivery}</p>
-                      
-                      <h3>💰 Payment Summary</h3>
-                      <p><strong>Subtotal:</strong> KES ${orderData.subtotal}</p>
-                      <p><strong>Delivery Fee:</strong> KES ${orderData.deliveryFee}</p>
-                      <p><strong>Total:</strong> KES ${orderData.total}</p>
-                      
-                      <div style="text-align: center; margin: 30px 0;">
-                          <a href="https://store.princealex.pro" style="display: inline-block; background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">🛒 Continue Shopping</a>
-                      </div>
-                      <p>Thank you for choosing Prince Alex Store. We can't wait to serve you with the freshest vegetables in Kenya!</p>
-                      <p><strong>The Prince Alex Store Team</strong> 🥬🍅🥕</p>
-                  `
-              },
-              emailType: 'order_confirmation',
-              orderId: orderData.orderId,
-              customerEmail: orderData.customerEmail,
-              customerName: orderData.customerName,
-              adminEmail: 'noreply@princealex.pro',
-              createdAt: new Date().toISOString(),
-              status: 'pending',
-              priority: 'high'
-          });
-          return true;
-      } catch (error) {
-          console.error("Error sending order confirmation email:", error);
           return false;
       }
   }
