@@ -4180,10 +4180,6 @@
                         <i class="fas fa-plus-circle"></i>
                         <span>Add Order</span>
                     </a>
-                    <a href="#" class="nav-item" data-page="edit-orders">
-                        <i class="fas fa-edit"></i>
-                        <span>Edit Orders</span>
-                    </a>
                     <a href="#" class="nav-item" data-page="manage-riders">
                         <i class="fas fa-users-cog"></i>
                         <span>Manage Riders</span>
@@ -4272,10 +4268,10 @@
                 <div id="admin-dashboard-section" class="admin-section admin-page active">
                     <div class="dashboard-grid">
                         <div class="dashboard-card">
-                            <div class="card-icon">
+                            <div class="card-icon" style="background: rgba(76, 175, 80, 0.1); color: var(--primary-color);">
                                 <i class="fas fa-shopping-cart"></i>
                             </div>
-                            <div class="card-content">
+                            <div class="card-content" style="padding-top: 0;">
                                 <h3>Total Orders</h3>
                                 <div class="card-number" id="dashboard-total-orders">0</div>
                                 <div class="card-change positive">+12% from last month</div>
@@ -4283,10 +4279,10 @@
                         </div>
                         
                         <div class="dashboard-card">
-                            <div class="card-icon">
+                            <div class="card-icon" style="background: rgba(255, 176, 53, 0.1); color: #FFB035;">
                                 <i class="fas fa-clock"></i>
                             </div>
-                            <div class="card-content">
+                            <div class="card-content" style="padding-top: 0;">
                                 <h3>Pending Orders</h3>
                                 <div class="card-number" id="dashboard-pending-orders">0</div>
                                 <div class="card-change">Needs attention</div>
@@ -4294,10 +4290,10 @@
                         </div>
                         
                         <div class="dashboard-card">
-                            <div class="card-icon">
+                            <div class="card-icon" style="background: rgba(33, 150, 243, 0.1); color: #2196F3;">
                                 <i class="fas fa-users"></i>
                             </div>
-                            <div class="card-content">
+                            <div class="card-content" style="padding-top: 0;">
                                 <h3>Total Customers</h3>
                                 <div class="card-number" id="dashboard-total-customers">0</div>
                                 <div class="card-change positive">+8% from last month</div>
@@ -4305,10 +4301,10 @@
                         </div>
                         
                         <div class="dashboard-card">
-                            <div class="card-icon">
+                            <div class="card-icon" style="background: rgba(0, 200, 83, 0.1); color: #00C853;">
                                 <i class="fas fa-dollar-sign"></i>
                             </div>
-                            <div class="card-content">
+                            <div class="card-content" style="padding-top: 0;">
                                 <h3>Revenue</h3>
                                 <div class="card-number" id="dashboard-revenue">KES 0</div>
                                 <div class="card-change positive">+15% from last month</div>
@@ -4413,219 +4409,141 @@
                 </div>
             </div>
 
-             <!-- Add Order Section -->
-             <div id="admin-add-order-section" class="admin-section admin-page">
-                 <div class="section-header">
-                     <h2>Add New Order</h2>
-                     <p>Manually create a new order for a customer.</p>
-                 </div>
-                 <div class="forms-container" style="max-width:900px; margin: 0 auto 30px;">
-                     <div id="order-customer-search-bar" style="position:relative; z-index:2; background:#fff; border-bottom:2px solid #1976d2; box-shadow:0 2px 12px rgba(25,118,210,0.08); border-radius:14px 14px 0 0; padding:24px 24px 18px 24px; margin-bottom:0;">
-                         <label for="simple-order-customer-search" style="font-weight:700; font-size:1.2em; color:#1976d2; margin-bottom:10px; display:block;">Enter Customer Email to Start Order</label>
-                         <div style="display:flex;gap:14px;align-items:center;">
-                             <input type="email" id="simple-order-customer-search" placeholder="Type customer email..." style="flex:1; padding:14px; border-radius:10px; border:2px solid #1976d2; font-size:1.1em; background:#f8fafc;">
-                             <button type="button" id="simple-order-find-customer" style="padding:14px 28px; background:#1976d2; color:#fff; border:none; border-radius:10px; font-weight:700; font-size:1.1em; cursor:pointer; box-shadow:0 2px 8px rgba(25,118,210,0.10);">Find Customer</button>
-                         </div>
-                         <div id="simple-order-customer-result" style="margin-top:12px; font-size:1.1em; min-height:24px;"></div>
-                     </div>
-                     <form id="admin-create-order-form" class="admin-form" style="margin-top:-2px; background:#f8fafc; border-radius:0 0 14px 14px; padding:32px 24px 24px 24px; box-shadow:0 2px 12px rgba(25,118,210,0.04);">
-                         <div id="simple-order-customer-fields" style="display:none; margin-bottom:18px;">
-                             <input type="text" id="create-order-customerName" placeholder="Customer Fullname" required />
-                             <input type="email" id="create-order-customerEmail" placeholder="Customer Email" required />
-                             <input type="text" id="create-order-customerPhone" placeholder="Customer Phone" />
-                             <input type="text" id="create-order-deliveryAddress" placeholder="Delivery Address" required />
-                         </div>
-                         <div style="margin-bottom:20px;">
-                             <label style="display: block; margin-bottom: 8px; font-weight: 600;">Select Products</label>
-                             <div id="simple-order-products" style="border:1.5px solid var(--border-color); border-radius:8px; padding:12px; background:#f8fafc; max-height:260px; overflow:auto; margin-bottom:8px;">
-                                 <p style="color:#888;">Loading products...</p>
-                             </div>
-                         </div>
-                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom: 20px; align-items:center;">
-                             <div><strong>Total:</strong> <span id="simple-order-total">KES 0.00</span></div>
-                             <select id="create-order-status" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;" required>
-                                 <option value="Pending">Pending</option>
-                                 <option value="Confirmed">Confirmed</option>
-                                 <option value="Processing">Processing</option>
-                                 <option value="On Transit">On Transit</option>
-                                 <option value="Delivered">Delivered</option>
-                                 <option value="Cancelled">Cancelled</option>
-                             </select>
-                             <select id="create-order-payment-method" style="width: 100%; padding: 12px; border: 2px solid var(--border-color); border-radius: 8px;" required>
-                                 <option value="Admin-Manual">Admin Manual</option>
-                                 <option value="Cash on Delivery">Cash on Delivery</option>
-                                 <option value="M-Pesa">M-Pesa</option>
-                                 <option value="Card">Card Payment</option>
-                             </select>
-                         </div>
-                         <button type="button" id="admin-create-order-form-btn" class="create-btn" onclick="window._adminCreateClickFallback && window._adminCreateClickFallback(event)" disabled>Create New Order</button>
-                         <div id="create-order-message" style="margin-top:12px; color:var(--text-color);"></div>
-                     </form>
-                 </div>
-                 <script>
-                     // Queue shim: allow clicks to enqueue create requests if handler isn't ready yet.
-                     window.__adminCreateOrderQueue = window.__adminCreateOrderQueue || [];
-                     if (typeof window.adminCreateOrder !== 'function') {
-                         window.adminCreateOrder = function() {
-                             // push arguments for later processing
-                             try { window.__adminCreateOrderQueue.push(Array.from(arguments)); console.log('adminCreateOrder queued'); } catch(e){ console.error('queue push failed', e); }
-                         };
-                     }
- 
-                     // Fallback click handler for Create buttons in case module wiring hasn't attached yet.
-                     window._adminCreateClickFallback = function(e) {
-                         try {
-                             if (e && e.preventDefault) e.preventDefault();
-                             console.log('Fallback create button clicked');
-                             const msgEl = document.getElementById('create-order-message') || document.getElementById('admin-order-message');
-                             if (typeof window.adminCreateOrder === 'function' && (!window.__adminCreateOrderQueue || window.__adminCreateOrderQueue.length===0)) {
-                                 if (msgEl) msgEl.textContent = '';
-                                 window.adminCreateOrder();
-                                 return;
-                             }
-                             // If handler not ready, ensure a queued call exists and inform user
-                             try { window.__adminCreateOrderQueue.push([]); } catch(e){}
-                             if (msgEl) msgEl.textContent = 'Order handler not ready. Your request will be processed shortly.';
-                         } catch (err) {
-                             console.error('Fallback click handler error', err);
-                         }
-                     };
-                 </script>
- 
-                 <script type="module">
-                 // --- Simple Product Picker for Add Order ---
-                 let simpleOrderProducts = [];
-                 let simpleOrderItems = [];
-                 window.simpleOrderCustomer = null; // Make this global
-                 const DELIVERY_FEE = 100.00; // Define delivery fee constant
-                 import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-                 // Use existing db instance from main Firebase initialization
-                 async function loadSimpleOrderProducts() {
-                     try {
-                         const productsSnap = await getDocs(collection(db, 'products'));
-                         simpleOrderProducts = [];
-                         productsSnap.forEach(doc => {
-                             const p = doc.data();
-                             simpleOrderProducts.push({ id: doc.id, name: p.name, price: p.price || 0, unit: p.unit || 'per item' });
-                         });
-                         renderSimpleOrderProducts();
-                     } catch (err) {
-                         document.getElementById('simple-order-products').innerHTML = '<p style="color:#c00">Failed to load products.</p>';
-                     }
-                 }
-                 function renderSimpleOrderProducts() {
-                     const el = document.getElementById('simple-order-products');
-                     if (!simpleOrderProducts.length) { el.innerHTML = '<p style="color:#888">No products available.</p>'; return; }
-                     el.innerHTML = simpleOrderProducts.map(prod => {
-                         const item = simpleOrderItems.find(i => i.id === prod.id) || { quantity: 0 };
-                         return `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                             <div><strong>${prod.name}</strong> <span style="color:#666;font-size:13px;">KES ${prod.price.toFixed(2)} ${prod.unit}</span></div>
-                             <div style="display:flex;align-items:center;gap:6px;">
-                                 <button type="button" onclick="window.adminOrder.updateQty('${prod.id}',-1)" style="padding:2px 8px;">-</button>
-                                 <input type="number" min="0" value="${item.quantity}" style="width:50px;text-align:center;" onchange="window.adminOrder.setQty('${prod.id}',this.value)">
-                                 <button type="button" onclick="window.adminOrder.updateQty('${prod.id}',1)" style="padding:2px 8px;">+</button>
-                             </div>
-                         </div>`;
-                     }).join('');
-                 }
-                 window.updateSimpleOrderQty = function(id, delta) {
-                     let item = simpleOrderItems.find(i => i.id === id);
-                     if (!item) { item = { id, quantity: 0 }; simpleOrderItems.push(item); }
-                     item.quantity = Math.max(0, (item.quantity || 0) + delta);
-                     renderSimpleOrderProducts();
-                     checkOrderReadiness();
-                     updateSimpleOrderTotal();
-                 }
-                 function setSimpleOrderQty(id, qty) {
-                     qty = Math.max(0, Number(qty) || 0);
-                     let item = simpleOrderItems.find(i => i.id === id);
-                     if (!item) { item = { id, quantity: 0 }; simpleOrderItems.push(item); }
-                     item.quantity = qty;
-                     renderSimpleOrderProducts();
-                     checkOrderReadiness();
-                     updateSimpleOrderTotal();
-                 }
-                 // Expose functions to the global window object for onclick/onchange handlers
-                 window.adminOrder = { updateQty: updateSimpleOrderQty, setQty: setSimpleOrderQty };
- 
-                 function updateSimpleOrderTotal() {
-                     let subtotal = 0;
-                     simpleOrderItems.forEach(item => {
-                         const prod = simpleOrderProducts.find(p => p.id === item.id);
-                         if (prod && item.quantity > 0) subtotal += prod.price * item.quantity;
-                     });
-                     // Add delivery fee to the total
-                     const total = subtotal > 0 ? subtotal + DELIVERY_FEE : 0;
-                     document.getElementById('simple-order-total').textContent = `KES ${total.toFixed(2)}`;
-                 }
-                 // --- Enable/Disable Create Order Button ---
-                 function checkOrderReadiness() {
-                     const createBtn = document.getElementById('admin-create-order-form-btn');
-                     if (!createBtn) return;
-                     const isReady = simpleOrderCustomer && simpleOrderItems.some(item => item.quantity > 0);
-                     createBtn.disabled = !isReady;
-                 }
-                 // --- Customer Search ---
-                 document.getElementById('simple-order-find-customer').onclick = async function() {
-                     const email = document.getElementById('simple-order-customer-search').value.trim();
-                     const resultEl = document.getElementById('simple-order-customer-result');
-                     if (!email) {
-                         resultEl.innerHTML = '<span style="color:#c00">Please enter a customer email address.</span>';
-                         document.getElementById('simple-order-customer-fields').style.display = 'none';
-                         checkOrderReadiness();
-                         return;
-                     }
-                     resultEl.innerHTML = 'Searching...';
-                     try {
-                         const customersCol = collection(db, "customers");
-                         const q = query(customersCol, where("email", "==", email));
-                         const querySnapshot = await getDocs(q);
-                         if (querySnapshot.empty) {
-                             resultEl.innerHTML = `<span style="color:#c00">No customer found with email: <strong>${email}</strong></span>`;
-                             document.getElementById('simple-order-customer-fields').style.display = 'none';
-                             checkOrderReadiness();
-                             return;
-                         }
-                         const customerDoc = querySnapshot.docs[0];
-                     window.simpleOrderCustomer = { id: customerDoc.id, ...customerDoc.data() };
-                         document.getElementById('create-order-customerName').value = simpleOrderCustomer.fullname || simpleOrderCustomer.name || '';
-                         document.getElementById('create-order-customerEmail').value = simpleOrderCustomer.email || '';
-                         document.getElementById('create-order-customerPhone').value = simpleOrderCustomer.phone || '';
-                         document.getElementById('create-order-deliveryAddress').value = simpleOrderCustomer.deliveryLocation || '';
-                         document.getElementById('simple-order-customer-fields').style.display = '';
-                         resultEl.innerHTML = `<span style="color:#1976d2">Customer found: <strong>${simpleOrderCustomer.fullname || simpleOrderCustomer.name || simpleOrderCustomer.email}</strong></span>`;
-                         checkOrderReadiness();
-                     } catch (error) {
-                         console.error("Error searching customer:", error);
-                         resultEl.innerHTML = `<span style="color:#c00">Search failed: ${error.message}</span>`;
-                         document.getElementById('simple-order-customer-fields').style.display = 'none';
-                         checkOrderReadiness();
-                     }
-                 };
-                 // Load products when Add Order section is shown
-                 document.addEventListener('DOMContentLoaded', () => {
-                     if (document.getElementById('admin-add-order-section')) {
-                         loadSimpleOrderProducts();
-                     }
-                 });
-                 </script>
-                     </form>
-                 </div>
-            </div>
-
-            <!-- Edit Orders Section -->
-            <div id="admin-edit-orders-section" class="admin-section admin-page">
-                <h3>Edit Existing Order</h3>
-
-                <!-- Search -->
-                <div class="search-input-group">
-                    <input id="orderSearchInput" class="search-input"
-                    placeholder="Order ID / Phone / Email">
-                    <button class="search-btn" id="search-order-btn-legacy">Search</button>
+            <!-- Orders Section -->
+            <div id="admin-orders-section" class="admin-section admin-page">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h2>Order Hub</h2>
+                        <p>Real-time delivery management and order tracking</p>
+                    </div>
+                    <button class="new-voucher-button" onclick="switchAdminPage('add-order')">
+                        <i class="fas fa-plus"></i> Create Order
+                    </button>
                 </div>
 
-                <!-- Results -->
-                <div id="editOrderResult" style="margin-top: 24px;"></div>
+                <!-- Orders Statistics -->
+                <div class="orders-stats">
+                    <div class="stat-card" style="border-left: 4px solid #4CAF50;">
+                        <div class="stat-number" id="total-orders">0</div>
+                        <div class="stat-label">All Orders</div>
+                    </div>
+                    <div class="stat-card" style="border-left: 4px solid #FFC107;">
+                        <div class="stat-number" id="pending-orders">0</div>
+                        <div class="stat-label">Pending Approval</div>
+                    </div>
+                    <div class="stat-card" style="border-left: 4px solid #FF6B35;">
+                        <div class="stat-number" id="dashboard-ready-for-pickup">0</div>
+                        <div class="stat-label">Waiting for Rider</div>
+                    </div>
+                    <div class="stat-card" style="border-left: 4px solid #2196F3;">
+                        <div class="stat-number" id="processing-orders">0</div>
+                        <div class="stat-label">In Kitchen/Packing</div>
+                    </div>
+                    <div class="stat-card" style="border-left: 4px solid #00C853;">
+                        <div class="stat-number" id="delivered-orders">0</div>
+                        <div class="stat-label">Successfully Delivered</div>
+                    </div>
+                </div>
+
+                <!-- Advanced Controls -->
+                <div class="order-controls" style="padding: 20px; border-radius: 12px; background: rgba(255,255,255,0.5); backdrop-filter: blur(10px);">
+                    <div class="search-section" style="display: grid; grid-template-columns: 1fr auto; gap: 15px;">
+                        <div class="search-input-group">
+                            <i class="fas fa-search" style="position: absolute; left: 15px; top: 18px; color: #999;"></i>
+                            <input type="text" id="order-search" placeholder="Search ID, Customer, Phone or Email..." class="search-input" style="padding-left: 45px; border-radius: 50px;">
+                        </div>
+                        <div class="filter-section" style="display: flex; gap: 10px;">
+                            <select id="status-filter" class="filter-select" style="border-radius: 50px;">
+                                <option value="">Status: All</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Confirmed">Confirmed</option>
+                                <option value="Processing">Processing</option>
+                                <option value="Ready for Pickup">Ready for Pickup</option>
+                                <option value="On Transit">On Transit</option>
+                                <option value="Delivered">Delivered</option>
+                            </select>
+                            <button type="button" id="refresh-orders-btn" class="refresh-btn" style="border-radius: 50%; width: 48px; height: 48px; padding: 0;">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders List -->
+                <div id="orders-list" class="orders-container" style="background: transparent; box-shadow: none; display: flex; flex-direction: column; gap: 20px; margin-top: 20px;">
+                    <div class="loading-state">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Fetching orders...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Order Section -->
+            <div id="admin-add-order-section" class="admin-section admin-page">
+                <div class="section-header">
+                    <h2>Create New Manual Order</h2>
+                    <p>Enter customer details and select products to create an order manually.</p>
+                </div>
+
+                <div class="products-container" style="grid-template-columns: 1fr 1fr; display: grid; gap: 24px;">
+                    <!-- Customer Details Form -->
+                    <div class="products-sidebar" style="height: auto; background: var(--white); padding: 24px; border-radius: var(--border-radius); box-shadow: var(--shadow);">
+                        <h3>Customer Information</h3>
+                        <form id="admin-create-order-form" class="admin-form">
+                            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                                <input type="text" id="create-order-customerName" placeholder="Full Name" required style="margin-bottom: 0;">
+                                <button type="button" class="action-btn" onclick="lookupCustomer()" title="Search by Name" style="width: auto; padding: 0 15px;"><i class="fas fa-search"></i></button>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                                <input type="email" id="create-order-customerEmail" placeholder="Email Address" required style="margin-bottom: 0;">
+                                <button type="button" class="action-btn" onclick="lookupCustomerByEmail()" title="Search by Email" style="width: auto; padding: 0 15px;"><i class="fas fa-search"></i></button>
+                            </div>
+                            <input type="tel" id="create-order-customerPhone" placeholder="Phone Number" required>
+                            <textarea id="create-order-deliveryAddress" placeholder="Delivery Address" required rows="2"></textarea>
+                            <select id="create-order-payment-method">
+                                <option value="Cash on Delivery">Cash on Delivery</option>
+                                <option value="M-Pesa">M-Pesa</option>
+                                <option value="Paid-Manual">Mark as Paid (Manual)</option>
+                            </select>
+                            <select id="create-order-status">
+                                <option value="pending">Pending Approval</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="processing">Processing</option>
+                            </select>
+                            <button type="button" id="admin-create-order-form-btn" class="create-btn">Place Order</button>
+                            <div id="create-order-message" style="margin-top: 10px; text-align: center; font-weight: 600;"></div>
+                        </form>
+                    </div>
+
+                    <!-- Product Selection and Items -->
+                    <div class="products-main" style="background: var(--white); padding: 24px; border-radius: var(--border-radius); box-shadow: var(--shadow);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>Order Items</h3>
+                            <button onclick="openAddItemModalManual()" class="action-btn">
+                                <i class="fas fa-plus"></i> Add Product
+                            </button>
+                        </div>
+                        
+                        <div id="create-order-items-list" class="editable-items-list">
+                            <p style="text-align: center; color: #999; padding: 20px;">No items added to this order yet.</p>
+                        </div>
+
+                        <div class="order-summary-edit" style="margin-top: 20px; background: var(--light-bg); padding: 15px; border-radius: 8px;">
+                            <div class="summary-row">
+                                <span>Subtotal:</span>
+                                <span id="create-order-subtotal">KES 0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Delivery Fee:</span>
+                                <span>KES 100.00</span>
+                            </div>
+                            <div class="summary-row total-row" style="border-top: 2px solid var(--primary-color); margin-top: 10px; padding-top: 10px;">
+                                <span>Total:</span>
+                                <span id="simple-order-total" style="font-weight: 800; font-size: 20px; color: var(--primary-color);">KES 0.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Order Edit Modal -->
@@ -4669,155 +4587,44 @@
                 .product-add-item-info span { color: var(--primary-color); font-size: 14px; margin-left: 8px; }
                 .product-add-item .action-btn { font-size: 12px; padding: 6px 12px; }
             </style>
-
-
-            <!-- Edit Order Section -->
-            <div id="admin-edit-order-section" class="admin-section admin-page">
-                <div class="section-header">
-                    <h2>Edit Existing Order</h2>
-                    <p>Quickly find and modify an order's details, items, or status.</p>
-                </div>
-
-                <!-- Quick Order ID Search Section -->
-                <div class="quick-order-search-section" style="max-width: 900px; margin: 0 auto 24px;">
-                    <h3><i class="fas fa-search"></i> Find Order by ID</h3>
-                    <div class="quick-search-container">
-                        <div class="quick-search-input-group">
-                            <input type="text" id="editOrderSearchInput" placeholder="Enter Order ID (e.g., PA-L1X2Y3-A4B5)" class="quick-search-input">
-                            <button type="button" id="edit-page-quick-search-btn" class="quick-search-btn">
-                                <i class="fas fa-search"></i> Find Order
-                            </button>
-                        </div>
-                     </div>
-                </div>
-
-                <!-- Order Edit Form -->
-                <div id="edit-order-form-container" class="admin-section" style="display: none; max-width: 900px; margin: 24px auto;">
-                    <div class="details-section">
-                        <h4>👤 Customer Information</h4>
-                        <div class="details-grid">
-                            <div class="detail-item">
-                                <span class="detail-label">Full Name</span>
-                                <span id="editCustomerName" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Email</span>
-                                <span id="editCustomerEmail" class="detail-value"></span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Phone Number</span>
-                                <span id="editCustomerPhone" class="detail-value"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="details-section">
-                        <h4>🛒 Order Items</h4>
-                        <div id="editOrderItems" class="items-list">
-                            <!-- Items will be rendered here -->
-                        </div>
-                        <button class="add-item-btn" onclick="openAddItemModal()" style="margin-top: 16px;"><i class="fas fa-plus"></i> Add Item</button>
-                    </div>
-
-                    <div class="details-section">
-                        <h4>💰 Order Summary</h4>
-                        <p>Subtotal: <span id="editSubtotal">KES 0.00</span></p>
-                        <p><strong>Total: <span id="editTotal">KES 0.00</span></strong></p>
-                    </div>
-
-                    <div class="edit-actions">
-                        <button onclick="saveEditedOrder()" class="save-btn">Save Changes</button>
-                    </div>
-                </div>
-             </div>
-
-            <!-- Manage Orders Section -->
-                <div id="admin-orders-section" class="admin-section admin-page">
-                    <div class="section-header">
-                        <h2>Order Management</h2>
-                        <p>Manage customer orders and track delivery status</p>
-                    </div>
+            
+            <style>
+                /* Status Modal Enhancements */
+                .status-tiles-grid {
+                    display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                    gap: 12px;
+                    margin-top: 15px;
+                }
+                .status-tile {
+                    padding: 15px;
+            border: 2px solid var(--border-color);
+                    border-radius: 12px;
+                    cursor: pointer;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 8px;
+                    transition: all 0.2s ease;
+            background: var(--card-bg);
+                }
+                .status-tile:hover { transform: translateY(-3px); border-color: #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+                .status-tile.active { border-color: var(--primary-color); background: rgba(76, 175, 80, 0.05); }
+                .status-tile i { font-size: 20px; }
+                .status-tile span { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
                 
-                <!-- Order Search and Filters -->
-                <div class="order-controls">
-                    <!-- Quick Order ID Search Section -->
-                    <div class="quick-order-search-section">
-                        <h3><i class="fas fa-search"></i> Quick Order Search by ID</h3>
-                        <div class="quick-search-container">
-                            <div class="quick-search-input-group">
-                                <input type="text" id="quick-order-id-search" placeholder="Enter Order ID (e.g., ORD-001)" class="quick-search-input">
-                                <button type="button" id="quick-search-btn" class="quick-search-btn">
-                                    <i class="fas fa-search"></i> Search Order
-                                </button>
-                            </div>
-                            <div id="quick-search-results" class="quick-search-results" style="display: none;">
-                                <!-- Quick search results will appear here -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="search-section">
-                        <div class="search-input-group">
-                            <input type="text" id="order-search" placeholder="Search by email, phone, or order ID..." class="search-input">
-                            <button type="button" id="search-orders-btn" class="search-btn">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                        <div class="filter-section">
-                            <select id="status-filter" class="filter-select">
-                                <option value="">All Statuses</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Confirmed">Confirmed</option>
-                                <option value="Processing">Processing</option>
-                                <option value="Ready for Pickup">Ready for Pickup</option>
-                                <option value="On Transit">On Transit</option>
-                                <option value="Delivered">Delivered</option>
-                            </select>
-                            <select id="date-filter" class="filter-select">
-                                <option value="">All Dates</option>
-                                <option value="today">Today</option>
-                                <option value="week">This Week</option>
-                                <option value="month">This Month</option>
-                            </select>
-                            <button type="button" id="refresh-orders-btn" class="refresh-btn">
-                                <i class="fas fa-sync-alt"></i> Refresh
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Orders Statistics -->
-                <div class="orders-stats">
-                    <div class="stat-card">
-                        <div class="stat-number" id="total-orders">0</div>
-                        <div class="stat-label">Total Orders</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="pending-orders">0</div>
-                        <div class="stat-label">Pending</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="dashboard-ready-for-pickup">0</div>
-                        <div class="stat-label">Ready for Pickup</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="processing-orders">0</div>
-                        <div class="stat-label">Processing</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="delivered-orders">0</div>
-                        <div class="stat-label">Delivered</div>
-                    </div>
-                </div>
-
-                <!-- Orders List -->
-                <div id="orders-list" class="orders-container">
-                    <div class="loading-state">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Loading orders...</p>
-                    </div>
-                </div>
-            </div>
+                /* Color states for tiles */
+                .tile-pending { color: #f59e0b; }
+                .tile-confirmed { color: #3b82f6; }
+                .tile-processing { color: #6366f1; }
+                .tile-pickup { color: #f97316; }
+                .tile-transit { color: #06b6d4; }
+                .tile-delivered { color: #10b981; }
+                .tile-cancelled { color: #ef4444; }
+                
+                .status-tile.active.tile-pending { background: #fef3c7; border-color: #f59e0b; }
+                .status-tile.active.tile-delivered { background: #d1fae5; border-color: #10b981; }
+            </style>
 
             <!-- Manage Customers Section -->
                 <div id="admin-customers-section" class="admin-section admin-page">
@@ -4985,6 +4792,10 @@
                     <div style="display: flex; align-items: center; margin-right: 15px; background: var(--white); padding: 8px 12px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color);">
                         <input type="checkbox" id="select-all-emails" style="width: 18px; height: 18px; cursor: pointer;">
                         <label for="select-all-emails" style="margin-left: 8px; cursor: pointer; font-weight: 600; margin-bottom: 0; user-select: none;">Select All</label>
+                    </div>
+                    <div style="display: flex; align-items: center; margin-right: 15px; background: var(--white); padding: 8px 12px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color);">
+                        <input type="checkbox" id="auto-retry-emails-toggle" style="width: 18px; height: 18px; cursor: pointer;">
+                        <label for="auto-retry-emails-toggle" style="margin-left: 8px; cursor: pointer; font-weight: 600; margin-bottom: 0; user-select: none;">Auto-Retry failures</label>
                     </div>
                     <button id="delete-selected-emails-btn" class="email-action-btn delete" style="margin-right: 15px; display: none; padding: 10px 16px; font-size: 14px;">
                         <i class="fas fa-trash"></i> Delete Selected (<span id="selected-count">0</span>)
@@ -5728,6 +5539,9 @@
                 pageTitle.textContent = pageTitles[pageName];
             }
         }
+        window.switchAdminPage = switchAdminPage;
+        window.loadOrders = loadOrders;
+        window.loadDashboardData = loadDashboardData;
 
         // --- Dashboard Data Loading ---
         async function loadDashboardData() {
@@ -6462,16 +6276,114 @@
         // --- State for new edit logic (variables moved up) ---
         // ---------------------------------
 
+    // --- Manual Order Creation State & Logic ---
+    window.simpleOrderItems = [];
+    window.simpleOrderCustomer = null;
+    window.isAddingToManualOrder = false;
+
+    window.loadProductsForOrderCreation = async function() {
+        if (window.availableProducts && window.availableProducts.length > 0) return;
+        try {
+            const snap = await getDocs(collection(db, 'products'));
+            window.availableProducts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } catch (e) { console.error(e); }
+    };
+
+    window.openAddItemModalManual = function() {
+        window.isAddingToManualOrder = true;
+        window.openAddItemModal();
+    };
+
+    window.lookupCustomer = async function() {
+        const name = document.getElementById('create-order-customerName').value.trim();
+        if (!name) return;
+        try {
+            const q = query(collection(db, 'customers'), where('fullname', '==', name));
+            const snap = await getDocs(q);
+            if (!snap.empty) {
+                const data = snap.docs[0].data();
+                window.simpleOrderCustomer = { id: snap.docs[0].id, ...data };
+                document.getElementById('create-order-customerEmail').value = data.email || '';
+                document.getElementById('create-order-customerPhone').value = data.phoneNumber || '';
+                document.getElementById('create-order-deliveryAddress').value = data.deliveryLocation || '';
+                showModal('Customer Found', `Loaded details for ${name}`);
+            } else {
+                showModal('Not Found', 'No existing customer record found with that name.');
+            }
+        } catch (e) { console.error(e); }
+    };
+
+    window.lookupCustomerByEmail = async function() {
+        const email = document.getElementById('create-order-customerEmail').value.trim();
+        if (!email) return;
+        try {
+            const q = query(collection(db, 'customers'), where('email', '==', email));
+            const snap = await getDocs(q);
+            if (!snap.empty) {
+                const data = snap.docs[0].data();
+                window.simpleOrderCustomer = { id: snap.docs[0].id, ...data };
+                document.getElementById('create-order-customerName').value = data.fullname || '';
+                document.getElementById('create-order-customerPhone').value = data.phoneNumber || '';
+                document.getElementById('create-order-deliveryAddress').value = data.deliveryLocation || '';
+                showModal('Customer Found', `Loaded details for ${email}`);
+            } else {
+                showModal('Not Found', 'No existing customer record found with that email.');
+            }
+        } catch (e) { console.error(e); }
+    };
+
+    window.renderManualOrderItems = function() {
+        const list = document.getElementById('create-order-items-list');
+        if (!list) return;
+        if (window.simpleOrderItems.length === 0) {
+            list.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No items added to this order yet.</p>';
+            updateManualOrderSummary();
+            return;
+        }
+        const productsMap = window.availableProducts.reduce((m,p)=> (m[p.id]=p,m), {});
+        list.innerHTML = window.simpleOrderItems.map((item, index) => {
+            const product = productsMap[item.id] || {};
+            return `<div class="editable-item" style="margin-bottom:10px;">
+                <div class="item-details"><div class="item-name">${product.name || 'Item'}</div><div class="item-unit">KES ${product.price?.toFixed(2) || '0.00'}</div></div>
+                <div class="item-quantity-controls">
+                    <button class="quantity-btn" onclick="updateManualItemQty(${index}, -1)">-</button>
+                    <input type="number" class="quantity-input" value="${item.quantity}" readonly>
+                    <button class="quantity-btn" onclick="updateManualItemQty(${index}, 1)">+</button>
+                </div>
+                <div class="item-price">KES ${((product.price || 0) * item.quantity).toFixed(2)}</div>
+                <button class="remove-item-btn" onclick="removeManualItem(${index})"><i class="fas fa-trash"></i></button>
+            </div>`;
+        }).join('');
+        updateManualOrderSummary();
+    };
+
+    window.updateManualItemQty = (index, delta) => {
+        const item = window.simpleOrderItems[index]; if (!item) return;
+        item.quantity += delta; if (item.quantity <= 0) window.simpleOrderItems.splice(index, 1);
+        renderManualOrderItems();
+    };
+
+    window.removeManualItem = (index) => { window.simpleOrderItems.splice(index, 1); renderManualOrderItems(); };
+
+    window.updateManualOrderSummary = () => {
+        const productsMap = window.availableProducts.reduce((m,p)=> (m[p.id]=p,m), {});
+        const subtotal = window.simpleOrderItems.reduce((s, i) => s + ((productsMap[i.id]?.price || 0) * i.quantity), 0);
+        const fee = subtotal > 0 ? 100 : 0;
+        document.getElementById('create-order-subtotal').textContent = `KES ${subtotal.toFixed(2)}`;
+        document.getElementById('simple-order-total').textContent = `KES ${(subtotal + fee).toFixed(2)}`;
+    };
+
         async function loadOrders() {
             const ordersList = document.getElementById('orders-list');
             ordersList.innerHTML = `
-                <div class="loading-state">
+                <div class="loading-state" style="text-align:center; padding:40px;">
                     <i class="fas fa-spinner fa-spin"></i>
                     <p>Loading orders...</p>
                 </div>
             `;
 
             try {
+                console.log("Fetching orders from Firestore...");
                 const q = query(collection(db, "orders"), orderBy("date", "desc"));
                 const querySnapshot = await getDocs(q);
                 
@@ -6498,10 +6410,11 @@
                 renderOrders();
                 updateOrderStats(allOrders);
                 setupOrderEventListeners();
+                console.log(`Successfully loaded ${allOrders.length} orders.`);
 
             } catch (error) {
                 ordersList.innerHTML = `
-                    <div class="empty-state">
+                    <div class="empty-state" style="text-align:center; padding:40px; color:var(--error-color);">
                         <i class="fas fa-exclamation-triangle"></i>
                         <h4>Error Loading Orders</h4>
                         <p>Failed to load orders: ${error.message}</p>
@@ -6514,127 +6427,99 @@
 
         function renderOrders() {
             const ordersList = document.getElementById('orders-list');
+            const hasOrderPerm = window.hasPermission('orders');
+            ordersList.innerHTML = '';
             
             if (filteredOrders.length === 0) {
-                ordersList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-search"></i>
-                        <h4>No Orders Match Your Search</h4>
-                        <p>Try adjusting your search criteria.</p>
-                    </div>
-                `;
+                ordersList.innerHTML = '<div class="empty-state" style="text-align:center; padding:40px;"><h4>No orders found matching criteria</h4></div>';
                 return;
             }
 
-            ordersList.innerHTML = '';
-            
             filteredOrders.forEach((order) => {
                 const orderCard = document.createElement('div');
-                orderCard.className = 'order-card';
+                // FIX: Removed 'admin-section' class because it has display:none in CSS
+                orderCard.className = 'order-card-hub'; 
+                orderCard.style.backgroundColor = 'var(--white)';
+                orderCard.style.borderRadius = 'var(--border-radius)';
+                orderCard.style.boxShadow = 'var(--shadow)';
+                orderCard.style.margin = '0';
+                orderCard.style.padding = '25px';
                 
-                    const customerName = order.customer ? order.customer.fullName : 'Unknown Customer';
-                    const customerEmail = order.userEmail || 'No email';
-                    const customerPhone = order.customer ? order.customer.phoneNumber : 'No phone';
-                    const deliveryLocation = order.customer ? order.customer.deliveryLocation : 'No location';
-                const itemsCount = order.items ? order.items.length : 0;
-                const itemsSummary = order.items ? order.items.slice(0, 2).map(item => `${item.name} (x${item.quantity})`).join(', ') : 'No items';
-                const moreItems = itemsCount > 2 ? ` +${itemsCount - 2} more` : '';
+                const status = order.status || 'Pending';
+                const statusClass = status.toLowerCase().replace(/\s/g, '-');
                 
-                const isCancelled = order.status === 'Cancelled';
-                const isRestricted = isCancelled && window.currentUserRole !== 'super_admin';
-                const hasOrderPerm = window.hasPermission('orders');
-                const statusClass = order.status ? order.status.toLowerCase().replace(/\s/g, '-') : 'pending';                
+                // Vertical Status Color
+                let accentColor = '#4CAF50';
+                if(status === 'Pending') accentColor = '#FFC107';
+                if(status === 'Ready for Pickup') accentColor = '#FF6B35';
+                if(status === 'On Transit') accentColor = '#2196F3';
                 
-                let actionButtonHtml = '';
-                if (order.status === 'Processing') {
-                    actionButtonHtml = `
-                        <button class="action-btn accept" onclick="requestRide('${order.id}')" ${!hasOrderPerm ? 'disabled' : ''} style="background: var(--accent-color);">
-                            <i class="fas fa-motorcycle"></i> Request Ride
+                orderCard.style.borderLeft = `6px solid ${accentColor}`;
+
+                let specializedActionsHtml = '';
+                if (status === 'Processing') {
+                    specializedActionsHtml = `
+                        <button class="action-btn" onclick="requestRide('${order.id}')" style="background:#FF6B35; color:white;" ${!hasOrderPerm ? 'disabled' : ''}>
+                            <i class="fas fa-motorcycle"></i> Call Rider
                         </button>
-                        <button class="action-btn" onclick="openAssignRiderModal('${order.id}')" ${!hasOrderPerm ? 'disabled' : ''} style="background: #6f42c1; color: white;">
+                        <button class="action-btn" onclick="openAssignRiderModal('${order.id}')" style="background:#6f42c1; color:white;" ${!hasOrderPerm ? 'disabled' : ''}>
                             <i class="fas fa-user-plus"></i> Assign Rider
                         </button>
                     `;
-                } else if (order.status === 'Ready for Pickup') {
-                    actionButtonHtml = `
-                        <button class="action-btn" style="background: var(--warning-color); color: white; cursor: default;" disabled>
-                            <i class="fas fa-spinner fa-spin"></i> Awaiting Rider
-                        </button>
-                        <button class="action-btn" onclick="cancelRideRequest('${order.id}')" style="background: #dc3545; color: white;" title="Cancel Ride Request">
-                            <i class="fas fa-times"></i> Cancel
-                        </button>
-                        <button class="action-btn" onclick="openAssignRiderModal('${order.id}')" ${!hasOrderPerm ? 'disabled' : ''} style="background: #6f42c1; color: white;">
-                            <i class="fas fa-user-plus"></i> Re-Assign
-                        </button>
-                    `;
-                } else if (order.status === 'On Transit') {
-                    actionButtonHtml = `
-                        <button class="action-btn" style="background: #17a2b8; color: white;" disabled>
-                            <i class="fas fa-route"></i> On Transit
-                        </button>
-                    `;
-                } else {
-                    actionButtonHtml = `
-                        <button class="action-btn btn-status ${isRestricted || !hasOrderPerm ? 'disabled-btn' : ''}" onclick="openStatusUpdateModal('${order.id}')" title="${isRestricted ? 'Order is cancelled' : (!hasOrderPerm ? 'Permission denied' : 'Update Status')}">
-                            <i class="fas fa-edit"></i> Update Status
+                } else if (status === 'Ready for Pickup') {
+                    specializedActionsHtml = `
+                        <button class="action-btn" style="background:#f1f5f9; color:#666; cursor:default;" disabled>
+                            <i class="fas fa-spinner fa-spin"></i> Finding Rider
                         </button>
                     `;
                 }
-                
+
                 orderCard.innerHTML = `
-                    <div class="order-header">
-                        <div class="order-id">
-                            <strong>${order.id}</strong>
-                            <span class="order-date">${new Date(order.date).toLocaleDateString()}</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <div>
+                            <span class="order-id-badge" style="font-size: 14px; background: #f1f5f9; color: #475569;">#${order.id}</span>
+                            <span style="font-size: 12px; color: #94a3b8; margin-left: 10px;">${new Date(order.date).toLocaleString()}</span>
                         </div>
-                        <div class="order-status">
-                            <span class="status-badge status-${statusClass}">${order.status || 'Pending'}</span>
-                        </div>
+                        <span class="status-badge status-${statusClass}">${status}</span>
                     </div>
                     
-                    <div class="order-summary">
-                        <div class="order-info">
-                            <span class="order-info-label">Customer</span>
-                            <span class="order-info-value">${customerName}</span>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div>
+                            <label style="display:block; font-size:11px; text-transform:uppercase; color:#94a3b8; font-weight:700;">Customer</label>
+                            <div style="font-weight:600; color:#1e293b; display:flex; align-items:center; gap:8px;">
+                                <i class="fas fa-user-circle" style="color:#cbd5e1;"></i>
+                                ${order.customer?.fullName || 'Guest'}
+                            </div>
+                            <div style="font-size:13px; color:#64748b;">${order.customer?.phoneNumber || '-'}</div>
                         </div>
-                        <div class="order-info">
-                            <span class="order-info-label">Email</span>
-                            <span class="order-info-value">${customerEmail}</span>
+                        <div>
+                            <label style="display:block; font-size:11px; text-transform:uppercase; color:#94a3b8; font-weight:700;">Items</label>
+                            <div style="font-size:13px; color:#1e293b;">${(order.items || []).length} Products</div>
+                            <div style="font-size:12px; color:#64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">
+                                ${(order.items || []).map(i => i.name).join(', ')}
+                            </div>
                         </div>
-                        <div class="order-info">
-                            <span class="order-info-label">Phone</span>
-                            <span class="order-info-value">${customerPhone}</span>
-                        </div>
-                        <div class="order-info">
-                            <span class="order-info-label">Delivery</span>
-                            <span class="order-info-value">${deliveryLocation}</span>
-                        </div>
-                        <div class="order-info">
-                            <span class="order-info-label">Items</span>
-                            <span class="order-info-value">${itemsSummary}${moreItems}</span>
-                        </div>
-                        <div class="order-info">
-                            <span class="order-info-label">Total</span>
-                            <span class="order-info-value">
-                                KES ${order.total ? order.total.toFixed(2) : 
-                                    (Array.isArray(order.items) ? order.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0).toFixed(2) : '0.00')
-                                }
-                            </span>
-                            ${order.voucher ? `
-                                <span style="font-size: 12px; color: var(--accent-color-orange); font-weight: 600; margin-top: 4px;">
-                                    <i class="fas fa-ticket-alt"></i> Voucher Used
-                                </span>
-                            ` : ''}
+                        <div>
+                            <label style="display:block; font-size:11px; text-transform:uppercase; color:#94a3b8; font-weight:700;">Financials</label>
+                            <div style="font-weight:700; color:var(--primary-color);">KES ${(order.total || 0).toFixed(2)}</div>
+                            <div style="font-size:11px; background: #fef3c7; color: #d97706; padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 4px;">
+                                <i class="fas fa-credit-card"></i> ${order.paymentMethod || 'COD'}
+                            </div>
                         </div>
                     </div>
-                    
-                        <div class="order-actions">
-                        <button class="action-btn btn-view" onclick="viewOrderDetails('${order.id}')">
-                            <i class="fas fa-eye"></i> View Details
-                        </button>${actionButtonHtml}
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 15px;">
+                        <div style="font-size: 13px; color: #64748b;"><i class="fas fa-map-marker-alt"></i> ${order.customer?.deliveryLocation || 'No Address'}</div>
+                        <div class="order-actions" style="margin:0;">
+                            <button class="action-btn btn-view" onclick="window.viewOrderDetails('${order.id}')"><i class="fas fa-search"></i> Details</button>
+                            ${specializedActionsHtml}
+                            <button class="action-btn btn-status" onclick="window.openStatusUpdateModal('${order.id}')" ${!hasOrderPerm ? 'disabled' : ''}>
+                                <i class="fas fa-edit"></i> Status
+                            </button>
+                            <button class="action-btn" onclick="deleteOrder('${order.id}')" style="background:var(--error-color); color:white;" ${!hasOrderPerm ? 'disabled' : ''}><i class="fas fa-trash"></i> Delete</button>
+                        </div>
                     </div>
                 `;
-                
                 ordersList.appendChild(orderCard);
             });
         }
@@ -6654,57 +6539,35 @@
         }
 
         function setupOrderEventListeners() {
-            // Search functionality
             const searchInput = document.getElementById('order-search');
-            const searchBtn = document.getElementById('search-orders-btn');
             const statusFilter = document.getElementById('status-filter');
-            const dateFilter = document.getElementById('date-filter');
             const refreshBtn = document.getElementById('refresh-orders-btn');
 
-            const performSearch = () => {
-                const searchTerm = searchInput.value.toLowerCase();
-                const statusFilterValue = statusFilter.value;
-                const dateFilterValue = dateFilter.value;
+            if (!searchInput || !statusFilter || !refreshBtn) return;
 
-                filteredOrders = allOrders.filter(order => {
-                    const matchesSearch = !searchTerm || 
-                        order.id.toLowerCase().includes(searchTerm) ||
-                        (order.userEmail && order.userEmail.toLowerCase().includes(searchTerm)) ||
-                        (order.customer && order.customer.phoneNumber && order.customer.phoneNumber.includes(searchTerm)) ||
-                        (order.customer && order.customer.fullName && order.customer.fullName.toLowerCase().includes(searchTerm));
+            // Real-time filtering for the Order Hub
+            searchInput.oninput = filterOrdersHub;
+            statusFilter.onchange = filterOrdersHub;
+            refreshBtn.onclick = loadOrders;
+        }
 
-                    const matchesStatus = !statusFilterValue || order.status === statusFilterValue;
+        function filterOrdersHub() {
+            const searchTerm = document.getElementById('order-search').value.toLowerCase();
+            const statusValue = document.getElementById('status-filter').value;
 
-                    const matchesDate = !dateFilterValue || (() => {
-                        const orderDate = new Date(order.date);
-                        const now = new Date();
-                        
-                        switch (dateFilterValue) {
-                            case 'today':
-                                return orderDate.toDateString() === now.toDateString();
-                            case 'week':
-                                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                                return orderDate >= weekAgo;
-                            case 'month':
-                                const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-                                return orderDate >= monthAgo;
-                            default:
-                                return true;
-                        }
-                    })();
+            filteredOrders = allOrders.filter(order => {
+                const matchesSearch = !searchTerm || 
+                    order.id.toLowerCase().includes(searchTerm) ||
+                    (order.userEmail && order.userEmail.toLowerCase().includes(searchTerm)) ||
+                    (order.customer?.fullName && order.customer.fullName.toLowerCase().includes(searchTerm)) ||
+                    (order.customer?.phoneNumber && order.customer.phoneNumber.includes(searchTerm)) ||
+                    (order.customer?.deliveryLocation && order.customer.deliveryLocation.toLowerCase().includes(searchTerm));
 
-                    return matchesSearch && matchesStatus && matchesDate;
-                });
+                const matchesStatus = !statusValue || order.status === statusValue;
+                return matchesSearch && matchesStatus;
+            });
 
-                renderOrders();
-            };
-
-            searchInput.addEventListener('input', performSearch);
-            searchBtn.addEventListener('click', performSearch);
-            statusFilter.addEventListener('change', performSearch);
-            dateFilter.addEventListener('change', performSearch);
-            refreshBtn.addEventListener('click', loadOrders);
-            
+            renderOrders();
         }
 
         // Enhanced Order Action Functions with Professional Email Integration
@@ -6790,6 +6653,27 @@
             }
         };
 
+        window.deleteOrder = async function(orderId) {
+            if (!window.hasPermission('orders')) {
+                showModal('Permission Denied', 'You do not have permission to delete orders.', true);
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to PERMANENTLY delete order ${orderId}? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                await deleteDoc(doc(db, "orders", orderId));
+                await logAdminActivity('order_delete', `Permanently deleted order ${orderId}`);
+                showModal('Success', `Order ${orderId} has been deleted successfully.`);
+                loadOrders(); // Refresh the list
+            } catch (error) {
+                console.error("Error deleting order:", error);
+                showModal('Error', `Failed to delete order: ${error.message}`, true);
+            }
+        };
+
         // Request a ride for an order
         window.requestRide = async function(orderId) {
             if (!window.hasPermission('orders')) {
@@ -6842,38 +6726,93 @@
                         if (paymentMethod.toLowerCase().includes('cash')) {
                             paymentMessage = `Please have <strong>KES ${totalAmount.toFixed(2)}</strong> ready for payment upon delivery.`;
                         } else {
-                            paymentMessage = `Total amount to be paid: <strong>KES ${totalAmount.toFixed(2)}</strong> via ${paymentMethod}.`;
+                            paymentMessage = `Payment of <strong>KES ${totalAmount.toFixed(2)}</strong> has been successfully received via ${paymentMethod}. <strong>No further payment is required upon delivery.</strong>`;
                         }
 
+                        const items = orderData.items || [];
+                        const itemsHtmlRows = items.map(item => `
+                            <tr>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333;">
+                                    <strong>${item.name}</strong>
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; text-align: center;">
+                                    ${item.quantity} ${item.unit || ''}
+                                </td>
+                                <td style="padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; color: #333; text-align: right;">
+                                    KES ${(item.price * item.quantity).toFixed(2)}
+                                </td>
+                            </tr>
+                        `).join('');
+
+                        const subtotal = orderData.subtotal || items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+                        const deliveryFee = orderData.transportationFee || orderData.deliveryFee || 0;
+                        const total = orderData.total || (subtotal + deliveryFee);
+
                         const emailHtml = `
-                            <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
-                                <div style="background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); padding: 30px; text-align: center; color: white;">
-                                    <h1 style="margin: 0; font-size: 24px; font-weight: 700;">Rider Requested! 🛵</h1>
-                                    <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Your order is being assigned a delivery rider.</p>
-                                </div>
-                                <div style="padding: 30px;">
-                                    <p style="font-size: 16px; color: #333; line-height: 1.6;">Hello <strong>${orderData.customer ? orderData.customer.fullName : 'Valued Customer'}</strong>,</p>
-                                    <p style="font-size: 16px; color: #333; line-height: 1.6;">
-                                        Good news! We have requested a rider for your order <strong>#${orderId}</strong>. They will be picking up your items shortly and heading your way.
-                                    </p>
+                            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px;">
+                                <div style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eef2f5;">
+                                    <div style="background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); padding: 40px 20px; text-align: center; color: white;">
+                                        <div style="font-size: 48px; margin-bottom: 10px;">🛵</div>
+                                        <h1 style="margin: 0; font-size: 26px; font-weight: 700; letter-spacing: 0.5px;">Rider Requested!</h1>
+                                        <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Great news! Your delivery is being organized.</p>
+                                    </div>
                                     
-                                    <div style="background-color: #f8f9fa; border-left: 4px solid #4CAF50; padding: 20px; margin: 25px 0; border-radius: 4px;">
-                                        <h3 style="color: #2E7D32; margin: 0 0 15px 0; font-size: 18px;">💳 Payment Details</h3>
-                                        <p style="margin: 0; color: #555; font-size: 15px;">
-                                            ${paymentMessage}
+                                    <div style="padding: 35px 30px;">
+                                        <p style="font-size: 17px; color: #2c3e50; line-height: 1.6; margin-bottom: 20px;">Hello <strong>${orderData.customer ? orderData.customer.fullName : 'Valued Customer'}</strong>,</p>
+                                        <p style="font-size: 15px; color: #546e7a; line-height: 1.6;">
+                                            We've officially requested a delivery partner for your order <strong>#${orderId}</strong>. A rider will pick up your fresh produce shortly and head to your location.
                                         </p>
-                                    </div>
+                                        
+                                        <div style="margin: 30px 0;">
+                                            <h3 style="color: #2E7D32; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; border-bottom: 2px solid #e8f5e8; padding-bottom: 8px;">📦 Order Summary</h3>
+                                            <table style="width: 100%; border-collapse: collapse;">
+                                                <thead>
+                                                    <tr style="background-color: #f8f9fa;">
+                                                        <th style="padding: 10px; text-align: left; font-size: 12px; color: #78909c;">ITEM</th>
+                                                        <th style="padding: 10px; text-align: center; font-size: 12px; color: #78909c;">QTY</th>
+                                                        <th style="padding: 10px; text-align: right; font-size: 12px; color: #78909c;">PRICE</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    ${itemsHtmlRows}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="2" style="padding: 10px; text-align: right; font-size: 14px; color: #546e7a;">Subtotal</td>
+                                                        <td style="padding: 10px; text-align: right; font-size: 14px; color: #2c3e50;">KES ${subtotal.toFixed(2)}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2" style="padding: 10px; text-align: right; font-size: 14px; color: #546e7a;">Delivery Fee</td>
+                                                        <td style="padding: 10px; text-align: right; font-size: 14px; color: #2c3e50;">KES ${deliveryFee.toFixed(2)}</td>
+                                                    </tr>
+                                                    <tr style="background-color: #e8f5e8;">
+                                                        <td colspan="2" style="padding: 12px; text-align: right; font-size: 16px; font-weight: 700; color: #2E7D32;">Total Amount</td>
+                                                        <td style="padding: 12px; text-align: right; font-size: 18px; font-weight: 800; color: #2E7D32;">KES ${total.toFixed(2)}</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
 
-                                    <p style="font-size: 15px; color: #666; line-height: 1.6;">
-                                        Attached to this email is your official order receipt. Please keep it for your records.
-                                    </p>
+                                        <div style="background-color: #f8f9fa; border-left: 4px solid #FF6B35; padding: 20px; margin: 25px 0; border-radius: 6px;">
+                                            <h3 style="color: #FF6B35; margin: 0 0 10px 0; font-size: 16px; display: flex; align-items: center;">💳 Payment Details</h3>
+                                            <p style="margin: 0; color: #455a64; font-size: 15px; line-height: 1.5;">
+                                                ${paymentMessage}
+                                            </p>
+                                        </div>
 
-                                    <div style="text-align: center; margin-top: 30px;">
-                                        <a href="https://store.princealex.pro/orders" style="background-color: #4CAF50; color: white; padding: 12px 25px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px;">Track Your Order</a>
+                                        <p style="font-size: 14px; color: #78909c; line-height: 1.6; text-align: center; margin-top: 30px;">
+                                            An official receipt is attached to this email for your records.
+                                        </p>
+
+                                        <div style="text-align: center; margin-top: 25px;">
+                                            <a href="https://store.princealex.pro/orders" style="display: inline-block; background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); color: white; padding: 15px 35px; text-decoration: none; border-radius: 50px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(76,175,80,0.3);">Track My Order Live</a>
+                                        </div>
                                     </div>
-                                </div>
-                                <div style="background-color: #f1f1f1; padding: 15px; text-align: center; font-size: 12px; color: #888;">
-                                    <p style="margin: 0;">Prince Alex Store &bull; Fresh Vegetables & Groceries</p>
+                                    
+                                    <div style="background-color: #f1f5f9; padding: 25px; text-align: center; border-top: 1px solid #e2e8f0;">
+                                        <p style="margin: 0; font-size: 13px; color: #64748b; font-weight: 600;">Prince Alex Store &bull; Quality Farm Fresh Produce</p>
+                                        <p style="margin: 5px 0 0 0; font-size: 11px; color: #94a3b8;">Tambua Ward, Vihiga County, Kenya</p>
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -7415,20 +7354,20 @@
                 const totalAmount = subtotal + deliveryFee;
 
                 return `
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                        <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); padding: 30px; text-align: center; color: white;">
+                    <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f8fafc; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0;">
+                        <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); padding: 40px 20px; text-align: center; color: white;">
                             <h1 style="margin: 0; font-size: 28px;">${emoji} ${title}</h1>
-                            <p style="margin: 10px 0 0 0; font-size: 16px;">Prince Alex Store Order Update</p>
+                            <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Important updates regarding your order.</p>
                         </div>
                         
-                        <div style="padding: 30px; background: white;">
+                        <div style="padding: 30px; background: white; border-radius: 0 0 12px 12px;">
                             <p style="font-size: 16px; color: #333;">Hello ${order.customer?.fullName || 'Valued Customer'},</p>
                             <p style="font-size: 16px; color: #333;">${message}</p>
                             <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
                                 <h3 style="color: #4CAF50; margin: 0 0 15px 0;">📋 Order Details</h3>
                                 <p style="margin: 5px 0;"><strong>Order ID:</strong> ${order.id || order.orderId}</p>
                                 <p style="margin: 5px 0;"><strong>Order Date:</strong> ${new Date(order.date).toLocaleDateString()}</p>
-                                <p style="margin: 5px 0;"><strong>Status:</strong> <span style="color: #dc3545; font-weight: bold;">${order.status || 'Unknown'}</span></p>
+                                <p style="margin: 5px 0;"><strong>New Status:</strong> <span style="color: #4CAF50; font-weight: bold; text-transform: uppercase;">${order.status || 'Updated'}</span></p>
                                 <div style="background: white; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #4CAF50;">
                                     <h4 style="color: #4CAF50; margin: 0 0 10px 0;">💰 Order Summary</h4>
                                     <div style="display: flex; justify-content: space-between; margin: 5px 0;"><span>Subtotal:</span><span>KES ${subtotal.toFixed(2)}</span></div>
@@ -7437,8 +7376,8 @@
                                 </div>
                             </div>
                             ${this.formatOrderItems(order.items || [])}
-                            ${additionalData.notes ? `<div style="background: #e8f5e8; padding: 20px; border-radius: 10px; margin: 20px 0;"><h3 style="color: #4CAF50; margin: 0 0 15px 0;">📝 Admin Notes</h3><p style="color: #333; line-height: 1.6;">${additionalData.notes}</p></div>` : ''}
-                            <div style="text-align: center; margin: 30px 0;"><a href="https://store.princealex.pro" style="display: inline-block; background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">🛒 Visit Our Store</a></div>
+                            ${additionalData.notes ? `<div style="background: #fff3cd; border: 1px solid #ffeeba; padding: 20px; border-radius: 10px; margin: 20px 0;"><h3 style="color: #856404; margin: 0 0 10px 0;">📝 Note from Team</h3><p style="color: #333; line-height: 1.6; margin: 0;">${additionalData.notes}</p></div>` : ''}
+                            <div style="text-align: center; margin: 30px 0;"><a href="https://store.princealex.pro" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 35px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px;">🛒 Visit Our Store</a></div>
                             <p style="color: #666; font-size: 14px; text-align: center; margin-top: 30px;">If you have any questions about this order, please contact our support team.</p>
                         </div>
                     </div>
@@ -7588,147 +7527,133 @@
         // --- Order Details View Functions ---
         window.viewOrderDetails = async function(orderId) {
             try {
-                const order = allOrders.find(o => o.id === orderId);
-                if (!order) {
+                const orderSnap = await getDoc(doc(db, "orders", orderId));
+                if (!orderSnap.exists()) {
                     showModal('Error', 'Order not found.', true);
                     return;
                 }
-
+                const order = { id: orderSnap.id, ...orderSnap.data() };
                 currentOrderId = orderId; // Set the current order ID for editing
 
-                const customerName = order.customer ? order.customer.fullName : 'Unknown Customer';
-                const customerEmail = order.userEmail || 'No email';
-                const customerPhone = order.customer ? order.customer.phoneNumber : 'No phone';
-                const customerId = order.customer ? order.customer.idNumber : 'No ID';
-                const deliveryLocation = order.customer ? order.customer.deliveryLocation : 'No location';
-                const houseName = order.customer ? order.customer.houseName : 'N/A';
-                const additionalNotes = order.customer ? order.customer.additionalNotes : 'No special instructions';
+                const status = order.status || 'Pending';
 
-                const itemsHtml = order.items ? order.items.map(item => `
-                    <div class="item-card">
-                        <div class="item-header">
-                            <span class="item-name">${item.name}</span>
-                            <span class="item-price">KES ${item.totalPrice ? item.totalPrice.toFixed(2) : (item.price * item.quantity).toFixed(2)}</span>
+                const itemsHtml = (order.items || []).map(item => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: white; border-radius: 8px; margin-bottom: 8px; border: 1px solid #f1f5f9;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <div style="width: 40px; height: 40px; background: #f8fafc; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; color: #1e293b; font-size: 14px;">${item.name}</div>
+                                <div style="font-size: 12px; color: #64748b;">${item.quantity} ${item.unit || 'units'} x KES ${item.price.toFixed(2)}</div>
+                            </div>
                         </div>
-                        <div class="item-details">
-                            <span>Quantity: ${item.quantity} ${item.unit || 'units'}</span>
-                            <span>Unit Price: KES ${item.price ? item.price.toFixed(2) : '0.00'}</span>
-                            <span>Stock at Order: ${item.stockAtTimeOfOrder || 'N/A'}</span>
-                        </div>
+                        <div style="font-weight: 700; color: var(--primary-color);">KES ${(item.price * item.quantity).toFixed(2)}</div>
                     </div>
-                `).join('') : '<p>No items found</p>';
+                `).join('');
 
                 const orderDetailsHtml = `
-                    <div class="details-section">
-                        <h4>📋 Order Information</h4>
-                        <div class="details-grid">
-                            <div class="detail-item">
-                                <span class="detail-label">Order ID</span>
-                                <span class="detail-value">${order.id}</span>
+                    <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-radius: 12px; padding: 2px;">
+                        <!-- Header Status Banner -->
+                        <div style="background: white; border-radius: 10px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border: 1px solid #e2e8f0;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="width: 45px; height: 45px; border-radius: 10px; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+                                    <i class="fas fa-clipboard-list"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">Current Status</div>
+                                    <div style="font-size: 18px; font-weight: 800; color: var(--primary-color);">${status}</div>
+                                </div>
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Status</span>
-                                <span class="detail-value">${order.status || 'Pending'}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Order Date</span>
-                                <span class="detail-value">${new Date(order.date).toLocaleString()}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Payment Method</span>
-                                <span class="detail-value">${order.paymentMethod || 'Unknown'}</span>
+                            <div style="text-align: right;">
+                                <div style="font-size: 11px; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 1px;">Placed On</div>
+                                <div style="font-size: 13px; font-weight: 600; color: #475569;">${new Date(order.date).toLocaleString()}</div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="details-section">
-                        <h4>👤 Customer Information</h4>
-                        <div class="details-grid">
-                            <div class="detail-item">
-                                <span class="detail-label">Full Name</span>
-                                <span class="detail-value">${customerName}</span>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; padding: 0 10px;">
+                            <!-- Customer Card -->
+                            <div style="background: white; border-radius: 10px; padding: 18px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                                <h4 style="margin: 0 0 12px 0; font-size: 12px; color: var(--primary-color); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-user-circle"></i> Customer Profile
+                                </h4>
+                                <div style="font-weight: 700; font-size: 15px; color: #1e293b;">${order.customer?.fullName || 'Guest'}</div>
+                                <div style="font-size: 13px; color: #64748b; margin-top: 4px;">
+                                    <div style="margin-bottom: 2px;"><i class="fas fa-envelope" style="width: 16px; opacity: 0.5;"></i> ${order.userEmail || 'N/A'}</div>
+                                    <div style="margin-bottom: 2px;"><i class="fas fa-phone" style="width: 16px; opacity: 0.5;"></i> ${order.customer?.phoneNumber || 'N/A'}</div>
+                                    <div><i class="fas fa-id-card" style="width: 16px; opacity: 0.5;"></i> ID: ${order.customer?.idNumber || 'N/A'}</div>
+                                </div>
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Email</span>
-                                <span class="detail-value">${customerEmail}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Phone Number</span>
-                                <span class="detail-value">${customerPhone}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">ID Number</span>
-                                <span class="detail-value">${customerId}</span>
+
+                            <!-- Delivery Card -->
+                            <div style="background: white; border-radius: 10px; padding: 18px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                                <h4 style="margin: 0 0 12px 0; font-size: 12px; color: #2196F3; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-map-marked-alt"></i> Delivery Destination
+                                </h4>
+                                <div style="font-size: 13px; color: #1e293b; font-weight: 600; line-height: 1.4;">${order.customer?.deliveryLocation || 'N/A'}</div>
+                                <div style="font-size: 12px; color: #64748b; margin-top: 6px; padding-top: 6px; border-top: 1px dashed #e2e8f0;">
+                                    <div style="margin-bottom: 4px;"><strong>Building:</strong> ${order.customer?.houseName || 'N/A'}</div>
+                                    <div style="color: var(--accent-color);"><strong>Note:</strong> ${order.customer?.additionalNotes || 'None'}</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="details-section">
-                        <h4>🚚 Delivery Information</h4>
-                        <div class="details-grid">
-                            <div class="detail-item">
-                                <span class="detail-label">Delivery Location</span>
-                                <span class="detail-value">${deliveryLocation}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">House Name/Number</span>
-                                <span class="detail-value">${houseName}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Special Instructions</span>
-                                <span class="detail-value">${additionalNotes}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Estimated Delivery</span>
-                                <span class="detail-value">${order.deliveryInfo ? order.deliveryInfo.estimatedDelivery : '30 minutes'}</span>
+                        <!-- Items Section -->
+                        <div style="background: white; border-radius: 10px; padding: 20px; border: 1px solid #e2e8f0; margin: 0 10px 15px;">
+                            <h4 style="margin: 0 0 15px 0; font-size: 12px; color: #6366f1; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-shopping-basket"></i> Order Contents (${(order.items || []).length})
+                            </h4>
+                            <div style="max-height: 200px; overflow-y: auto; padding-right: 5px;">
+                                ${itemsHtml}
                             </div>
                         </div>
-                    </div>
 
-                    <div class="details-section">
-                        <h4>🛒 Order Items</h4>
-                        <div class="items-list">
-                            ${itemsHtml}
-                        </div>
-                    </div>
-
-                    <div class="details-section">
-                        <h4>💰 Order Summary</h4>
-                        <div class="details-grid">
-                            <div class="detail-item">
-                                <span class="detail-label">Subtotal</span>
-                                <span class="detail-value">KES ${order.subtotal ? order.subtotal.toFixed(2) : '0.00'}</span>
+                        <!-- Summary Card -->
+                        <div style="background: #1e293b; border-radius: 10px; padding: 20px; color: white; margin: 0 10px 10px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; opacity: 0.6;">
+                                <span>Subtotal</span>
+                                <span>KES ${order.subtotal?.toFixed(2) || '0.00'}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; opacity: 0.6;">
+                                <span>Delivery Fee</span>
+                                <span>KES ${order.transportationFee?.toFixed(2) || '0.00'}</span>
                             </div>
                             ${order.voucher ? `
-                            <div class="detail-item" style="color: var(--accent-color-orange);">
-                                <span class="detail-label">Voucher Discount (${order.voucher.code})</span>
-                                <span class="detail-value">-KES ${order.voucher.discountAmount.toFixed(2)}</span>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: #fbbf24;">
+                                <span>Discount (${order.voucher.code})</span>
+                                <span>-KES ${order.voucher.discountAmount?.toFixed(2)}</span>
                             </div>
                             ` : ''}
-                            <div class="detail-item">
-                                <span class="detail-label">Delivery Fee</span>
-                                <span class="detail-value">KES ${order.transportationFee ? order.transportationFee.toFixed(2) : '0.00'}</span>
+                            <div style="display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); font-weight: 800; font-size: 20px;">
+                                <span>Grand Total</span>
+                                <span style="color: #4ade80;">KES ${order.total?.toFixed(2) || '0.00'}</span>
                             </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Total Amount</span>
-                                <span class="detail-value" style="font-weight: 700; color: var(--primary-color);">
-                                    KES ${order.total ? order.total.toFixed(2) : 
-                                        (Array.isArray(order.items) ? order.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0).toFixed(2) : '0.00')
-                                    }
-                                </span>
-                            </div>
-                        </div>
-                        </div>
-                        <div class="details-section">
-                            <h4>Actions</h4>
-                            <div class="order-actions">
-                                <button class="action-btn btn-view ${!hasOrderPerm ? 'disabled-btn' : ''}" onclick="toggleOrderEditMode()" ${!hasOrderPerm ? 'disabled' : ''}>
-                                    <i class="fas fa-edit"></i> Edit This Order
-                                </button>
-                                <!-- More actions can be added here -->
+                            <div style="margin-top: 15px; padding: 10px; border-radius: 6px; background: ${(order.paymentStatus || 'Unpaid').toLowerCase() === 'paid' ? 'rgba(74, 222, 128, 0.1)' : 'rgba(251, 191, 36, 0.1)'}; text-align: center; border: 1px solid ${(order.paymentStatus || 'Unpaid').toLowerCase() === 'paid' ? 'rgba(74, 222, 128, 0.3)' : 'rgba(251, 191, 36, 0.3)'};">
+                                <div style="font-size: 11px; font-weight: 700; color: ${(order.paymentStatus || 'Unpaid').toLowerCase() === 'paid' ? '#4ade80' : '#fbbf24'}; text-transform: uppercase; letter-spacing: 1px;">
+                                    ${(order.paymentStatus || 'Unpaid').toLowerCase() === 'paid' ? '💰 Payment Received' : '⏳ Collection Pending'}
+                                </div>
+                                <div style="font-size: 10px; opacity: 0.5; margin-top: 2px;">
+                                    Method: ${order.paymentMethod || 'Cash'} &bull; Admin v2.0
+                                </div>
                             </div>
                         </div>
-                    `;
+                    </div>
+                    
+                    <div class="order-actions" style="margin-top: 25px; display:flex; justify-content: center; gap: 12px;">
+                        <button class="action-btn" style="background: #64748b; color:white;" onclick="closeOrderDetailsModal()">Close</button>
+                        <button class="action-btn" style="background: #6366f1; color:white;" onclick="downloadOrderReceipt('${order.id}')">
+                            <i class="fas fa-print"></i> Receipt
+                        </button>
+                        ${(status === 'Processing') ? `
+                            <button class="action-btn" style="background:#FF6B35; color:white;" onclick="requestRide('${order.id}')">
+                                <i class="fas fa-motorcycle"></i> Call Rider
+                            </button>
+                        ` : ''}
+                        <button class="action-btn btn-view" onclick="toggleOrderEditMode()" ${!window.hasPermission('orders') ? 'disabled' : ''}>
+                            <i class="fas fa-edit"></i> Edit Items
+                        </button>
+                    </div>
+                `;
 
                 document.getElementById('order-details-title').textContent = `Order Details - ${order.id}`;
                 document.getElementById('order-details-body').innerHTML = orderDetailsHtml;
@@ -7740,12 +7665,125 @@
             }
         }
 
+        window.downloadOrderReceipt = async function(orderId) {
+            try {
+                const orderSnap = await getDoc(doc(db, "orders", orderId));
+                if (!orderSnap.exists()) return;
+                const orderData = { id: orderSnap.id, ...orderSnap.data() };
+                const pdfBase64 = await generateReceiptBase64(orderData);
+                if (pdfBase64) {
+                    const link = document.createElement('a');
+                    link.href = `data:application/pdf;base64,${pdfBase64}`;
+                    link.download = `PrinceAlex_Receipt_${orderId}.pdf`;
+                    link.click();
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function sendOrderConfirmedEmail(order) {
+            try {
+                const customerEmail = order.userEmail || (order.customer ? order.customer.email : null);
+                if (!customerEmail) return;
+
+                const customerName = order.customer ? order.customer.fullName : 'Valued Customer';
+                const subtotal = order.subtotal || (order.items || []).reduce((sum, i) => sum + (i.price * i.quantity), 0);
+                const deliveryFee = order.transportationFee || order.deliveryFee || 0;
+                const total = order.total || (subtotal + deliveryFee);
+                const deliveryAddress = `${order.customer?.deliveryLocation || 'N/A'}, ${order.customer?.houseName || 'N/A'}`;
+
+                await addDoc(collection(db, "mail"), {
+                    to: customerEmail,
+                    message: {
+                        subject: `Order Confirmed - ${order.id} | Prince Alex Store`,
+                        html: `
+                            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                                <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); padding: 40px 20px; text-align: center; color: white; border-radius: 12px 12px 0 0;">
+                                    <h1 style="margin: 0; font-size: 28px;">🥬 Order Confirmed!</h1>
+                                    <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">We've verified your request and are picking your fresh veggies now.</p>
+                                </div>
+                                
+                                <div style="padding: 30px; background: white; border: 1px solid #eee; border-top: none; border-radius: 0 0 12px 12px;">
+                                    <p style="font-size: 16px; color: #333;">Hello ${customerName},</p>
+                                    <p style="font-size: 16px; color: #333;">Your order has been officially <strong>confirmed</strong> and is being prepared for delivery!</p>
+                                    
+                                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                                        <h3 style="color: #4CAF50; margin: 0 0 15px 0;">📋 Order Details</h3>
+                                        <p style="margin: 5px 0;"><strong>Order ID:</strong> ${order.id}</p>
+                                        <p style="margin: 5px 0;"><strong>Order Date:</strong> ${new Date(order.date).toLocaleString()}</p>
+                                        <p style="margin: 5px 0;"><strong>Customer Name:</strong> ${customerName}</p>
+                                        <p style="margin: 5px 0;"><strong>Phone Number:</strong> ${order.customer?.phoneNumber || 'N/A'}</p>
+                                        <p style="margin: 5px 0;"><strong>Payment Method:</strong> ${order.paymentMethod || 'N/A'}</p>
+                                        <p style="margin: 5px 0;"><strong>Location:</strong> ${deliveryAddress}</p>
+                                        <p style="margin: 5px 0;"><strong>Estimated Delivery:</strong> 30 minutes</p>
+                                        <p style="margin: 5px 0;"><strong>Order Status:</strong> <span style="color: #4CAF50; font-weight: bold;">Confirmed & Processing</span></p>
+                                    </div>
+                                    
+                                    <div style="background: #ffffff; border: 1px solid #eee; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                                        <h3 style="color: #4CAF50; margin: 0 0 15px 0; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">🛒 Order Items</h3>
+                                        ${(order.items || []).map(item => `
+                                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #ddd;">
+                                                <span>${item.name} (${item.quantity} ${item.unit || 'units'})</span>
+                                                <span><strong>KES ${(item.price * item.quantity).toFixed(2)}</strong></span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    
+                                    <div style="background: #f8f9fa; border: 1px solid #eee; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                                        <h3 style="color: #856404; margin: 0 0 15px 0;">💰 Order Summary</h3>
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                            <span>Subtotal:</span>
+                                            <span>KES ${subtotal.toFixed(2)}</span>
+                                        </div>
+                                        ${order.voucher ? `
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px; color: #4CAF50;">
+                                            <span>Voucher Discount (${order.voucher.code}):</span>
+                                            <span>-KES ${order.voucher.discountAmount.toFixed(2)}</span>
+                                        </div>
+                                        ` : ''}
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                            <span>Delivery Fee:</span>
+                                            <span>KES ${deliveryFee.toFixed(2)}</span>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 20px; color: #4CAF50; border-top: 2px solid #eee; padding-top: 15px; margin-top: 10px;">
+                                            <span>Total:</span>
+                                            <span>KES ${total.toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div style="text-align: center; margin: 30px 0;">
+                                        <a href="https://store.princealex.pro/orders" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 35px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 12px rgba(76,175,80,0.3);">Track My Order Live</a>
+                                    </div>
+                                </div>
+                            </div>
+                        `
+                    },
+                    emailType: 'order_confirmation',
+                    orderId: order.id,
+                    customerEmail: customerEmail,
+                    customerName: customerName,
+                    createdAt: new Date().toISOString(),
+                    status: 'pending',
+                    priority: 'high'
+                });
+            } catch (e) {
+                console.error("Error sending confirmation email:", e);
+            }
+        }
+
         // --- Status Update Functions ---
-        window.openStatusUpdateModal = function(orderId) {
+        async function openStatusUpdateModal(orderId) {
             currentOrderId = orderId;
-            const order = allOrders.find(o => o.id === orderId);
+            let order = (allOrders || []).find(o => o.id === orderId);
+            
             if (!order) {
-                showModal('Error', 'Order not found.', true);
+                try {
+                    const snap = await window.getDoc(window.doc(window.db, "orders", orderId));
+                    if (snap.exists()) order = { id: snap.id, ...snap.data() };
+                } catch (e) { console.error(e); }
+            }
+
+            if (!order) {
+                showAlert('Error', 'Order data could not be retrieved.', true);
                 return;
             }
 
@@ -7754,27 +7792,33 @@
                 return;
             }
 
-            // Clear previous selections
-            document.querySelectorAll('.status-option').forEach(option => {
-                option.classList.remove('selected');
-            });
+            const statusTiles = [
+                { status: 'Pending', icon: 'fa-clock', class: 'tile-pending' },
+                { status: 'Confirmed', icon: 'fa-check-circle', class: 'tile-confirmed' },
+                { status: 'Processing', icon: 'fa-cogs', class: 'tile-processing' },
+                { status: 'Ready for Pickup', icon: 'fa-motorcycle', class: 'tile-pickup' },
+                { status: 'On Transit', icon: 'fa-route', class: 'tile-transit' },
+                { status: 'Delivered', icon: 'fa-check-double', class: 'tile-delivered' },
+                { status: 'Cancelled', icon: 'fa-times-circle', class: 'tile-cancelled' }
+            ];
 
-            // Highlight current status
-            const currentStatus = order.status || 'Pending';
-            const currentOption = document.querySelector(`[data-status="${currentStatus}"]`);
-            if (currentOption) {
-                currentOption.classList.add('selected');
-            }
+            const optionsContainer = document.getElementById('status-options');
+            optionsContainer.className = 'status-tiles-grid';
+            optionsContainer.innerHTML = statusTiles.map(tile => `
+                <div class="status-tile ${tile.class} ${order.status === tile.status ? 'active' : ''}" 
+                     data-status="${tile.status}" onclick="selectStatusTile(this)">
+                    <i class="fas ${tile.icon}"></i>
+                    <span>${tile.status}</span>
+                </div>
+            `).join('');
 
             document.getElementById('status-update-modal').style.display = 'flex';
+        }
+        window.openStatusUpdateModal = openStatusUpdateModal;
 
-            // Add click handlers for status options
-            document.querySelectorAll('.status-option').forEach(option => {
-                option.onclick = function() {
-                    document.querySelectorAll('.status-option').forEach(opt => opt.classList.remove('selected'));
-                    this.classList.add('selected');
-                };
-            });
+        window.selectStatusTile = function(el) {
+            document.querySelectorAll('.status-tile').forEach(opt => opt.classList.remove('active'));
+            el.classList.add('active');
         }
 
         async function sendDeliveryConfirmationWithVoucher(order) {
@@ -7823,33 +7867,33 @@
                     message: {
                         subject: `Order Delivered! 📦 Plus a Gift for You 🎁`,
                         html: `
-                            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                                <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); padding: 30px; text-align: center; color: white;">
+                            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f4f4f4; border-radius: 12px; overflow: hidden;">
+                                <div style="background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%); padding: 40px 20px; text-align: center; color: white;">
                                     <h1 style="margin: 0; font-size: 28px;">Order Delivered! ✅</h1>
-                                    <p style="margin: 10px 0 0 0; font-size: 16px;">Your fresh vegetables have arrived.</p>
+                                    <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Freshness has arrived at your doorstep.</p>
                                 </div>
-                                <div style="padding: 30px; background: white;">
-                                    <p style="font-size: 16px; color: #333;">Hello ${customerName},</p>
+                                <div style="padding: 30px; background: white; border: 1px solid #ddd; border-top: none;">
+                                    <p style="font-size: 18px; color: #333;">Hello <strong>${customerName}</strong>,</p>
                                     <p style="font-size: 16px; color: #333;">We are pleased to inform you that your order <strong>#${order.id}</strong> has been successfully delivered.</p>
-                                    <p style="font-size: 16px; color: #333;">We hope you enjoy your fresh produce! If you have any issues with your order or if anything is missing, please don't hesitate to reach out to us.</p>
+                                    <p style="font-size: 16px; color: #555; line-height: 1.6;">We hope you enjoy your fresh produce! If anything isn't quite right, our support team is just a call away.</p>
                                     <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2196F3;">
                                         <h4 style="color: #2196F3; margin: 0 0 10px 0;">📞 Support Contact</h4>
                                         <p style="margin: 5px 0;"><strong>Phone:</strong> 0717384875</p>
                                         <p style="margin: 5px 0;"><strong>Email:</strong> info@princealex.pro</p>
                                     </div>
-                                    <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center; border: 1px solid #ffeeba;">
+                                    <div style="background: linear-gradient(135deg, #FFFDE7 0%, #FFF9C4 100%); padding: 25px; border-radius: 15px; margin: 25px 0; text-align: center; border: 1.5px dashed #FFD600;">
                                         <h3 style="color: #856404; margin: 0 0 15px 0;">🎁 A Thank You Gift!</h3>
                                         <p style="margin: 5px 0; color: #856404;">As a token of our appreciation, please enjoy this voucher on your next order:</p>
-                                        <div style="background: #FF6B35; color: white; padding: 15px; border-radius: 8px; margin: 15px 0; display: inline-block; min-width: 200px;">
-                                            <div style="font-size: 24px; font-weight: 700; letter-spacing: 1px;">${voucherCode}</div>
-                                            <div style="font-size: 14px; margin-top: 5px;">KES ${voucherValue} OFF</div>
+                                        <div style="background: #FF6B35; color: white; padding: 15px 30px; border-radius: 8px; margin: 15px 0; display: inline-block;">
+                                            <div style="font-size: 28px; font-weight: 800; letter-spacing: 2px;">${voucherCode}</div>
+                                            <div style="font-size: 16px; font-weight: 600; margin-top: 5px;">KES ${voucherValue} DISCOUNT</div>
                                         </div>
                                         <p style="margin: 5px 0; color: #856404; font-size: 12px;">Valid for 30 days • Min order KES 200</p>
                                     </div>
                                     <div style="text-align: center; margin-top: 30px;">
-                                        <a href="https://store.princealex.pro" style="display: inline-block; background: #4CAF50; color: white; padding: 12px 25px; text-decoration: none; border-radius: 50px; font-weight: bold;">Shop Again</a>
+                                        <a href="https://store.princealex.pro" style="display: inline-block; background: #4CAF50; color: white; padding: 14px 35px; text-decoration: none; border-radius: 50px; font-weight: bold; font-size: 16px; box-shadow: 0 4px 10px rgba(76,175,80,0.3);">Shop Fresh Again</a>
                                     </div>
-                                    <p style="font-size: 14px; color: #666; margin-top: 30px; text-align: center;">Thank you for choosing Prince Alex Store!</p>
+                                    <p style="font-size: 14px; color: #999; margin-top: 40px; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">Thank you for supporting local farmers &bull; Prince Alex Store</p>
                                 </div>
                             </div>
                         `
@@ -7880,14 +7924,21 @@
                 return;
             }
 
-            const selectedOption = document.querySelector('.status-option.selected');
+            const selectedOption = document.querySelector('.status-tile.active');
             if (!selectedOption) {
                 showModal('Error', 'Please select a status.', true);
                 return;
             }
 
             const newStatus = selectedOption.dataset.status;
-            const order = allOrders.find(o => o.id === currentOrderId);
+            let order = allOrders.find(o => o.id === currentOrderId);
+            
+            if (!order) {
+                try {
+                    const snap = await getDoc(doc(db, "orders", currentOrderId));
+                    if (snap.exists()) order = { id: snap.id, ...snap.data() };
+                } catch (e) { console.error(e); }
+            }
             
             if (!order) {
                 showModal('Error', 'Order not found.', true);
@@ -7905,6 +7956,11 @@
                 // Update local data
                 order.status = newStatus;
                 order.lastUpdated = new Date().toISOString();
+
+                // Send email notification if status is "Confirmed"
+                if (newStatus === 'Confirmed') {
+                    await sendOrderConfirmedEmail(order);
+                }
 
                 // Send email notification if status is "On Transit"
                 if (newStatus === 'On Transit') {
@@ -7936,101 +7992,142 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // Branding colors
-            const primaryColor = [76, 175, 80]; // #4CAF50
+            const primaryColor = [76, 175, 80]; // Fresh Green
+            const secondaryColor = [46, 125, 50]; // Darker Green
+            const lightGray = [248, 249, 250];
             
-            // Header
+            // 1. Modern Header with Color Block
             doc.setFillColor(...primaryColor);
-            doc.rect(0, 0, 210, 40, 'F');
+            doc.rect(0, 0, 210, 50, 'F');
             
             doc.setTextColor(255, 255, 255);
-            doc.setFontSize(22);
+            doc.setFontSize(28);
             doc.setFont("helvetica", "bold");
-            doc.text("Prince Alex Store", 105, 20, { align: "center" });
-            doc.setFontSize(12);
+            doc.text("Prince Alex Store", 15, 25);
+            
+            doc.setFontSize(11);
             doc.setFont("helvetica", "normal");
-            doc.text("Fresh Vegetables & Groceries", 105, 30, { align: "center" });
+            doc.text("Farm-Fresh Produce & Quality Groceries", 15, 35);
+            doc.text("Vihiga County, Kenya | info@princealex.pro", 15, 42);
             
-            // Receipt Info
-            doc.setTextColor(0, 0, 0);
-            doc.setFontSize(16);
+            // 2. Receipt Badge
+            doc.setFillColor(...secondaryColor);
+            doc.roundedRect(145, 15, 50, 20, 3, 3, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(14);
             doc.setFont("helvetica", "bold");
-            doc.text("OFFICIAL RECEIPT", 105, 55, { align: "center" });
+            doc.text("RECEIPT", 170, 28, { align: "center" });
             
+            // 3. Information Section
+            doc.setTextColor(50, 50, 50);
             doc.setFontSize(10);
+            
+            // Left Column: Customer
+            let y = 65;
+            doc.setFont("helvetica", "bold");
+            doc.text("BILL TO:", 15, y);
             doc.setFont("helvetica", "normal");
+            y += 6;
+            doc.text(order.customer?.fullName || 'Valued Customer', 15, y);
+            y += 5;
+            doc.text(order.customer?.phoneNumber || 'N/A', 15, y);
+            y += 5;
+            doc.text(order.customer?.deliveryLocation || 'N/A', 15, y, { maxWidth: 80 });
             
-            // Customer & Order Details
-            const leftX = 15;
-            const rightX = 110;
-            let y = 70;
+            // Right Column: Order Details
+            y = 65;
+            const rightAlignX = 140;
+            doc.setFont("helvetica", "bold");
+            doc.text("ORDER DETAILS:", rightAlignX, y);
+            doc.setFont("helvetica", "normal");
+            y += 6;
+            doc.text(`Order ID:`, rightAlignX, y);
+            doc.text(`#${order.id}`, 195, y, { align: "right" });
+            y += 5;
+            doc.text(`Order Date:`, rightAlignX, y);
+            doc.text(new Date(order.date).toLocaleDateString(), 195, y, { align: "right" });
+            y += 5;
+            doc.text(`Payment:`, rightAlignX, y);
+            doc.text(order.paymentMethod || 'N/A', 195, y, { align: "right" });
+            y += 5;
             
-            doc.text(`Order ID: ${order.id}`, leftX, y);
-            doc.text(`Date: ${new Date(order.date).toLocaleString()}`, rightX, y);
-            y += 7;
-            doc.text(`Customer: ${order.customer ? order.customer.fullName : 'Valued Customer'}`, leftX, y);
-            doc.text(`Phone: ${order.customer ? order.customer.phoneNumber : 'N/A'}`, rightX, y);
-            y += 7;
-            doc.text(`Payment Method: ${order.paymentMethod || 'N/A'}`, leftX, y);
-            doc.text(`Status: ${order.status || 'On Transit'}`, rightX, y);
+            // Payment Status Banner
+            const status = order.paymentStatus || 'Unpaid';
+            const statusColor = status.toLowerCase() === 'paid' ? [40, 167, 69] : [220, 53, 69];
+            doc.setTextColor(...statusColor);
+            doc.setFont("helvetica", "bold");
+            doc.text(`Status:`, rightAlignX, y);
+            doc.text(status.toUpperCase(), 195, y, { align: "right" });
+            y += 5;
             
-            // Table
-            const tableColumn = ["Item", "Quantity", "Unit Price", "Total"];
-            const tableRows = [];
+            if (status.toLowerCase() === 'paid') {
+                doc.setFontSize(8);
+                doc.text("NO BALANCE DUE", 195, y, { align: "right" });
+            }
             
-            const items = order.items || [];
-            items.forEach(item => {
-                const itemData = [
-                    item.name,
-                    `${item.quantity} ${item.unit || ''}`,
-                    `KES ${item.price.toFixed(2)}`,
-                    `KES ${(item.price * item.quantity).toFixed(2)}`
-                ];
-                tableRows.push(itemData);
-            });
+            // 4. Items Table
+            const tableColumn = ["Product Description", "Qty", "Unit Price", "Subtotal"];
+            const tableRows = (order.items || []).map(item => [
+                item.name,
+                `${item.quantity} ${item.unit || ''}`,
+                `KES ${item.price.toFixed(2)}`,
+                `KES ${(item.price * item.quantity).toFixed(2)}`
+            ]);
             
             doc.autoTable({
                 head: [tableColumn],
                 body: tableRows,
-                startY: 95,
-                theme: 'grid',
-                headStyles: { fillColor: primaryColor, textColor: 255 },
-                styles: { fontSize: 10, cellPadding: 3 },
+                startY: 105,
+                theme: 'striped',
+                headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' },
+                alternateRowStyles: { fillColor: lightGray },
+                styles: { fontSize: 9, cellPadding: 4, halign: 'left' },
                 columnStyles: {
-                    0: { cellWidth: 80 },
+                    1: { halign: 'center' },
+                    2: { halign: 'right' },
                     3: { halign: 'right' }
                 }
             });
             
+            // 5. Financial Summary
             let finalY = doc.lastAutoTable.finalY + 10;
+            const summaryX = 135;
             
-            // Totals
-            const subtotal = order.subtotal || items.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+            doc.setTextColor(100, 100, 100);
+            doc.setFont("helvetica", "normal");
+            
+            const subtotal = order.subtotal || (order.items || []).reduce((sum, i) => sum + (i.price * i.quantity), 0);
             const deliveryFee = order.transportationFee || order.deliveryFee || 0;
             const total = order.total || (subtotal + deliveryFee);
             
-            doc.setFont("helvetica", "normal");
-            doc.text(`Subtotal:`, 140, finalY);
+            doc.text("Subtotal:", summaryX, finalY);
             doc.text(`KES ${subtotal.toFixed(2)}`, 195, finalY, { align: "right" });
-            finalY += 7;
             
-            doc.text(`Delivery Fee:`, 140, finalY);
+            finalY += 7;
+            doc.text("Delivery Fee:", summaryX, finalY);
             doc.text(`KES ${deliveryFee.toFixed(2)}`, 195, finalY, { align: "right" });
-            finalY += 7;
             
+            finalY += 4;
+            doc.setDrawColor(200, 200, 200);
+            doc.line(summaryX, finalY, 195, finalY);
+            
+            finalY += 8;
+            doc.setFontSize(14);
             doc.setFont("helvetica", "bold");
-            doc.setFontSize(12);
             doc.setTextColor(...primaryColor);
-            doc.text(`Total Amount:`, 140, finalY);
+            doc.text("GRAND TOTAL:", summaryX, finalY);
             doc.text(`KES ${total.toFixed(2)}`, 195, finalY, { align: "right" });
             
-            // Footer
-            doc.setTextColor(100, 100, 100);
-            doc.setFontSize(10);
-            doc.setFont("helvetica", "normal");
+            // 6. Footer & Thank You
+            doc.setTextColor(150, 150, 150);
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "italic");
             const pageHeight = doc.internal.pageSize.height;
-            doc.text("Thank you for shopping with Prince Alex Store!", 105, pageHeight - 20, { align: "center" });
-            doc.text("For support, contact: info@princealex.pro", 105, pageHeight - 15, { align: "center" });
+            doc.text("Thank you for choosing Prince Alex Store! We appreciate your business.", 105, pageHeight - 25, { align: "center" });
+            
+            doc.setFont("helvetica", "normal");
+            doc.text("This is a computer-generated receipt and requires no signature.", 105, pageHeight - 20, { align: "center" });
+            doc.text("Support: info@princealex.pro | Call: 0717384875", 105, pageHeight - 15, { align: "center" });
             
             return doc.output('datauristring').split(',')[1];
         }
@@ -8184,6 +8281,21 @@
             document.getElementById('status-update-modal').style.display = 'none';
             currentOrderId = null;
         }
+
+        // --- Constants ---
+        const ADMIN_DELIVERY_FEE = 100.00; // Fixed delivery fee for admin-managed orders
+
+        // --- Helper function to calculate order totals ---
+        function calculateOrderTotals(order) {
+            if (!order || !Array.isArray(order.items)) {
+                return { subtotal: 0, deliveryFee: 0, total: 0 };
+            }
+            const subtotal = order.items.reduce((sum, item) => sum + ((item.price || 0) * (item.quantity || 0)), 0);
+            const deliveryFee = subtotal > 0 ? ADMIN_DELIVERY_FEE : 0;
+            const total = subtotal + deliveryFee;
+            return { subtotal, deliveryFee, total };
+        }
+        window.calculateOrderTotals = calculateOrderTotals;
 
         // --- Order Editing Functions ---
         // Global state for the order currently being edited in a modal
@@ -8357,16 +8469,12 @@
             if (!currentEditingOrder) return;
 
             let subtotal = 0;
-            currentEditingOrder.items.forEach(item => {
-                subtotal += item.price * item.quantity;
-            });
-
-            // Handle different field names for delivery fee
-            const deliveryFee = currentEditingOrder.transportationFee || 
-                               currentEditingOrder.deliveryFee || 
-                               currentEditingOrder.deliveryCost || 0;
             
-            const total = subtotal + deliveryFee;
+            // Use the centralized calculation function
+            const totals = window.calculateOrderTotals(currentEditingOrder);
+            subtotal = totals.subtotal;
+            const deliveryFee = totals.deliveryFee;
+            const total = totals.total;
 
             // Update UI elements
             const subtotalElement = document.getElementById('edit-subtotal');
@@ -8393,7 +8501,7 @@
         }
 
         // --- Add Item to Order Functions ---
-        let availableProducts = [];
+        window.availableProducts = [];
 
         window.openAddItemModal = async function() {
             if (!window.hasPermission('orders')) {
@@ -8406,14 +8514,14 @@
                 const productsCol = collection(db, 'products');
                 const querySnapshot = await getDocs(productsCol);
                 
-                availableProducts = [];
+                window.availableProducts = [];
                 querySnapshot.forEach(doc => {
                     const product = { id: doc.id, ...doc.data() };
-                    availableProducts.push(product);
+                    window.availableProducts.push(product);
                 });
 
                 // Populate products list
-                window.populateProductsList(availableProducts);
+                window.populateProductsList(window.availableProducts);
                 
                 // Show modal
                 document.getElementById('add-item-modal').style.display = 'flex'; // Show modal
@@ -8426,7 +8534,7 @@
 
         window.searchProducts = function() {
             const searchTerm = document.getElementById('product-search').value.toLowerCase();
-            const filteredProducts = availableProducts.filter(product =>
+            const filteredProducts = window.availableProducts.filter(product =>
                 (product.category && product.category.toLowerCase().includes(searchTerm))
             );
             window.populateProductsList(filteredProducts);
@@ -8574,7 +8682,20 @@
                 return;
             }
 
-            const product = availableProducts.find(p => p.id === productId);
+            const product = window.availableProducts.find(p => p.id === productId);
+
+            // Handle Manual Order Creation flow
+            if (window.isAddingToManualOrder) {
+                const existing = (window.simpleOrderItems || []).find(i => i.id === productId);
+                if (existing) existing.quantity++;
+                else window.simpleOrderItems.push({ id: productId, quantity: 1 });
+                
+                renderManualOrderItems();
+                closeAddItemModal();
+                window.isAddingToManualOrder = false;
+                return;
+            }
+
             if (!currentEditingOrder) {
                 console.error("addProductToOrder called but no order is being edited.");
                 showModal('Error', 'No active order to add items to. Please open an order to edit first.', true);
@@ -8844,116 +8965,6 @@
         }
 
         // Expose markOrderAsDelivered to the global scope for onclick events
-        window.markOrderAsDelivered = async function(orderId) {
-            showModal('Confirm Delivery', 'Are you sure you want to mark this order as delivered? <br><br><button onclick="confirmMarkOrderAsDelivered(\'' + orderId + '\')">Yes, Mark Delivered</button> <button onclick="closeModal()">Cancel</button>');
-        }
-
-        async function confirmMarkOrderAsDelivered(orderId) {
-            closeModal(); // Close the confirmation modal
-            try {
-                const orderRef = doc(db, "orders", orderId);
-                await updateDoc(orderRef, { status: "Delivered" });
-                await logAdminActivity('order_status_update', `Marked order ${orderId} as Delivered`);
-                
-                // Fetch order details to send email
-                const orderSnap = await getDoc(orderRef);
-                if (orderSnap.exists()) {
-                    const orderData = { id: orderSnap.id, ...orderSnap.data() };
-                    await sendDeliveryConfirmationWithVoucher(orderData);
-                }
-                
-                showModal('Success', 'Order status updated to Delivered!');
-                loadOrders(); // Reload the order list
-            } catch (error) {
-                showModal('Error', `Failed to update order status: ${error.message}`, true);
-                console.error("Error marking order as delivered:", error);
-            }
-        }
-
-        // Expose viewOrderDetails to the global scope for onclick events
-        window.viewOrderDetails = async function(orderId) {
-            try {
-                const orderRef = doc(db, "orders", orderId);
-                const orderSnap = await getDoc(orderRef);
-                
-                if (!orderSnap.exists()) {
-                    showModal('Error', 'Order not found.', true);
-                    return;
-                }
-                
-                const order = orderSnap.data();
-                const customerName = order.customer ? order.customer.fullName : 'Unknown Customer';
-                const customerEmail = order.userEmail || 'No email';
-                const customerPhone = order.customer ? order.customer.phoneNumber : 'No phone';
-                const deliveryLocation = order.customer ? order.customer.deliveryLocation : 'No location';
-                const houseName = order.customer ? order.customer.houseName : 'N/A';
-                
-                // Format items for display (defensive: handle missing items or missing fields)
-                const hasOrderPerm = window.hasPermission('orders');
-                let itemsHtml = '';
-                const itemsArr = Array.isArray(order.items) ? order.items : [];
-                itemsArr.forEach(item => {
-                    const qty = (item && (item.quantity || item.qty)) ? (item.quantity || item.qty) : 0;
-                    const price = (item && (item.price || item.totalPrice)) ? Number(item.price || item.totalPrice) : 0;
-                    const itemTotal = price * qty;
-                    const itemName = (item && (item.name || item.title)) ? (item.name || item.title) : 'Item';
-                    itemsHtml += `
-                        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee;">
-                            <span>${itemName} (x${qty})</span>
-                            <span>KES ${Number(itemTotal || 0).toFixed(2)}</span>
-                        </div>
-                    `;
-                });
-                
-                const orderDetailsHtml = `
-                    <div style="text-align: left; max-width: 500px;">
-                        <h4 style="color: var(--primary-color); margin-bottom: 20px;">Order Details - ${orderId}</h4>
-                        
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                            <h5 style="margin-bottom: 10px;">Customer Information</h5>
-                            <p><strong>Name:</strong> ${customerName}</p>
-                            <p><strong>Email:</strong> ${customerEmail}</p>
-                            <p><strong>Phone:</strong> ${customerPhone}</p>
-                            <p><strong>Delivery Location:</strong> ${deliveryLocation}</p>
-                            <p><strong>House Name:</strong> ${houseName}</p>
-                        </div>
-                        
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                            <h5 style="margin-bottom: 10px;">Order Items</h5>
-                            ${itemsHtml}
-                        </div>
-                        
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                            <h5 style="margin-bottom: 10px;">Order Summary</h5>
-                            <div style="display: flex; justify-content: space-between; padding: 5px 0;">
-                                <span>Subtotal:</span>
-                                <span>KES ${Number(order.subtotal || calculateSubtotal(itemsArr) || 0).toFixed(2)}</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; padding: 5px 0;">
-                                <span>Transport Fee:</span>
-                                <span>KES ${Number(order.transportationFee || order.transportFee || 0).toFixed(2)}</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; padding: 5px 0; border-top: 2px solid var(--primary-color); margin-top: 10px; font-weight: bold;">
-                                <span>Total:</span>
-                                <span>KES ${Number(order.total || (order.subtotal ? order.subtotal + (order.transportationFee||0) : (calculateSubtotal(itemsArr) + (order.transportationFee||0))) ).toFixed(2)}</span>
-                            </div>
-                        </div>
-                        
-                        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                            <h5 style="margin-bottom: 10px;">Order Information</h5>
-                            <p><strong>Status:</strong> <span class="status-${order.status.toLowerCase()}">${order.status}</span></p>
-                            <p><strong>Payment Method:</strong> ${order.paymentMethod}</p>
-                            <p><strong>Order Date:</strong> ${new Date(order.date).toLocaleString()}</p>
-                        </div>
-                    </div>
-                `;
-                
-                showModal('Order Details', orderDetailsHtml);
-            } catch (error) {
-                showModal('Error', `Failed to load order details: ${error.message}`, true);
-                console.error("Error loading order details:", error);
-            }
-        }
 
         // Helper to calculate subtotal from items array
         function calculateSubtotal(itemsArr) {
@@ -10451,7 +10462,6 @@
         (function insertAdminOrderUI(){
             try {
                 const container = document.querySelector('.container');
-                if (!container) return;
 
                 const html = `
                 <section class="admin-section" id="admin-order-management">
@@ -10493,11 +10503,11 @@
                 `;
 
                 // Append once (avoid duplicating)
-                if (!document.getElementById('admin-order-management')) {
+                if (container && !document.getElementById('admin-order-management')) {
                     container.insertAdjacentHTML('afterbegin', html);
                 }
 
-                // Wire up buttons
+                // Wire up buttons (Robustly handle static buttons too)
                 setTimeout(() => {
                     const searchBtn = document.getElementById('admin-search-order-btn');
                     const clearBtn = document.getElementById('admin-clear-order-btn');
@@ -10942,6 +10952,24 @@
     // --- Automatic Email Retry System (Every 2 Minutes) ---
     function startAutoRetrySystem() {
         if (retryInterval) clearInterval(retryInterval);
+        
+        const toggle = document.getElementById('auto-retry-emails-toggle');
+        const isEnabled = localStorage.getItem('autoRetryEmails') !== 'false'; // Default to true
+        
+        if (toggle) {
+            toggle.checked = isEnabled;
+            if (!toggle.dataset.listenerAttached) {
+                toggle.addEventListener('change', (e) => {
+                    localStorage.setItem('autoRetryEmails', e.target.checked);
+                    if (e.target.checked) startAutoRetrySystem();
+                    else stopAutoRetrySystem();
+                });
+                toggle.dataset.listenerAttached = 'true';
+            }
+        }
+
+        if (!isEnabled) return;
+
         console.log("Starting auto-retry system (2 min interval)...");
         // Run once immediately after a short delay
         setTimeout(autoRetryFailedEmails, 5000);
@@ -11618,10 +11646,13 @@
 
 <!-- Admin Firebase + Order management module -->
 <script type="module">
-    import { getAuth } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const { collection, db, query, where, getDocs, doc, setDoc, addDoc, updateDoc, deleteDoc, getDoc, limit } = window;
+
     // Utility: show a short admin message
     function adminMessage(text, isError=false) {
-        const el = document.getElementById('admin-order-message');
+        const el = document.getElementById('admin-order-message') || document.getElementById('create-order-message');
         if (!el) return;
         el.style.color = isError ? 'var(--error-color)' : 'var(--primary-color)';
         el.textContent = text;
@@ -11636,8 +11667,7 @@
             return; 
         }
         try { 
-            const ordersCol = collection(db, 'orders');
-            const q = query(ordersCol, where('orderId', '==', orderId));
+            const q = query(collection(db, 'orders'), where('orderId', '==', orderId));
             const snap = await getDocs(q);
             if (snap.empty) {
                 adminMessage('Order not found.', true);
@@ -11675,23 +11705,37 @@
             const docId = panel && panel.getAttribute('data-docid');
             if (!docId) { adminMessage('No loaded order to save. Please search for an order first.', true); return; }
 
-            const updated = {
-                customerName: document.getElementById('admin-order-customerName').value || '',
-                customerEmail: document.getElementById('admin-order-customerEmail').value || '',
-                customerPhone: document.getElementById('admin-order-customerPhone').value || '',
-                total: parseFloat(document.getElementById('admin-order-total').value) || 0,
-                status: document.getElementById('admin-order-status').value || '',
-                deliveryAddress: document.getElementById('admin-order-deliveryAddress').value || ''
-            };
             const itemsText = document.getElementById('admin-order-items').value || '[]';
-            try { updated.items = JSON.parse(itemsText); } catch (e) { adminMessage('Items must be valid JSON array.', true); return; }
+            let itemsArr = [];
+            try { itemsArr = JSON.parse(itemsText); } catch (e) { adminMessage('Items must be valid JSON array.', true); return; }
+
+            // Recalculate totals automatically from the items JSON
+            const totals = window.calculateOrderTotals({ items: itemsArr });
+
+            const updated = {
+                customer: {
+                    fullName: document.getElementById('admin-order-customerName').value || '',
+                    phoneNumber: document.getElementById('admin-order-customerPhone').value || '',
+                    deliveryLocation: document.getElementById('admin-order-deliveryAddress').value || ''
+                },
+                userEmail: document.getElementById('admin-order-customerEmail').value || '',
+                total: totals.total,
+                subtotal: totals.subtotal,
+                transportationFee: totals.deliveryFee,
+                status: document.getElementById('admin-order-status').value || '',
+                items: itemsArr,
+                updatedAt: new Date().toISOString()
+            };
 
             await updateDoc(doc(db, 'orders', docId), updated);
-            await logAdminActivity('order_edit_manual', `Manually edited order ${docId} via admin panel`);
+            await window.logAdminActivity('order_edit_manual', `Manually edited order ${docId} via admin panel`);
+
+            // Sync UI: Update the total input field to show the new calculated price
+            document.getElementById('admin-order-total').value = totals.total.toFixed(2);
 
             // Enqueue an email notifying customer of update
             try {
-                await addDoc(collection(adminDb, 'mail'), {
+                await addDoc(collection(db, 'mail'), {
                     to: updated.customerEmail,
                     message: {
                         subject: `Your Order ${updated.orderId || ''} Has Been Updated`,
@@ -11707,6 +11751,10 @@
             } catch (mailErr) {
                 console.error('Failed to enqueue update email', mailErr);
             }
+
+            // CRUCIAL: Refresh the Order Hub and Dashboard stats
+            if (window.loadOrders) window.loadOrders();
+            if (window.loadDashboardData) window.loadDashboardData();
 
             adminMessage('Order updated successfully. Notification enqueued.');
         } catch (err) {
@@ -11726,7 +11774,7 @@
             const panel = document.getElementById('admin-order-result');
             const docId = panel && panel.getAttribute('data-docid');
             if (!docId) { adminMessage('No loaded order to cancel.', true); return; }
-
+            
             const orderRef = doc(db, 'orders', docId);
             const orderSnap = await getDoc(orderRef);
             if (!orderSnap.exists() || orderSnap.data().status === 'Cancelled') {
@@ -11781,6 +11829,10 @@
                 console.warn('emailService not found, skipping email notification.');
             }
 
+            // Refresh Hub and Stats
+            if (window.loadOrders) window.loadOrders();
+            if (window.loadDashboardData) window.loadDashboardData();
+
             adminMessage('Order cancelled and cancellation email sent to customer.');
             // refresh form status (guard element presence)
             const adminStatusEl = document.getElementById('admin-order-status');
@@ -11817,16 +11869,21 @@
 
             // Items: prefer admin-order-items textarea (JSON), else build from simpleOrderItems (selected products)
             let items = [];
-            const itemsEl = el('admin-order-items') || el('create-order-items');
+            const itemsEl = el('admin-order-items');
             if (itemsEl && itemsEl.value) {
                 try { items = JSON.parse(itemsEl.value); } catch (e) { adminMessage('Items must be valid JSON array.', true); return; }
-            } else if (typeof simpleOrderItems !== 'undefined' && Array.isArray(simpleOrderItems) && simpleOrderItems.length) {
-                // Map selected simpleOrderItems into full item objects using simpleOrderProducts lookup
-                const productsMap = (typeof simpleOrderProducts !== 'undefined' && Array.isArray(simpleOrderProducts)) ? simpleOrderProducts.reduce((m,p)=> (m[p.id]=p,m), {}) : {};
-                items = simpleOrderItems.filter(i=>i.quantity && i.quantity>0).map(i=>{
+            } else if (window.simpleOrderItems && Array.isArray(window.simpleOrderItems) && window.simpleOrderItems.length) {
+                // Map selected simpleOrderItems into full item objects using availableProducts lookup
+                const productsMap = (window.availableProducts && Array.isArray(window.availableProducts)) ? window.availableProducts.reduce((m,p)=> (m[p.id]=p,m), {}) : {};
+                items = window.simpleOrderItems.filter(i=>i.quantity && i.quantity>0).map(i=>{
                     const product = productsMap[i.id] || {};
                     return { productId: i.id, name: product.name || 'Item', quantity: i.quantity, price: product.price || 0 };
                 });
+            }
+
+            if (!items || items.length === 0) {
+                adminMessage('Please add at least one product to the order.', true);
+                return;
             }
 
             // Generate orderId the same way as the storefront does for consistency
@@ -11847,10 +11904,11 @@
             // ✅ THE FIX: Align this data structure with the one from index.html
             const orderData = {
                 orderId: orderId,
-                userId: simpleOrderCustomer?.id || null, // Add customer's user ID
+                userId: window.simpleOrderCustomer?.id || null, // Add customer's user ID
                 userDisplayName: customerName, // Add user display name
                 userEmail: customerEmail, // Add top-level user email
                 status: status.charAt(0).toUpperCase() + status.slice(1),
+                date: new Date().toISOString(),
                 createdAt: new Date().toISOString(),
                 subtotal: Number(subtotal) || 0, // Corrected to a single subtotal field
                 transportationFee: Number(transportationFee) || 0,
@@ -11859,14 +11917,14 @@
                 customer: {
                     fullName: customerName,
                     email: customerEmail,
-                    idNumber: simpleOrderCustomer?.idNumber || '', // Add customer ID number
+                    idNumber: window.simpleOrderCustomer?.idNumber || '', // Add customer ID number
                     phoneNumber: customerPhone,
                     deliveryLocation: deliveryAddress // Use consistent field name
                 },
                 items: items.map(item => ({ // Ensure items have a consistent structure
                     ...item,
-                    image: (window.simpleOrderProducts || []).find(p => p.id === item.productId)?.image || '',
-                    unit: (window.simpleOrderProducts || []).find(p => p.id === item.productId)?.unit || 'per item'
+                    image: (window.availableProducts || []).find(p => p.id === item.productId)?.image || '',
+                    unit: (window.availableProducts || []).find(p => p.id === item.productId)?.unit || 'per item'
                 })),
                 deliveryInfo: { // Add consistent deliveryInfo object
                     estimatedDelivery: '30 minutes',
@@ -11879,13 +11937,13 @@
 
             // Save order using setDoc so the Firestore document id equals the orderId (same flow as storefront)
             await setDoc(doc(db, 'orders', orderId), orderData);
-            await logAdminActivity('order_create', `Created order ${orderId} for ${customerEmail}`);
+            await window.logAdminActivity('order_create', `Created order ${orderId} for ${customerEmail}`);
 
             // Enqueue confirmation email using the same structure as the storefront
             const emailData = {
                 orderId: orderId,
                 customerName: customerName,
-            customerEmail: customerEmail, attachments: attachments,
+                customerEmail: customerEmail,
                 customerPhone: customerPhone,
                 items: items.map(i => ({ 
                     quantity: i.quantity || i.qty || 1, 
@@ -11967,6 +12025,20 @@
                 showAdminOrderResult(true);
             }
             adminMessage('Order created and confirmation email enqueued.');
+
+            // Refresh Hub and Dashboard data
+            if (window.loadOrders) window.loadOrders();
+            if (window.loadDashboardData) window.loadDashboardData();
+
+            // Reset manual order state and UI
+            window.simpleOrderItems = [];
+            window.simpleOrderCustomer = null;
+            if (typeof renderManualOrderItems === 'function') renderManualOrderItems();
+            if (el('create-order-customerName')) el('create-order-customerName').value = '';
+            if (el('create-order-customerEmail')) el('create-order-customerEmail').value = '';
+            if (el('create-order-customerPhone')) el('create-order-customerPhone').value = '';
+            if (el('create-order-deliveryAddress')) el('create-order-deliveryAddress').value = '';
+
             // Show a modal popup summarizing the created order and that email was queued
             try {
                 // ✅ THE FIX: Generate an HTML list of items from the orderData.items array.
@@ -12022,353 +12094,6 @@
             });
         }
     } catch (e) { console.error('Failed to process adminCreateOrder queue', e); }
-
-    let allAdminProducts = []; // Cache for products
-    let currentEditingOrder = null; // Holds the state of the order being edited in the modal
-
-
-    async function getOrders() {
-        const ordersCol = collection(db, 'orders');
-        const snapshot = await getDocs(ordersCol);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    }
-
-    window.searchOrder = async function searchOrder() {
-        const q = document.getElementById('orderSearchInput').value.trim().toLowerCase();
-        const editOrderResult = document.getElementById('editOrderResult');
-        if (!q) {
-            editOrderResult.innerHTML = "<p>Please enter a search term.</p>";
-            return;
-        }
-
-        editOrderResult.innerHTML = "<p>Searching...</p>";
-        const orders = await getOrders();
-
-        const order = orders.find(o =>
-            (o.id && o.id.toLowerCase().includes(q)) ||
-            (o.customer && o.customer.phone && o.customer.phone.includes(q)) ||
-            (o.customer && o.customer.email && o.customer.email.toLowerCase().includes(q)) ||
-            (o.userEmail && o.userEmail.toLowerCase().includes(q))
-        );
-
-        if (!order) {
-            editOrderResult.innerHTML = "<p>No order found</p>";
-            return;
-        }
-
-        renderEditOrder(order);
-    }
-
-    window.renderEditOrder = function(order) {
-        const editOrderResult = document.getElementById('editOrderResult');
-        const customerName = order.customer?.name || order.customer?.fullName || 'N/A';
-        const customerPhone = order.customer?.phone || order.customer?.phoneNumber || 'N/A';
-        // Correctly calculate total. Use order.total if it exists. 
-        const orderTotal = order.total || (Array.isArray(order.items) ? order.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0) : 0);
-        const isCancelled = order.status === 'Cancelled';
-        const hasOrderPerm = window.hasPermission('orders');
-        const isRestricted = isCancelled && window.currentUserRole !== 'super_admin';
-
-        editOrderResult.innerHTML = `
-            <div class="order-card">
-                <h4>Order ${order.id}</h4>
-                <p>${customerName} — ${customerPhone}</p>
-                <p>Status: <span class="status-badge status-${order.status || 'pending'}">${order.status || 'Pending'}</span></p>
-                <p>Total: <strong>KES ${orderTotal.toFixed(2)}</strong></p>
-                <div class="order-actions">
-                    <button class="btn-view ${isRestricted || !hasOrderPerm ? 'disabled-btn' : ''}" onclick="window.openAdminOrderEditModal('${order.id}')" title="${isRestricted ? 'Cannot edit a cancelled order' : (!hasOrderPerm ? 'Permission denied' : 'Edit This Order')}">
-                        <i class="fas fa-edit"></i> Edit This Order
-                    </button>
-                    <button class="action-btn cancel ${isCancelled || !hasOrderPerm ? 'disabled-btn' : ''}" onclick="window.cancelOrderById('${order.id}')" title="${isCancelled ? 'Order is already cancelled' : (!hasOrderPerm ? 'Permission denied' : 'Cancel Order')}">
-                        <i class="fas fa-times-circle"></i> Cancel Order
-                    </button>
-                </div>
-            </div>
-        `;
-    }
-
-    // Helper function to calculate order totals
-    window.calculateOrderTotals = function(order) { 
-        if (!order || !order.items) {
-            console.warn("calculateOrderTotals called with invalid order object:", order);
-            return { subtotal: 0, deliveryFee: 0, total: 0 };
-        }
-        const subtotal = order.items.reduce((sum, item) => sum + (item.price * (item.qty || item.quantity)), 0);
-        // Use a fixed delivery fee for admin orders, or retrieve from order if it exists
-        const deliveryFee = order.transportationFee || order.deliveryFee || ADMIN_DELIVERY_FEE;
-        const total = subtotal > 0 ? subtotal + deliveryFee : 0;
-        return { subtotal, deliveryFee, total };
-    }
-
-    // --- Modal Based Editing ---
-
-    window.openAdminOrderEditModal = async function(orderId) { // This is the correct function to modify
-        if (!window.hasPermission('orders')) {
-            showModal('Permission Denied', 'You do not have permission to edit orders.', true);
-            return;
-        }
-
-        // Guard against being called without an orderId, which causes the error.
-        if (!orderId) {
-            showModal('Error', 'An order must be selected before it can be edited.', true);
-            console.error("openAdminOrderEditModal was called without an orderId.");
-            return;
-        }
-        try {
-            const orderRef = doc(db, "orders", orderId);
-            const orderSnap = await getDoc(orderRef);
-            if (!orderSnap.exists()) {
-                showModal('Error', 'Order not found!', true);
-                return;
-            }
-
-            const orderData = orderSnap.data();
-            if (orderData.status === 'Cancelled' && window.currentUserRole !== 'super_admin') {
-                showModal('Action Not Allowed', 'A cancelled order cannot be edited. Only Super Admins can perform this action.', true);
-                return;
-            }
-
-            // ✅ THE FIX: Ensure the order ID is always preserved when loading an order for editing.
-            // The .data() method does not include the document ID, so it must be added explicitly.
-            // Also, create the snapshot here to ensure it's available for the save function.
-            currentEditingOrder = { 
-                id: orderSnap.id, 
-                ...orderSnap.data() 
-            };
-            window.originalOrderSnapshot = JSON.parse(JSON.stringify(currentEditingOrder));
-
-            const modal = document.getElementById('order-edit-modal');
-            if (!modal) {
-                console.error('Order edit modal element not found!');
-                return;
-            }
-        const modalTitle = document.getElementById('edit-modal-title');
-        if(modalTitle) modalTitle.textContent = `Edit Order ${orderId}`;
-
-        // 2. Call the new rendering functions
-        renderEditableOrderItems(currentEditingOrder.items);
-        updateEditOrderTotals();
-
-        modal.style.display = 'flex'; // This was inside an unclosed try block
-    } catch (err) {
-        console.error('openAdminOrderEditModal error:', err);
-        showAlert('Error', 'Could not open the order editor. See console for details.', true);
-    }
-    };
-
-    function renderEditableOrderItems(items = []) {
-        const listEl = document.getElementById('editable-items-list');
-
-        if (!listEl) return;
-
-        if (!Array.isArray(items) || items.length === 0) {
-            listEl.innerHTML = '<p style="color:#666">No products in this order.</p>';
-            return;
-        }
-
-        listEl.innerHTML = items.map((item, index) => `
-            <div class="editable-item">
-                <div>
-                    <strong>${item.name}</strong><br>
-                    <small>KES ${item.price} × ${item.quantity}</small>
-                </div>
-
-                <div style="display:flex; gap:8px;">
-                    <input type="number" min="1"
-                        value="${item.quantity}"
-                        onchange="updateItemQty(${index}, this.value)"
-                        style="width:70px">
-
-                    <button onclick="removeItemFromOrder(${index})"
-                            style="background:#dc3545;color:#fff;border:none;padding:6px 10px;border-radius:6px">
-                        ✕
-                    </button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    window.updateItemQty = function(index, qty) {
-        if (currentEditingOrder && currentEditingOrder.items[index]) {
-            currentEditingOrder.items[index].quantity = Number(qty);
-            updateEditOrderTotals();
-        }
-    }
-
-    window.removeItemFromOrder = function(index) {
-        if (currentEditingOrder && currentEditingOrder.items[index]) {
-            currentEditingOrder.items.splice(index, 1);
-            renderEditableOrderItems(currentEditingOrder.items);
-            updateEditOrderTotals();
-        }
-    }
-
-    function updateEditOrderTotals() {
-        if (!currentEditingOrder) return;
-        const { subtotal, deliveryFee, total } = calculateOrderTotals(currentEditingOrder);
-
-        const subtotalEl = document.getElementById('edit-subtotal');
-        const deliveryFeeEl = document.getElementById('edit-delivery-fee');
-        const totalEl = document.getElementById('edit-total');
-
-        if(subtotalEl) subtotalEl.textContent = `KES ${subtotal.toFixed(2)}`;
-        if(deliveryFeeEl) deliveryFeeEl.textContent = `KES ${deliveryFee.toFixed(2)}`;
-        if(totalEl) totalEl.textContent = `KES ${total.toFixed(2)}`;
-    }
-
-    function renderEditModalContent() {
-        if (!currentEditingOrder) {
-            console.error("renderEditModalContent called but currentEditingOrder is null.");
-            return;
-        }
-        const modalBody = document.getElementById('edit-modal-body');
-        if (!modalBody) {
-            console.error("edit-modal-body element not found!");
-            return;
-        }
-        // Recalculate totals for display
-        const { subtotal, deliveryFee, total } = calculateOrderTotals(currentEditingOrder);
-
-        modalBody.innerHTML = `
-            <div class="edit-section">
-                <h4>Order Items</h4>
-                <div id="editable-items-list" class="editable-items-list">
-                ${currentEditingOrder.items.map((item, i) => `
-                    <div class="editable-item" data-item-index="${i}">
-                        <div class="item-details" style="flex-grow:1;">
-                            <div class="item-name">${item.name}</div>
-                            <div class="item-unit">@ KES ${item.price.toFixed(2)}</div>
-                        </div>
-                        <div class="item-quantity-controls">
-                        <button class="quantity-btn" onclick="updateModalItemQuantity(${i}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>
-                            <i class="fas fa-minus"></i>
-                        </button>
-                            <input type="number" class="quantity-input" value="${item.quantity}" min="1" onchange="updateModalItemQuantity(${i}, 0, this.value)">
-                        <button class="quantity-btn" onclick="updateModalItemQuantity(${i}, 1)">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                        <div class="item-price">KES ${(item.price * item.quantity).toFixed(2)}</div>
-                        <button class="remove-item-btn" onclick="removeModalItem(${i})"><i class="fas fa-trash"></i></button>
-                    </div>
-                `).join("")}
-            </div>
-            <div class="edit-section">
-                <button class="add-item-btn" onclick="openAddItemModal()"><i class="fas fa-plus"></i> Add Another Item</button>
-            </div>
-            <div class="edit-section">
-                <h4>Order Summary</h4>
-                <div class="order-summary-edit">
-                    <div class="summary-row"><span>Subtotal:</span><span id="edit-subtotal">KES ${subtotal.toFixed(2)}</span></div>
-                    <div class="summary-row"><span>Delivery Fee:</span><span id="edit-delivery-fee">KES ${deliveryFee.toFixed(2)}</span></div>
-                    <div class="summary-row total-row"><span>Total:</span><span id="edit-total">KES ${total.toFixed(2)}</span></div>
-                </div>
-            </div>
-            <div class="edit-actions">
-                <button class="cancel-btn" onclick="closeOrderEditModal()">Cancel</button>
-                <button class="save-btn" onclick="saveOrderChanges()">Save Changes</button>
-            </div>
-        `;
-    }
-
-    window.removeModalItem = async function(index) {
-        currentEditingOrder.items.splice(index, 1);
-        renderEditModalContent(); // Re-render the modal content
-        // This should call the new rendering logic, not the old one.
-        renderEditableOrderItems(currentEditingOrder.items);
-        updateEditOrderTotals();
-    };
-
-    // Debounce function to limit the rate at which a function can fire.
-    let addProductSearchTimeout; // This is fine here
-
-    window.openAdminAddProductModal = async function() {
-        if (allAdminProducts.length === 0) {
-            const productsSnap = await getDocs(collection(db, 'products'));
-            allAdminProducts = productsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        }
-        renderAddProductList(allAdminProducts);
-        document.getElementById('add-item-modal').style.display = 'flex';
-        document.getElementById('addProductSearchInput').onkeyup = (event) => {
-            clearTimeout(addProductSearchTimeout);
-            addProductSearchTimeout = setTimeout(() => {
-                const query = event.target.value.trim().toLowerCase();
-                const filtered = allAdminProducts.filter(p => p.name.toLowerCase().includes(query));
-                renderAddProductList(filtered);
-            }, 300); // Debounce for 300ms
-        };
-    }
-
-    function renderAddProductList(products) {
-        const listEl = document.getElementById('add-product-list'); // Ensure this element exists in the add-item-modal
-        if (products.length === 0) {
-            listEl.innerHTML = '<p>No products found.</p>';
-            return;
-        }
-        listEl.innerHTML = products.map(p => `
-            <div class="product-add-item">
-                <div class="product-add-item-info">
-                    <strong>${p.name}</strong>
-                    <span>KES ${p.price.toFixed(2)}</span>
-                </div>
-                <button class="action-btn" onclick="addProductToOrder('${p.id}')">Add</button>
-            </div>
-        `).join('');
-    }
-
-    window.addModalItem = function(productId) {
-        const product = allAdminProducts.find(p => p.id === productId);
-        if (!product) return;
-        const qty = Number(prompt(`Quantity for ${product.name}?`, 1));
-        if (!qty || qty <= 0) return;
-
-        const existingItem = currentEditingOrder.items.find(item => item.productId === productId);
-        if (existingItem) {
-            existingItem.qty = (existingItem.qty || existingItem.quantity) + qty;
-        } else {
-            currentEditingOrder.items.push({
-                productId: product.id,
-                name: product.name,
-                price: product.price,
-                qty: qty
-            });
-        }
-        
-        renderEditModalContent();
-        closeAdminAddProductModal();
-    }
-
-    window.closeAdminOrderEditModal = function() {
-        document.getElementById('admin-order-edit-modal').style.display = 'none';
-        currentEditingOrder = null;
-    }
-
-    window.closeAdminAddProductModal = function() {
-        document.getElementById('admin-add-product-modal').style.display = 'none';
-        document.getElementById('addProductSearchInput').value = '';
-    }
-
-    // 6️⃣ Cancel Order (Adapted for Firebase)
-    window.cancelOrder = async function cancelOrder(orderId) {
-        if (!confirm("Cancel this order?")) return;
-        const orderRef = doc(db, "orders", orderId);
-        await updateDoc(orderRef, { 
-            status: "cancelled", 
-            updatedAt: new Date().toISOString(), 
-            emailPending: true 
-        });
-        alert("Order cancelled");
-        closeAdminOrderEditModal();
-        searchOrder(); // Refresh search result
-    }
-
-    window.saveOrder = async function saveOrder(orderId) {
-        const orderRef = doc(db, "orders", orderId);
-            // Just update the timestamp, as item changes are saved instantly. // This function seems unused.
-        await updateDoc(orderRef, { updatedAt: new Date().toISOString(), emailPending: true });
-        alert("Order saved. Email queued for sending.");
-        // A backend worker/function should look for `emailPending: true` to send notifications.
-    }
-
 </script>
 </body>
 </html>
