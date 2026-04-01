@@ -4,41 +4,47 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>Prince Alex Store - Rider Dashboard</title>
+  
+  <!-- PWA Support -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00C853">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
     :root{
-      --bg: #f4f6f8;
+      --bg: #f8fafc;
       --panel: #ffffff;
       --panel-2: #f8f9fa;
-      --border: #eef2f5;
-      --text: #1a1a1a;
-      --muted: #555555;
-      --subtle: #f0f2f5;
-      --brand: #00C853;
-      --brand-2:#00E676;
-      --blue: #2962FF;
-      --warn:#FFB020;
-      --danger:#FF4D4D;
-      --shadow: 0 4px 12px rgba(0,0,0,0.08);
-      --radius: 18px;
-      --radius-sm: 12px;
+      --border: #e2e8f0;
+      --text: #1a202c;
+      --muted: #64748b;
+      --subtle: #f1f5f9;
+      --brand: #4CAF50;
+      --brand-2:#8BC34A;
+      --blue: #2196F3;
+      --warn:#FF9800;
+      --danger: #F44336;
+      --shadow: 0 10px 25px rgba(0,0,0,0.08);
+      --radius: 24px;
+      --radius-sm: 16px;
       --header-h: 72px;
-      --sidebar-w: 290px;
-      --transition: 180ms ease;
+      --sidebar-w: 300px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --gradient-primary: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
+      --gradient-accent: linear-gradient(135deg, #FF6B35 0%, #FF9800 100%);
     }
 
     *{box-sizing:border-box; margin:0; padding:0;}
     html,body{height:100%;}
     body{
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg);
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
       color: var(--text);
       overflow-x: hidden;
     }
@@ -56,8 +62,8 @@
       height: var(--header-h);
       display:flex;
       align-items:center;
-      backdrop-filter: blur(14px);
-      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(16px);
+      background: rgba(255,255,255,0.8);
       border-bottom: 1px solid var(--border);
     }
     .header-inner{
@@ -72,23 +78,22 @@
     .header-left{
       display:flex; align-items:center; gap:12px;
     }
-    .brand{
-      display:flex; align-items:center; gap: 10px; font-weight:800; letter-spacing: .2px;
+    .brand {
+      display:flex; align-items:center; gap: 12px; font-weight:800;
       user-select:none;
       white-space:nowrap;
     }
-    .brand .dot{
+    .brand .dot {
       width: 12px; height: 12px;
       background: linear-gradient(135deg, var(--brand), var(--brand-2));
       border-radius: 999px;
-      box-shadow: 0 0 0 6px rgba(0,200,83,0.12);
+      box-shadow: 0 0 0 6px rgba(76, 175, 80, 0.12);
     }
     .brand span{font-size: 18px;}
     .header-actions{
       display:flex;
       align-items:center;
       gap: 10px;
-      flex-wrap: wrap;
       justify-content:flex-end;
     }
     #sideOverlay { display: none; }
@@ -96,11 +101,11 @@
 
     .chip{
       display:flex; align-items:center; gap:10px;
-      padding: 10px 12px;
+      padding: 8px 16px;
       border-radius: 999px;
       background: var(--panel);
       border: 1px solid var(--border);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+      box-shadow: var(--shadow);
       max-width: 360px;
     }
     .avatar{
@@ -122,8 +127,8 @@
       border: 1px solid var(--border);
       background: var(--panel);
       color: var(--text);
-      padding: 10px 12px;
-      border-radius: 12px;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
       cursor:pointer;
       transition: transform var(--transition), background var(--transition), border-color var(--transition);
       display:inline-flex;
@@ -138,17 +143,17 @@
     .btn:hover{transform: translateY(-1px); background: var(--panel-2); border-color: #dce1e7;}
     .btn:active{transform: translateY(0px) scale(0.99);}
     .btn.primary{
-      background: linear-gradient(135deg, rgba(0,200,83,0.28), rgba(0,230,118,0.18));
-      border-color: rgba(0,230,118,0.30);
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
     }
-    .btn.danger{
-      background: linear-gradient(135deg, rgba(255,77,77,0.26), rgba(255,77,77,0.12));
-      border-color: rgba(255,77,77,0.30);
+    .btn.danger {
+      background: #fff;
+      color: var(--danger);
+      border-color: var(--danger);
     }
-    .btn.blue{
-      background: linear-gradient(135deg, rgba(41,98,255,0.22), rgba(41,98,255,0.12));
-      border-color: rgba(41,98,255,0.30);
-    }
+    .btn.blue { background: var(--blue); color: white; border: none; }
     .btn.ghost{
       background: transparent;
       border-color: transparent;
@@ -157,28 +162,30 @@
 
     .status-pill{
       display:inline-flex; align-items:center; gap:8px;
-      padding: 8px 10px;
+      padding: 8px 16px;
       border-radius: 999px;
       border:1px solid var(--border);
       background: var(--panel);
-      font-size: 12px;
+      font-size: 11px;
       font-weight:800;
     }
     .status-pill .led{
-      width: 9px; height: 9px; border-radius: 999px;
+      width: 8px; height: 8px; border-radius: 999px;
       background: var(--danger);
-      box-shadow: 0 0 0 6px rgba(255,77,77,0.15);
+      animation: pulse-danger 2s infinite;
     }
     .status-pill.online .led{
       background: var(--brand);
-      box-shadow: 0 0 0 6px rgba(0,200,83,0.16);
+      animation: pulse-success 2s infinite;
     }
+    @keyframes pulse-success { 0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); } 100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); } }
+    @keyframes pulse-danger { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
     .status-pill span{color: var(--muted); font-weight:700; letter-spacing:.2px;}
 
     .main{
       width: min(1400px, 100%);
-      margin: 16px auto 90px;
-      padding: 0 18px;
+      margin: 20px auto 90px;
+      padding: 0 12px;
       display:grid;
       grid-template-columns: var(--sidebar-w) 1fr;
       gap: 16px;
@@ -193,11 +200,11 @@
       background: var(--panel);
       box-shadow: var(--shadow);
       z-index: 1000;
-      overflow: hidden;
+      padding: 12px;
     }
     .side-head{
-      padding: 16px 16px 14px;
-      border-bottom: 1px solid var(--border);
+      padding: 12px 12px 20px;
+      border-bottom: 1px dashed var(--border);
       display:flex;
       flex-direction:column;
       gap: 8px;
@@ -208,8 +215,8 @@
     .nav{
       display:flex;
       flex-direction:column;
-      padding: 10px;
-      gap: 8px;
+      gap: 4px;
+      margin-top: 12px;
     }
     .nav .nav-item{
       width: 100%;
@@ -217,23 +224,23 @@
       align-items:center;
       justify-content:space-between;
       gap: 10px;
-      padding: 12px 12px;
-      border-radius: 14px;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
       border: 1px solid transparent;
       background: transparent;
       color: var(--text);
       cursor: pointer;
       transition: background var(--transition), border-color var(--transition), transform var(--transition);
       text-align:left;
-      font-weight:800;
+      font-weight:600;
       font-size: 13px;
     }
-    .nav .nav-item:hover{background: var(--subtle); transform: translateY(-1px);}
+    .nav .nav-item:hover{background: var(--subtle);}
     .nav .nav-item.active{
-      background: linear-gradient(135deg, rgba(0,200,83,0.18), rgba(41,98,255,0.10));
-      border-color: rgba(0,230,118,0.22);
+      background: rgba(76, 175, 80, 0.1);
+      color: var(--brand);
     }
-    .nav .nav-item i{opacity:.9;}
+    .nav .nav-item i{ font-size: 16px; width: 24px; }
     .badge{
       min-width: 28px;
       height: 20px;
@@ -245,7 +252,7 @@
       font-size: 12px;
       font-weight:900;
       color: var(--text);
-      background: var(--subtle);
+      background: var(--white);
       border: 1px solid var(--border);
     }
 
@@ -265,29 +272,28 @@
 
     .panel{
       border-radius: var(--radius);
-      border: 1px solid var(--border);
+      border: none;
       background: var(--panel);
       box-shadow: var(--shadow);
       overflow: hidden;
     }
-    #mapPanel {
+    #mapPanel { 
       position: sticky;
       top: calc(var(--header-h) + 16px);
       height: fit-content;
       z-index: 900;
     }
     .panel-head{
-      padding: 16px;
+      padding: 20px 24px;
       border-bottom: 1px solid var(--border);
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap: 12px;
-      background: linear-gradient(180deg, var(--subtle), transparent);
     }
     .panel-head h3{
-      font-size: 14px;
-      letter-spacing:.2px;
+      font-size: 16px;
+      font-weight: 700;
     }
     .panel-head small{color: var(--muted); font-weight:700;}
     .panel-body{padding: 16px;}
@@ -298,24 +304,24 @@
       gap: 10px;
     }
     .stat{
-      border-radius: 16px;
+      border-radius: var(--radius-sm);
       border: 1px solid var(--border);
       background: var(--panel-2);
-      padding: 14px;
+      padding: 16px;
       display:flex;
       align-items:center;
-      gap: 12px;
+      gap: 16px;
       min-width: 0;
     }
     .stat .icon{
       width: 40px; height: 40px;
       border-radius: 14px;
       display:flex; align-items:center; justify-content:center;
-      background: var(--white);
-      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--brand);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
       flex: 0 0 auto;
     }
-    .stat .icon i{font-size: 16px; opacity:.95;}
     .stat .kpi{display:flex; flex-direction:column; min-width:0;}
     .stat .kpi .v{font-size: 16px; font-weight:900; letter-spacing:.2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
     .stat .kpi .l{font-size: 12px; color: var(--muted); font-weight:700;}
@@ -323,20 +329,20 @@
     .list{
       display:flex;
       flex-direction:column;
-      gap: 10px;
+      gap: 16px;
     }
 
     .card{
       border-radius: 18px;
-      border: 1px solid var(--border);
-      background: var(--panel-2);
-      padding: 14px;
+      border: none;
+      background: var(--panel);
+      padding: 24px;
       display:flex;
       flex-direction:column;
-      gap: 10px;
+      gap: 16px;
       transition: transform var(--transition), background var(--transition), border-color var(--transition);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.02);
     }
-    .card:hover{transform: translateY(-1px); background: var(--white); border-color: #dce1e7;}
     .row{
       display:flex;
       align-items:flex-start;
@@ -348,24 +354,24 @@
       display:flex; align-items:center; gap: 10px;
       min-width: 0;
     }
-    .title strong{font-size: 13px; font-weight:900;}
+    .title strong{font-size: 15px; font-weight:700;}
     .title span{
       font-size: 12px;
       color: var(--muted);
-      font-weight:700;
+      font-weight:500;
       overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-      max-width: 460px;
+      max-width: 100%;
     }
     .pill{
       padding: 6px 10px;
       border-radius: 999px;
       font-size: 11px;
-      font-weight:900;
+      font-weight:700;
       border: 1px solid var(--border);
       background: var(--white);
       text-transform: uppercase;
       letter-spacing: .4px;
-      white-space:nowrap;
+      white-space: nowrap;
     }
     .pill.pending{border-color: rgba(255,176,32,0.35); background: rgba(255,176,32,0.10); color: #d48806;}
     .pill.pickup{border-color: rgba(0,230,118,0.32); background: rgba(0,230,118,0.10);}
@@ -379,13 +385,13 @@
       gap: 10px;
     }
     .kv{
-      border-radius: 14px;
-      border: 1px solid var(--border);
+      border-radius: 16px;
+      border: none;
       background: var(--subtle);
-      padding: 10px;
+      padding: 12px 16px;
       min-width: 0;
     }
-    .kv .k{font-size: 11px; color: var(--muted); font-weight:800; text-transform:uppercase; letter-spacing:.4px;}
+    .kv .k{font-size: 10px; color: var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.5px;}
     .kv .v{font-size: 13px; font-weight:800; margin-top: 4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 
     .actions{
@@ -398,8 +404,8 @@
     /* Map */
     #map{
       width: 100%;
-      height: 500px;
-      border-radius: 18px;
+      height: 400px;
+      border-radius: var(--radius);
       overflow:hidden;
       background: #e0e0e0;
       border: 1px solid var(--border);
@@ -417,7 +423,7 @@
       position: fixed;
       right: 16px;
       bottom: 86px;
-      width: min(420px, calc(100vw - 32px));
+      width: min(450px, calc(100vw - 32px));
       border-radius: 22px;
       border: 1px solid var(--border);
       background: var(--panel);
@@ -428,7 +434,7 @@
       pointer-events:none;
       transition: opacity 200ms ease, transform 200ms ease;
       z-index: 2100;
-      overflow: hidden;
+      overflow: visible;
     }
     .drawer.open{opacity:1; transform: translateY(0); pointer-events:auto;}
     .drawer-head{
@@ -437,8 +443,8 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap: 10px;
-      background: linear-gradient(135deg, rgba(0,200,83,0.14), rgba(41,98,255,0.10));
+      gap: 12px;
+      background: #fff;
     }
     .drawer-head strong{font-size: 13px; font-weight:900;}
     .drawer-body{padding: 14px 16px; display:flex; flex-direction:column; gap: 10px;}
@@ -455,7 +461,7 @@
       inset: 0;
       z-index: 3000;
       background: rgba(0,0,0,0.40);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(12px);
       display:none;
       align-items:center;
       justify-content:center;
@@ -464,36 +470,36 @@
     .modal{
       width: min(520px, 100%);
       background: var(--panel);
-      border: 1px solid var(--border);
+      border: none;
       border-radius: 22px;
       box-shadow: 0 22px 70px rgba(0,0,0,0.15);
       overflow:hidden;
     }
     .modal .mhead{
       padding: 16px 16px;
-      border-bottom: 1px solid var(--border);
-      background: linear-gradient(135deg, rgba(0,200,83,0.14), rgba(41,98,255,0.10));
+      border-bottom: 1px solid #eee;
+      background: #fff;
       display:flex; align-items:center; justify-content:space-between; gap: 10px;
     }
-    .modal .mhead h2{font-size: 15px;}
-    .modal .mbody{padding: 16px; display:flex; flex-direction:column; gap: 12px;}
+    .modal .mhead h2{font-size: 18px; font-weight: 700;}
+    .modal .mbody{padding: 24px; display:flex; flex-direction:column; gap: 16px;}
     .field{
-      display:flex; flex-direction:column; gap: 6px;
+      display:flex; flex-direction:column; gap: 8px;
     }
     .field label{font-size: 12px; font-weight:900; color: var(--muted); text-transform:uppercase; letter-spacing:.4px;}
     .field input{
-      padding: 12px 12px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--border);
       background: var(--subtle);
       color: var(--text);
       outline: none;
       font-weight:700;
       transition: border-color var(--transition), background var(--transition);
     }
-    .field input:focus{border-color: rgba(0,230,118,0.35); background: var(--white);}
+    .field input:focus{border-color: var(--brand); background: var(--white);}
     .help{font-size: 12px; color: var(--muted); font-weight:600; line-height: 1.5;}
-    .mfoot{padding: 16px; border-top: 1px solid var(--border); display:flex; gap: 10px; justify-content:flex-end; flex-wrap:wrap;}
+    .mfoot{padding: 20px 24px; border-top: 1px solid var(--border); display:flex; gap: 12px; justify-content:flex-end; flex-wrap:wrap;}
 
     /* Toast */
     .toast{
@@ -502,20 +508,20 @@
       right: 16px;
       z-index: 4000;
       width: min(420px, calc(100vw - 32px));
-      background: var(--panel);
-      border: 1px solid var(--border);
+      background: #fff;
+      border: none;
       border-left: 4px solid var(--brand);
-      padding: 12px 14px;
+      padding: 16px 20px;
       border-radius: 16px;
-      box-shadow: 0 18px 60px rgba(0,0,0,0.15);
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
       display:none;
       gap: 10px;
       align-items:flex-start;
       backdrop-filter: blur(14px);
     }
-    .toast.show{display:flex;}
-    .toast i{margin-top: 2px;}
-    .toast .t{display:flex; flex-direction:column; gap: 2px; min-width:0;}
+    .toast.show { display: flex; animation: slide-in 0.3s ease-out; }
+    @keyframes slide-in { from { transform: translateX(100%); } to { transform: translateX(0); } }
+    .toast .t{display:flex; flex-direction:column; gap: 4px; min-width:0;}
     .toast .t strong{font-size: 13px;}
     .toast .t span{font-size: 12px; color: var(--muted); font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
     .toast .close{margin-left:auto;}
@@ -523,49 +529,49 @@
     /* Mobile */
     .bottom-nav{
       position: fixed;
-      left: 0; right: 0; bottom: 0;
+      left: 12px; right: 12px; bottom: 12px;
       z-index: 2000;
-      padding: 12px 14px 16px;
-      background: rgba(255,255,255,0.90);
-      border-top: 1px solid var(--border);
+      padding: 10px;
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(255,255,255,0.3);
       backdrop-filter: blur(16px);
-      display:none;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      display: none;
     }
     .bottom-nav .bar{
       display:grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 8px;
-      width: min(520px, 100%);
-      margin: 0 auto;
     }
     .bbtn{
-      border-radius: 16px;
-      border: 1px solid var(--border);
+      border-radius: 18px;
+      border: none;
       background: var(--subtle);
       padding: 10px 8px;
       display:flex;
       flex-direction:column;
       align-items:center;
-      justify-content:center;
-      gap: 6px;
+      gap: 4px;
       color: var(--muted);
-      font-weight:800;
+      font-weight:600;
       font-size: 10px;
       cursor:pointer;
       user-select:none;
-      transition: background var(--transition), transform var(--transition), border-color var(--transition), color var(--transition);
+      transition: var(--transition);
       position:relative;
     }
-    .bbtn i{font-size: 16px;}
+    .bbtn i{font-size: 18px;}
     .bbtn.active{
       color: var(--text);
-      background: linear-gradient(135deg, rgba(0,200,83,0.16), rgba(41,98,255,0.10));
-      border-color: rgba(0,230,118,0.22);
+      background: #fff;
+      color: var(--brand);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
     .bbtn:hover{transform: translateY(-1px);}
 
     .bbadge{
-      position:absolute;
+      position: absolute;
       top: 8px;
       right: 10px;
       min-width: 18px;
@@ -574,64 +580,64 @@
       border-radius: 999px;
       background: rgba(255,77,77,0.90);
       color: #fff;
-      font-size: 11px;
-      font-weight:900;
-      display:none;
+      font-size: 9px;
+      font-weight: 800;
+      display: none;
       align-items:center;
       justify-content:center;
-      border: 1px solid rgba(255,255,255,0.50);
+      border: 2px solid #fff;
     }
 
     /* Stepper & Badges */
     .stepper{
-      display:flex; justify-content:space-between; position:relative;
-      margin: 16px 0 12px; padding: 0 4px;
+      display:flex; justify-content:space-between; position: relative;
+      margin: 20px 0 12px; padding: 0 4px;
     }
     .stepper::before{
       content:''; position:absolute; top:9px; left:12px; right:12px; height:2px;
-      background: #e0e0e0; z-index:0;
+      background: #f1f5f9; z-index:0;
     }
-    .step{position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:6px; flex:1;}
+    .step{position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:8px; flex:1;}
     .step-dot{
-      width:20px; height:20px; border-radius:999px; background: var(--bg);
-      border: 2px solid #e0e0e0; transition: all 0.2s ease;
+      width:18px; height:18px; border-radius:999px; background: #fff;
+      border: 2px solid #cbd5e1; transition: var(--transition);
     }
-    .step.active .step-dot{background: var(--brand); border-color: var(--brand); box-shadow: 0 0 0 4px rgba(0,200,83,0.2);}
+    .step.active .step-dot{background: var(--brand); border-color: var(--brand); box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.2);}
     .step.done .step-dot{background: var(--brand); border-color: var(--brand);}
     .step-label{font-size:10px; color: var(--muted); font-weight:700; text-align:center;}
     .step.active .step-label, .step.done .step-label{color: var(--text);}
 
-    .badges{display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;}
+    .badges{display:flex; gap:8px; margin-bottom:12px; flex-wrap: wrap;}
     .badge-pill{
-      padding:4px 10px; border-radius:8px; font-size:11px; font-weight:800;
-      display:flex; align-items:center; gap:6px; border:1px solid transparent;
+      padding:4px 12px; border-radius:8px; font-size:10px; font-weight:700;
+      display:flex; align-items:center; gap:6px; border: 1px solid transparent;
     }
-    .badge-pill.cash{background: rgba(0,230,118,0.1); color: var(--brand-2); border-color: rgba(0,230,118,0.2);}
-    .badge-pill.priority{background: rgba(255,77,77,0.1); color: var(--danger); border-color: rgba(255,77,77,0.2);}
-    .badge-pill.dist{background: rgba(41,98,255,0.1); color: var(--blue); border-color: rgba(41,98,255,0.2);}
+    .badge-pill.cash{background: rgba(76, 175, 80, 0.1); color: var(--brand); border-color: rgba(76, 175, 80, 0.2);}
+    .badge-pill.priority{background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: rgba(239, 68, 68, 0.2);}
+    .badge-pill.dist{background: rgba(37, 99, 235, 0.1); color: #2563eb; border-color: rgba(37, 99, 235, 0.2);}
 
     /* Login Modal Specifics */
-    .login-modal {
+    .login-modal { 
       max-width: 420px !important;
       padding: 0 !important;
     }
-    .login-modal .mhead {
+    .login-modal .mhead { 
       background: transparent !important;
       border: none !important;
       padding: 32px 32px 10px !important;
       flex-direction: column;
-      text-align: center;
+      text-align: center; 
     }
     .login-modal .mhead h2 {
       font-size: 22px;
       color: var(--text);
-      margin-top: 10px;
+      margin-top: 12px;
     }
     .login-modal .mhead p {
       color: var(--muted);
       font-size: 14px;
       margin-top: 5px;
-      font-weight: 500;
+      font-weight: 500; 
     }
     .login-modal .mbody {
       padding: 10px 32px 32px !important;
@@ -645,40 +651,40 @@
       align-items: center;
       margin: 20px 0;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
     }
-    .login-modal .divider::before, .login-modal .divider::after {
+    .login-modal .divider::before, .login-modal .divider::after { 
       content: '';
       flex: 1;
-      height: 1px;
-      background: var(--border);
+      height: 1px; 
+      background: var(--border); 
     }
     .login-modal .divider span {
       padding: 0 12px;
     }
-    .login-modal .google-btn {
+    .login-modal .google-btn { 
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 12px; 
       padding: 12px;
       background: #ffffff;
       border: 1px solid var(--border);
       border-radius: 14px;
       color: var(--text);
-      font-weight: 700;
+      font-weight: 700; 
       font-size: 14px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: var(--transition); 
     }
-    .login-modal .google-btn:hover {
+    .login-modal .google-btn:hover { 
       background: var(--subtle);
       border-color: #dce1e7;
     }
     .login-modal .footer-links {
-      margin-top: 24px;
+      margin-top: 32px;
       text-align: center;
       font-size: 13px;
       color: var(--muted);
@@ -1061,7 +1067,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
-      getFirestore, collection, query, where, onSnapshot, doc, getDoc, setDoc, updateDoc, addDoc, limit, runTransaction
+      getFirestore, collection, query, where, onSnapshot, doc, getDoc, setDoc, updateDoc, addDoc, limit, runTransaction, enableIndexedDbPersistence
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
     import {
       getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, signInWithEmailAndPassword
@@ -1080,6 +1086,15 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
+
+    // Enable Firestore Offline Persistence for rural delivery support
+    enableIndexedDbPersistence(db).catch((err) => {
+      if (err.code === 'failed-precondition') {
+        console.warn("Persistence failed: multiple tabs open");
+      } else if (err.code === 'unimplemented') {
+        console.warn("Persistence not supported by browser");
+      }
+    });
 
     // --- UI Elements ---
     const loginOverlay = document.getElementById("loginOverlay");
@@ -1174,6 +1189,10 @@
     let myHistory = [];
 
     let activeFocusOrder = null;      // order shown in drawer
+    
+    // GPS Sync State
+    let lastLocationSyncTime = 0;
+    const LOCATION_SYNC_INTERVAL = 15000; // Sync to Firestore every 15 seconds
     let completingOrder = null;       // order for confirmation modal
 
     const notificationSound = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
@@ -1346,7 +1365,7 @@
                 subject: "Application Received - Prince Alex Store Rider",
                 html: `
                   <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden">
-                    <div style="background:#00C853;color:white;padding:18px 22px">
+                    <div style="background:#4CAF50;color:white;padding:18px 22px">
                       <h2 style="margin:0">Application Received</h2>
                     </div>
                     <div style="padding:22px">
@@ -1354,8 +1373,7 @@
                       <p style="margin:0 0 10px;line-height:1.6;color:#374151">
                         Thank you for applying to join Prince Alex Store as a rider partner. Your application is <b>pending approval</b>.
                       </p>
-                      <p style="margin:0;line-height:1.6;color:#374151">
-                        You will receive an update once your status is approved.
+                      <p style="margin:0;line-height:1.6;color:#374151">asi
                       </p>
                     </div>
                   </div>
@@ -1895,6 +1913,29 @@
       window.open(buildNavUrl(o), "_blank");
     }
 
+    // Real-time GPS Sync to Firestore for Customer Tracking
+    async function syncRiderLocation(lat, lng) {
+      if (!currentRider || riderStatus !== "online") return;
+
+      try {
+        // 1. Update Rider Profile (for general tracking)
+        const riderRef = doc(db, "riders", currentRider.id);
+        await updateDoc(riderRef, {
+          currentLoc: { lat, lng },
+          lastLocUpdate: nowISO()
+        });
+
+        // 2. Update Active Orders (for customer-specific tracking)
+        if (myActiveOrders && myActiveOrders.length > 0) {
+          const updates = myActiveOrders.map(o => updateDoc(doc(db, "orders", o.id), {
+            riderLocation: { lat, lng },
+            locationUpdatedAt: nowISO()
+          }));
+          await Promise.all(updates);
+        }
+      } catch (e) { console.warn("GPS sync skipped (offline)"); }
+    }
+
     async function acceptOrder(orderId){
       if(!currentRider) return;
       if(riderStatus!=="online"){
@@ -1955,7 +1996,7 @@
             subject: `Resent: Delivery Code ${code}`,
             html: `
                 <div style="font-family:sans-serif; padding:20px; border:1px solid #eee; border-radius:10px;">
-                <h2 style="color:#00C853; margin-top:0;">Order Arriving!</h2>
+                <h2 style="color:#4CAF50; margin-top:0;">Order Arriving!</h2>
                 <p>Please provide this code to the rider to confirm delivery:</p>
                 <div style="background:#f5f5f5; padding:15px; text-align:center; font-size:32px; font-weight:bold; letter-spacing:5px; border-radius:5px; margin:20px 0; color:#333;">
                     ${code}
@@ -1966,7 +2007,6 @@
             },
             emailType: "delivery_verification_resend",
             orderId: orderId,
-            createdAt: nowISO(),
             priority: "high",
             status: "pending"
         });
@@ -2065,13 +2105,14 @@
                       message: {
                         subject: `Delivery Code: ${code}`,
                         html: `
-                          <div style="font-family:sans-serif; padding:20px; border:1px solid #eee; border-radius:10px;">
-                            <h2 style="color:#00C853; margin-top:0;">Order Arriving!</h2>
-                            <p>Please provide this code to the rider to confirm delivery:</p>
-                            <div style="background:#f5f5f5; padding:15px; text-align:center; font-size:32px; font-weight:bold; letter-spacing:5px; border-radius:5px; margin:20px 0; color:#333;">
+                          <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 30px; border: 1.5px solid #eee; border-radius: 15px; background-color: #ffffff;">
+                            <div style="text-align: center; margin-bottom: 20px;"><span style="font-size: 40px;">🛵</span></div>
+                            <h2 style="color:#4CAF50; margin-top:0; text-align: center; font-size: 24px;">Your Rider is Arriving!</h2>
+                            <p style="color: #555; text-align: center; line-height: 1.5;">Please provide this 4-digit code to the rider to securely confirm your delivery:</p>
+                            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; text-align: center; font-size: 42px; font-weight: 800; letter-spacing: 8px; border-radius: 12px; margin: 25px 0; color: #333; border: 1px solid #dee2e6; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
                               ${code}
                             </div>
-                            <p style="color:#666; font-size:14px;">Order #${orderId}</p>
+                            <p style="color:#999; font-size:13px; text-align: center; border-top: 1px solid #eee; padding-top: 15px; margin-top: 20px;">Order Reference: <strong>#${orderId}</strong></p>
                           </div>
                         `
                       },
@@ -2091,8 +2132,10 @@
 
         confirmDetails.innerHTML = `
           <div style="text-align:center; padding: 10px 0;">
-             <div style="width:64px; height:64px; background:rgba(41,98,255,0.15); color:var(--blue); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px;"><i class="fa-solid fa-shield-halved"></i></div>
-             <h3 style="margin-bottom:8px; font-size:18px; color:var(--text);">Verify Delivery</h3>
+             <div style="width:64px; height:64px; background:rgba(0,200,83,0.15); color:var(--brand); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:28px;"><i class="fa-solid fa-check-double"></i></div>
+             <h3 style="margin-bottom:2px; font-size:18px; color:var(--brand);">PAID IN FULL</h3>
+             <div style="font-size:11px; font-weight:800; color:var(--muted); margin-bottom:12px; text-transform:uppercase;">No payment to be collected</div>
+             <p style="color:var(--text); font-size:14px; font-weight:600; margin-bottom:16px;">Verify Delivery</p>
              <p style="color:var(--muted); font-size:14px; margin-bottom:24px; line-height:1.5;">Ask customer for the 4-digit code sent to their email.</p>
              <input type="text" id="delivery-code-input" style="width:100%; padding:16px; border-radius:12px; border:1px solid var(--border); background:var(--bg); text-align:center; font-size:24px; letter-spacing:8px; font-weight:bold;" placeholder="0000" maxlength="4" inputmode="numeric">
              <button class="btn ghost" id="resendCodeBtn" onclick="resendVerificationCode('${orderId}')" style="margin-top:12px; width:100%; font-size:13px; color:var(--blue);">
@@ -2160,18 +2203,84 @@
                 message: {
                   subject: `Order Delivered - Proof of Delivery`,
                   html: `
-                    <div style="font-family:sans-serif; padding:24px; border:1px solid #eee; border-radius:12px; max-width:600px; margin:0 auto;">
-                      <h2 style="color:#00C853; margin-top:0;">Order Delivered Successfully</h2>
-                      <p style="color:#555; font-size:16px;">Hi ${o.customer?.name || o.customerName || 'Customer'},</p>
-                      <p style="color:#555; line-height:1.5;">Your order <b>#${orderId}</b> has been successfully delivered by ${currentRider?.name || 'our rider'}.</p>
-                      
-                      <div style="background:#f9f9f9; padding:20px; border-radius:8px; margin:24px 0; text-align:center; border:1px dashed #ddd;">
-                        <p style="margin:0; font-size:12px; color:#888; font-weight:bold; letter-spacing:1px;">PROOF OF DELIVERY CODE</p>
-                        <h1 style="margin:12px 0; letter-spacing:4px; color:#333; font-size:32px;">${deliveryCode}</h1>
-                        <p style="margin:0; font-size:14px; color:#00C853; font-weight:bold;">Paid via ${pay}</p>
-                      </div>
+                    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px;">
+                        <div style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eef2f5;">
+                            <div style="background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); padding: 40px 20px; text-align: center; color: white;">
+                                <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
+                                <h1 style="margin: 0; font-size: 26px; font-weight: 700; letter-spacing: 0.5px;">Order Delivered!</h1>
+                                <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Fresh produce has arrived.</p>
+                            </div>
+                            
+                            <div style="padding: 35px 30px;">
+                                <p style="font-size: 17px; color: #2c3e50; line-height: 1.6; margin-bottom: 20px;">Hello <strong>${o.customer?.fullName || o.customer?.name || o.customerName || 'Customer'}</strong>,</p>
+                                <p style="font-size: 15px; color: #546e7a; line-height: 1.6;">
+                                    Your order <strong>#${orderId}</strong> has been successfully delivered by <strong>${currentRider?.name || 'our delivery partner'}</strong>. We hope you enjoy your fresh farm produce!
+                                </p>
+                                
+                                <div style="background-color: #f8f9fa; border: 1px dashed #4CAF50; padding: 25px; margin: 30px 0; border-radius: 8px; text-align: center;">
+                                    <p style="margin: 0 0 10px; font-size: 12px; color: #78909c; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Proof of Delivery Code</p>
+                                    <h1 style="margin: 0; letter-spacing: 6px; color: #2c3e50; font-size: 36px; font-weight: 800;">${deliveryCode}</h1>
+                                    <div style="margin-top: 15px; display: inline-block; padding: 4px 12px; background-color: #e8f5e8; border-radius: 20px; font-size: 13px; color: #2E7D32; font-weight: 600;">
+                                        Paid via ${pay}
+                                    </div>
+                                </div>
+
+                                <div style="background-color: #e3f2fd; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
+                                    <h3 style="color: #1976d2; margin: 0 0 10px 0; font-size: 16px;">💬 Feedback?</h3>                    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px;">
+                                      <div stymargin: 0; le="ba c455a64ound-color:  #ffff line-height: 1.5;ff
+                                        Was everything fresh? We'd love to hear from you. Reply to this email or chat with us on WhatsApp.
+                                    </p>
+                                </div>
+
+                                <div style="text-align: center; margin-top: 30px;">
+                                    <a href=" ttps://store.princealex.pro" style="displby: inlioe-block; bacrground: linear-gradient(135deg,d#4CAF50 0%, #2E7D32 100%); crlor: white; padding: 15px 35px; text-decoration: none; border-radi-s:r50px; adnt-weight: 700; font-size: 16px; box-shadow: 0 4px 12px igba(76,175,80,0.3);">ShopuFres: Again</a>
+                                </div>
+                            </div>
+                            
+                            <div style="background-col r: #f1f5f9; 1adding: 252x; text-alpgn: cexter; border-top: 1px solid #e2e8f0;">
+                                <p style="mar;in: 0; font-size: 13px; color: #64748b; font-oevghe:f600;">low: hidden; box- &bull; Farm Fresh Delivery</p>
+                                <p style="margin: 5px 0 0 0; font-size: 11px; color: #94a3b8;">Tambua Ward, Vihiga County, Kenyahad>
+                            </div>
+                        </div>
+                    </divow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eef2f5;">
+                            <div style="background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); padding: 40px 20px; text-align: center; color: white;">
+                                <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
+                                <h1 style="margin: 0; font-size: 26px; font-weight: 700; letter-spacing: 0.5px;">Order Delivered!</h1>
+                                <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Fresh produce has arrived.</p>
+                            </div>
+                            
+                            <div style="padding: 35px 30px;">
+                                <p style="font-size: 17px; color: #2c3e50; line-height: 1.6; margin-bottom: 20px;">Hello <strong>${o.customer?.fullName || o.customer?.name || o.customerName || 'Customer'}</strong>,</p>
+                                <p style="font-size: 15px; color: #546e7a; line-height: 1.6;">
+                                    Your order <strong>#${orderId}</strong> has been successfully delivered by <strong>${currentRider?.name || 'our delivery partner'}</strong>. We hope you enjoy your fresh farm produce!
+                                </p>
+                                
+                                <div style="background-color: #f8f9fa; border: 1px dashed #4CAF50; padding: 25px; margin: 30px 0; border-radius: 8px; text-align: center;">
+                                    <p style="margin: 0 0 10px; font-size: 12px; color: #78909c; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Proof of Delivery Code</p>
+                                    <h1 style="margin: 0; letter-spacing: 6px; color: #2c3e50; font-size: 36px; font-weight: 800;">${deliveryCode}</h1>
+                                    <div style="margin-top: 15px; display: inline-block; padding: 4px 12px; background-color: #e8f5e8; border-radius: 20px; font-size: 13px; color: #2E7D32; font-weight: 600;">
+                                        Paid via ${pay}
+                                    </div>
+                                </div>
 
                       <p style="color:#888; font-size:14px;">Thank you for shopping with Prince Alex Store!</p>
+                                <div style="background-color: #e3f2fd; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
+                                    <h3 style="color: #1976d2; margin: 0 0 10px 0; font-size: 16px;">💬 Feedback?</h3>
+                                    <p style="margin: 0; color: #455a64; font-size: 14px; line-height: 1.5;">
+                                        Was everything fresh? We'd love to hear from you. Reply to this email or chat with us on WhatsApp.
+                                    </p>
+                                </div>
+
+                                <div style="text-align: center; margin-top: 30px;">
+                                    <a href="https://store.princealex.pro" style="display: inline-block; background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); color: white; padding: 15px 35px; text-decoration: none; border-radius: 50px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 12px rgba(76,175,80,0.3);">Shop Fresh Again</a>
+                                </div>
+                            </div>
+                            
+                            <div style="background-color: #f1f5f9; padding: 25px; text-align: center; border-top: 1px solid #e2e8f0;">
+                                <p style="margin: 0; font-size: 13px; color: #64748b; font-weight: 600;">Prince Alex Store &bull; Farm Fresh Delivery</p>
+                                <p style="margin: 5px 0 0 0; font-size: 11px; color: #94a3b8;">Tambua Ward, Vihiga County, Kenya</p>
+                            </div>
+                        </div>
                     </div>
                   `
                 },
@@ -2223,6 +2332,13 @@
             if(!destMarker) map.setView(loc, 15);
           }else{
             riderMarker.setLatLng(loc);
+          }
+
+          // Throttled Firestore Update for Customer Tracking
+          const now = Date.now();
+          if (now - lastLocationSyncTime > LOCATION_SYNC_INTERVAL) {
+            syncRiderLocation(pos.coords.latitude, pos.coords.longitude);
+            lastLocationSyncTime = now;
           }
         }, (err)=>{ console.warn("Location access denied or error", err); }, { enableHighAccuracy:true, maximumAge: 10000, timeout: 10000 });
       }
@@ -2308,25 +2424,29 @@
 
       currentRider = { id: snap.id, ...snap.data() };
 
-      // show chip
+      // UI update
       riderChip.style.display = "flex";
       riderAvatar.src = currentRider.photoURL || "https://ui-avatars.com/api/?background=0b1220&color=ffffff&name=Rider";
-      riderName.textContent = safe(currentRider.name,"Rider");
+      riderName.textContent = safe(currentRider.name, "Rider");
       riderEmail.textContent = safe(currentRider.email, currentRider.id);
-
       loginOverlay.style.display = "none";
 
-      // status from firestore
+      // Status logic
       riderStatus = currentRider.availability === "online" ? "online" : "offline";
       setStatusUI();
-
-      // start listeners
       startListeners();
-
-      // default view
       setView("available");
       render();
     });
+
+    // PWA Offline Support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => console.log('PA Rider PWA Active'))
+          .catch(err => console.warn('PWA error', err));
+      });
+    }
   </script>
 </body>
 </html>
