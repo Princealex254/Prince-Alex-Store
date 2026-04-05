@@ -1,0 +1,18 @@
+{
+  "name": "Prince Alex Rider Dashboard",
+  "short_name": "PA Rider",
+  "description": "Real-time delivery management for Prince Alex Store riders",
+  "start_url": "rider.html",
+  "display": "standalone",
+  "background_color": "#f4f6f8",
+  "theme_color": "#00C853",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://ui-avatars.com/api/?background=00C853&color=ffffff&name=PA&size=512",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
