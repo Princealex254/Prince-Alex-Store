@@ -11981,6 +11981,7 @@
                 customerEmail: customerEmail,
                 customerPhone: customerPhone,
                 items: items.map(i => ({ 
+                    name: i.name || 'Item',
                     quantity: i.quantity || i.qty || 1, 
                     price: Number(i.price || i.totalPrice || 0), 
                     unit: i.unit || '' 
